@@ -1,0 +1,269 @@
+% ====================== Pakiety =========================
+
+% Polski
+\usepackage[polish]{babel}
+\usepackage[T1]{fontenc}
+
+% Marginesy
+\usepackage[a4paper, top=2.5cm, bottom=2.5cm, inner=3cm, outer=2cm]{geometry}
+
+% Stylizacja spisu treści
+\usepackage{tocloft}
+
+% Czcionki
+\usepackage{fontspec}
+
+% Nagłówki i stopki
+\usepackage{fancyhdr}
+
+% Odstępy między liniami
+\usepackage{setspace}
+
+% Bibliografia
+\usepackage[backend=biber, sorting=none]{biblatex}
+\usepackage{csquotes}
+
+% Stylizacja nagłówków
+\usepackage{titlesec}
+\usepackage{titletoc}
+
+% Generowanie Lorem Ipsum
+\usepackage{lipsum} 
+
+% Wcinanie pierwszych akapitów
+\usepackage{indentfirst}
+
+% Hiperlinki
+\usepackage[draft=false]{hyperref}
+
+% Unikanie przełamania strony w akapicie
+\usepackage[defaultlines=2,all]{nowidow}
+
+% Zdjęcia
+\usepackage{graphicx}
+\usepackage{subcaption}
+
+% Bloki komentarzy i bezpośredni tekst
+\usepackage{verbatim}
+
+% Stylizacja list
+\usepackage{enumitem}
+
+% Pakiet do wielu kolumn
+\usepackage{multicol}
+
+% Pakiet wspierający wiele opcjonalnych parametrów
+\usepackage{xargs}
+
+% Pakiet do umieszczania listingów kodu
+\usepackage{listings}
+
+% Kolory
+\usepackage{color}
+
+% Pakiet dotyczący języka francuskiego, ale usuwa sieroty
+% \usepackage[nosingleletter]{impnattypo}
+
+% Poprawa typesettingu
+% \usepackage{microtype}
+
+% Notatki
+% \usepackage[colorinlistoftodos,prependcaption]{todonotes}
+
+% Reprezentowanie struktury plików
+\usepackage{forest}
+
+% Opływanie zdjęć przez tekst
+\usepackage{wrapfig}
+
+% Dodatkowe narzędzia do tabel
+\usepackage{makecell}
+
+% ================== Konfiguracja =====================
+
+% Ustawienie domyślnych czcionek
+\setmainfont{Times New Roman}
+\setsansfont{Arial}
+
+% Odstęp między liniami
+\setstretch{1.5}
+
+% Głębokość wcięcie akapitów
+\setlength\parindent{0cm}
+
+% Usunięcie odstępu po tytule w spisie treści
+\addtocontents{toc}{\vspace{-5ex}}
+
+% Nagłówek strony
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Tłumaczenie zapytań w języku polskim na SQL}
+\lhead{inż. Łukasz Klimkiewicz}
+\fancyfoot[RO,LE]{\thepage} % strona tytułowa drukowana jednostronnie
+
+% Zapewnienie ilości miejsca na nagłówek
+\setlength{\headheight}{14.5pt}
+
+% Dodanie nagłówka na każdej stronie
+\fancypagestyle{plain}{}
+
+% Usunięcie domyślnego tytułu spisu treści
+\makeatletter
+\renewcommand{\@cftmaketoctitle}{}
+\makeatother
+
+% Usunięcie domyślnego tytułu spisu zdjęć
+\makeatletter
+\renewcommand{\@cftmakeloftitle}{}
+\makeatother
+
+% Usunięcie domyślnego tytułu spisu tabel
+\makeatletter
+\renewcommand{\@cftmakelottitle}{}
+\makeatother
+
+% Zmniejsza automatycznie dodawane spacje między paragrafami
+\setlength{\parskip}{3mm plus 1.0pt minus0mm}
+
+% Usunięcie przerw przed rozdziałami i sekcjami
+% Usunięcie przerw przez rozdziałami
+\titlespacing{\chapter}{0pt}{-30pt}{0mm} % -\parskip
+\titlespacing{\section}{0pt}{5mm}{0mm}
+\titlespacing{\subsection}{0pt}{5mm}{0mm}
+
+% Dodanie poprawnego numerowanie rozdziałów
+\titleformat{\chapter}[hang] 
+{\normalfont\LARGE\bfseries}{\thechapter}{1em}{} 
+
+\titleformat*{\chapter}{\bfseries\LARGE\sffamily}
+\titleformat*{\section}{\bfseries\Large\sffamily}
+\titleformat*{\subsection}{\bfseries\large\sffamily}
+
+% Dodanie bibliografii
+\addbibresource{bibliography/mendeley.bib}
+\addbibresource{bibliography/others.bib}
+
+% Konfiguracja hiperlinków
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+
+% Ograniczenie głębokości spisu treści
+\setcounter{tocdepth}{1}
+
+% Usunięcie odstępu pomiędzy rozdział w spisie treści
+\makeatletter
+\renewcommand*\l@chapter[2]{%
+  \ifnum \c@tocdepth >\z@
+    \addpenalty\@secpenalty
+    \setlength\@tempdima{1.5em}%
+    \begingroup
+      \parindent \z@ \rightskip \@pnumwidth
+      \parfillskip -\@pnumwidth
+      \leavevmode \bfseries
+      \advance\leftskip\@tempdima
+      \hskip -\leftskip
+      #1\nobreak\hfil \nobreak\hb@xt@\@pnumwidth{\hss #2}\par
+    \endgroup
+  \fi}
+\makeatother
+
+% Usunięcie odstępu między elementami list i górnego odstępu
+\setlist{nolistsep, topsep=0pt}
+
+% Dostosowanie odstępu przed i po kolumnach
+\setlength{\multicolsep}{3pt plus 0pt minus 0pt}
+
+% Odstęp pomiędzy ramką, a zawartośc\setlength{\fboxsep}{0pt}
+
+% Definicja kolorów
+\definecolor{lightgray}{rgb}{.95,.95,.92}
+\definecolor{purple}{rgb}{1, 0, 1}
+\definecolor{mediumorchid}{rgb}{0.72, 0.33, 0.82}
+\definecolor{darkviolet}{rgb}{0.58, 0, 0.82}
+\definecolor{green}{rgb}{0, 0.5, 0}
+
+% Domyślna długość lorem ipsum
+\SetLipsumDefault{2-6}
+
+% Domyślnie nagłóœki
+\captionsetup[subfigure]{justification=centering}
+\captionsetup[table]{name=Tabela}
+
+% Strony nie muszą być równej wysokości
+\raggedbottom
+
+\colorlet{punct}{red!60!black}
+\definecolor{background}{HTML}{EEEEEE}
+\definecolor{delim}{RGB}{20,105,176}
+\colorlet{numb}{magenta!60!black}
+
+\definecolor{delim}{RGB}{20,105,176}
+\definecolor{numb}{RGB}{106, 109, 32}
+\definecolor{string}{rgb}{0.64,0.08,0.08}
+
+% Określenie stylów listingów
+\lstset{
+   backgroundcolor=\color{lightgray},
+   extendedchars=true,
+   basicstyle=\footnotesize\ttfamily,
+   showstringspaces=false,
+   showspaces=false,
+   numbers=left,
+   numberstyle=\small,
+   numbersep=9pt,
+   tabsize=2,
+   breaklines=true,
+   showtabs=false,
+   captionpos=b,
+   frame=single,
+   upquote=true,
+}
+
+\lstdefinelanguage{json}{
+    morestring=[b]",
+    stringstyle=\color{string},
+    literate=
+     *{0}{{{\color{numb}0}}}{1}
+      {1}{{{\color{numb}1}}}{1}
+      {2}{{{\color{numb}2}}}{1}
+      {3}{{{\color{numb}3}}}{1}
+      {4}{{{\color{numb}4}}}{1}
+      {5}{{{\color{numb}5}}}{1}
+      {6}{{{\color{numb}6}}}{1}
+      {7}{{{\color{numb}7}}}{1}
+      {8}{{{\color{numb}8}}}{1}
+      {9}{{{\color{numb}9}}}{1}
+      {\{}{{{\color{delim}{\{}}}}{1}
+      {\}}{{{\color{delim}{\}}}}}{1}
+      {[}{{{\color{delim}{[}}}}{1}
+      {]}{{{\color{delim}{]}}}}{1},
+}
+
+% ====================== Nowe komendy =========================
+
+% Dodanie komendy do zakreślania
+\newcommand{\todolater}[1]{\todo[color=yellow,inline]{TODO: #1}}
+
+% Komenda unsure
+\newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
+
+% Fake chapter & fake section
+\newcommand{\fchapter}[1]{\chapter{#1}\lipsum[3]}
+\newcommand{\ftchapter}[2]{\chapter{#1}\todolater{#2}\lipsum[3]}
+
+\newcommand{\fsection}[1]{\section{#1}\lipsum[3]}
+\newcommand{\ftsection}[2]{\section{#1}\todolater{#2}\lipsum[3]}
+
+% Komenda do towrzenia wykazu skrótów
+\newcommand{\abbrev}[2]{\item \textbf{#1} - {#2}}
+
+\newcommand{\filename}[1]{\texttt{#1}}
+
+\newcommand{\code}[1]{\texttt{#1}}
+
+\renewcommand\theadfont{\bfseries\sffamily}

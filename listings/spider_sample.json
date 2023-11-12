@@ -1,0 +1,12 @@
+[
+  {
+    "db_id": "concert_singer",
+    "question": "How many singers do we have?",
+    "question_toks": ["How", "many", "singers", "do", "we", "have", "?"],
+    "query": "SELECT count(*) FROM singer",
+    "query_toks": ["SELECT", "count", "(", "*", ")", "FROM", "singer"],
+    "query_toks_no_value": ["select","count","(","*",")","from","singer"],
+    "sql": {...}
+  },
+  ...
+]

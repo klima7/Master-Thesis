@@ -1,0 +1,24 @@
+% strona tytułowa
+\include{template/titlepage}
+
+% Pusta strona
+\shipout\null
+
+% Numerowanie rzymskie
+\clearpage
+\setcounter{page}{1}
+\pagenumbering{Roman}
+
+% Abstrakt
+\include{chapters/streszczenie}
+
+% Spis treści
+\newpage
+\section*{Spis treści} \
+\vspace{2mm}
+\tableofcontents\thispagestyle{fancy}
+\cleardoublepage
+
+% Numerowanie arabskie
+\setcounter{page}{1}
+\pagenumbering{arabic}

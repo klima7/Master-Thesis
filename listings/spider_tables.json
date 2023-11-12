@@ -1,0 +1,21 @@
+[
+  {
+    "db_id": "perpetrator",
+    "table_names": ["perpetrator", "people", ...],
+    "table_names_original": ["perpetrator", "people", ...],
+    "column_names": [
+      [0, "perpetrator id"],
+      [0, "people id"],
+      ...
+    ],
+    "column_names_original": [
+      [0, "Perpetrator_ID"],
+      [0, "People_ID"],
+      ...
+    ],
+    "column_types": ["number", "number", ...],
+    "foreign_keys": [[2, 9]],
+    "primary_keys": [1, 9]
+  },
+  ...
+]

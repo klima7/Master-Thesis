@@ -1,0 +1,36 @@
+% Bibliografia
+\printbibliography[heading=bibintoc]
+
+% Wykaz rysunków
+\setstretch{1.400}
+\newcommand{\loftitle}{Wykaz rysunków}
+\clearpage
+\chapter*{\loftitle}
+\addcontentsline{toc}{chapter}{\loftitle}
+\vspace{3mm}
+\listoffigures
+\setstretch{1.5}
+
+% Wykaz tabel
+\newcommand{\lottitle}{Wykaz tabel}
+\clearpage
+\chapter*{\lottitle}
+\addcontentsline{toc}{chapter}{\lottitle}
+\listoftables
+
+% Wykaz listingów
+\newcommand{\loltitle}{Wykaz listingów}
+\clearpage
+\chapter*{\loltitle}
+\addcontentsline{toc}{chapter}{\loltitle}
+\vspace{3mm}
+\lstlistoflistings
+
+% Wykaz skrótów
+\newcommand{\lostitle}{Wykaz skrótów}
+\clearpage
+\chapter*{\lostitle}
+\addcontentsline{toc}{chapter}{\lostitle}
+\begin{itemize}
+\input{chapters/skroty}
+\end{itemize}

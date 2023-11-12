@@ -1,0 +1,4 @@
+SELECT count(*) FROM singer     concert_singer
+SELECT Title FROM Cartoon WHERE Directed_by = "Ben Jones";	tvshow
+SELECT petid,  weight FROM pets WHERE pet_age  >  1	pets_1
+...
