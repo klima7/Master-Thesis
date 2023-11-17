@@ -1,0 +1,6 @@
+{
+  "type": 2,
+  "db_id": "wta_1",
+  "question": "Return names of all players sorted from oldest to youngest?"
+  "query": "SELECT name FROM players ORDER BY birth_date",
+}

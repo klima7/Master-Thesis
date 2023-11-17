@@ -79,6 +79,9 @@
 % Dodatkowe narzędzia do tabel
 \usepackage{makecell}
 
+% Usuwa odstępy pomiędzy rozdziałąmi na listach obrazków
+\usepackage[figurewithin=none]{caption}
+
 % ================== Konfiguracja =====================
 
 % Ustawienie domyślnych czcionek
@@ -191,7 +194,7 @@
 \SetLipsumDefault{2-6}
 
 % Domyślnie nagłóœki
-\captionsetup[subfigure]{justification=centering}
+% \captionsetup[subfigure]{justification=centering}
 \captionsetup[table]{name=Tabela}
 
 % Strony nie muszą być równej wysokości
@@ -207,23 +210,6 @@
 \definecolor{string}{rgb}{0.64,0.08,0.08}
 
 % Określenie stylów listingów
-\lstset{
-   backgroundcolor=\color{lightgray},
-   extendedchars=true,
-   basicstyle=\footnotesize\ttfamily,
-   showstringspaces=false,
-   showspaces=false,
-   numbers=left,
-   numberstyle=\small,
-   numbersep=9pt,
-   tabsize=2,
-   breaklines=true,
-   showtabs=false,
-   captionpos=b,
-   frame=single,
-   upquote=true,
-}
-
 \lstdefinelanguage{json}{
     morestring=[b]",
     stringstyle=\color{string},
@@ -240,8 +226,44 @@
       {9}{{{\color{numb}9}}}{1}
       {\{}{{{\color{delim}{\{}}}}{1}
       {\}}{{{\color{delim}{\}}}}}{1}
-      {[}{{{\color{delim}{[}}}}{1}
-      {]}{{{\color{delim}{]}}}}{1},
+      % {[}{{{\color{delim}{[}}}}{1}
+      % {]}{{{\color{delim}{]}}}}{1},
+}
+
+\lstdefinelanguage{SQL}{
+  morekeywords={select,from,where,inner,join,on,order,by,group,asc,desc,limit,and,or,not,is,null,like,in,between,as},
+  sensitive=false,
+  morecomment=[l]{--},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]",
+}
+
+\lstset{
+   backgroundcolor=\color{lightgray},
+   extendedchars=true,
+   basicstyle=\footnotesize\ttfamily,
+   showstringspaces=false,
+   showspaces=false,
+   numbers=left,
+   numberstyle=\small,
+   numbersep=9pt,
+   tabsize=2,
+   breaklines=true,
+   showtabs=false,
+   captionpos=b,
+   frame=single,
+   upquote=true,
+   aboveskip=2em,
+}
+
+\lstset{
+   language=SQL,
+   keywordstyle=\color{blue}\bfseries,
+   commentstyle=\color{darkgreen},
+   stringstyle=\color{red},
+   showstringspaces=false,
+   breaklines=true,
+   postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
 }
 
 % ====================== Nowe komendy =========================
@@ -264,6 +286,14 @@
 
 \newcommand{\filename}[1]{\texttt{#1}}
 
-\newcommand{\code}[1]{\texttt{#1}}
+\definecolor{code_color}{RGB}{138,0,0}
+\newcommand{\code}[1]{\texttt{\color{code_color}{#1}}}
+
+\newcommand{\sql}[1]{\texttt{\textcolor{code_color}{#1}}}
 
 \renewcommand\theadfont{\bfseries\sffamily}
+
+\newcommand{\s}{\hphantom{0}}
+
+\newcommand{\bibtitle}[1]{\textit{\enquote{#1}}}
+

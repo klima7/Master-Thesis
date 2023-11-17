@@ -1,0 +1,20 @@
+{
+    "perpetrator": [
+        {
+            "name_src": "perpetrator",
+            "name_tgt": "sprawca",
+            "orig_src": "perpetrator",
+            "orig_tgt": "sprawca",
+            "columns": [
+                {
+                    "name_src": "perpetrator id",
+                    "name_tgt": "sprawca id",
+                    "orig_src": "Perpetrator_ID",
+                    "orig_tgt": "Sprawca_ID"
+                },
+                kolejne kolumny ...
+            ]
+        },
+        kolejne tabele...
+    kolejne bazy danych...
+}

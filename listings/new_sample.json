@@ -1,0 +1,11 @@
+{
+ "db_id": "local_govt_in_alabama",
+ "question": {
+  "en": "How many participants have the type 'Organizer'?",
+  "pl": "Ilu uczestników posiada typ 'Organizator'?"
+ },
+ "query": {
+  "en": "SELECT count(*) FROM participants WHERE type_code='Organizer'",
+  "pl": "SELECT count(*) FROM participants WHERE type_code='Organizator'"
+ }
+}

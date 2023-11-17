@@ -1,0 +1,6 @@
+{
+  "db_id": "concert_singer",
+  "SpiderQuestion": "What is the total number of singers?",
+  "SpiderSynQuestion": "What is the total number of musicians?",
+  "query": "SELECT count(*) FROM singer"
+}
