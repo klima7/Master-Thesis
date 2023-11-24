@@ -83,7 +83,7 @@ caption=Fragment pliku \code{dev\_gold.json} zawierającego poprawne zapytania S
 \end{minipage}
 
 \subsubsection{Schemat (\code{tables.json})}
-Plik \code{tables.json}, którego fragment został przedstawiony na listingu \ref{lst:spider-tables}, opisuję strukturę każdej zawartej w zbiorze Spider bazy danych. Obejmuję to nazwy wszystkich tabel i kolumn, typy kolumn, wskazane są kolumny stanowiące klucze podstawowe oraz uwzględnione są klucze obce.
+Plik \code{tables.json}, którego fragment został przedstawiony na listingu \ref{lst:spider-tables}, opisuję strukturę każdej zawartej w zbiorze Spider bazy danych. Obejmuję to nazwy wszystkich tabel i kolumn, typy kolumn, wskazane są kolumny stanowiące klucze podstawowe oraz obce.
 
 Co ciekawe, oprócz oryginalnie występujących w bazie nazw tabel i kolumn w pliku schematu znajdują się również ich odpowiedniki w języku naturalnym. Oznacza to, że nazwy składające się z kilku słów i zapisywane oryginalnie za pomocą różnych konwencji, takich jak Camel Case, Snake Case, czy Pascal Case, są zamieniane na naturalną postać słów odseparowanych spacjami. Poza tym, część oryginalnych, skrótowych nazw jest rozwijana do zrozumiałej postaci. Jest to dodatkowa informacja, która nie jest dostępna w większości baz danych, a mimo wszystko jest wykorzystywana przez wiele algorytmów.
 
@@ -141,8 +141,6 @@ Jako, że część ze wspomnianych powyżej zbiorów pokrewnych do zbioru \code{
 \subsection{Spider-Syn}
 \code{Spider-Syn} jest zbiorem danych powstałym ze zbioru \code{Spider} poprzez zmodyfikowanie próbek w taki sposób, aby ograniczyć dosłowne wymienianie w pytaniach nazw kolumn, tabel i wartości z bazy. Odzwierciedla to scenariusz w którym z interfejsu tekstowego do bazy korzysta osoba, która dokładnie jej nie zna, więc często posługuję się synonimami. Stworzenie tego typu zbioru było istotne, ponieważ okazało się, że duża część istniejących algorytmów opiera się na powiązywaniu pytania z elementami bazy poprzez znajdywanie dosłownych powtórzeń i w przedstawionym scenariuszu ich skuteczność radykalnie spada. Zmodyfikowana została jednak jedynie nieco ponad połowa próbek, ponieważ dla dużej części przykładów ciężkim było znalezienie odpowiednich synonimów.
 
-\subsubsection{Przykład próbki}
-
 \begin{minipage}{\linewidth}
 \lstinputlisting[
 caption=Przykład próbki ze zbioru \code{Spider-Syn}, label={lst:spider-syn-example}, language=json
@@ -152,18 +150,14 @@ caption=Przykład próbki ze zbioru \code{Spider-Syn}, label={lst:spider-syn-exa
 \subsection{Spider-DK}
 Zbiór danych \code{Spider-DK} (skrót od Domain Knowledge) został zbudowany w oparciu o zbiór testowy \code{Spider} w celu oceny uogólniania modeli \code{Text-to-SQL}, ze szczególnym uwzględnieniem rozumienia wiedzy dziedzinowej. \code{Spider-DK} zawiera 535 par pytań w języku naturalnym i zapytań SQL, z czego 270 par jest identycznych jak w oryginalnym Spiderze, a pozostałe 265 par zostało zmodyfikowanych tak, aby uwzględnić wiedzę dziedzinową. Pytania w \code{Spider-DK} wymagają zrozumienia 5 typów wiedzy dziedzinowej: pomijanie wymieniania kolumn, proste wnioskowanie, synonimy wartości komórek, generowanie warunków na podstawie słów spoza wartości komórek oraz wiedza, która łatwo kłóci się z innymi dziedzinami. \code{Spider-DK} symuluje scenariusz, w którym w zapytaniu użytkownika wykorzystywana jest konkretna wiedza dziedzinowa.
 
-\subsubsection{Przykład próbki}
-
 \begin{minipage}{\linewidth}
 \lstinputlisting[
-caption=Przykład próbki ze zbioru \code{Spider-Syn}, label={lst:spider-syn-example}, language=json
+caption=Przykład próbki ze zbioru \code{Spider-DK}, label={lst:spider-dk-example}, language=json
 ]{listings/spider_dk_example.json}
 \end{minipage}
 
 \subsection{SParC}
 \code{SParC} jest zbiorem danych zawierającym sekwencje pytań w języku naturalnym oraz odpowiadające im zapytania SQL. Zbiór zawiera 4298 spójnych sekwencji pytań (łącznie ponad 12 tysięcy pojedynczych pytań), dotyczących baz danych \code{Spider}. Został stworzony przez 15 studentów posiadających doświadczenie w SQL. Pytania są tematycznie powiązane i wymagają wykorzystania informacji z poprzednich pytań, aby poprawnie sformułować odpowiednie zapytanie SQL.
-
-\subsubsection{Przykład próbki}
 
 \begin{figure}[ht!]
   \centering
@@ -175,17 +169,15 @@ caption=Przykład próbki ze zbioru \code{Spider-Syn}, label={lst:spider-syn-exa
 \subsection{CoSQL}
 \code{CoSQL} to pierwszy duży korpus tekstowych zapytań SQL zebranych w konwersacyjnej formie. Zawiera on ponad 30 000 fragmentów dialogów oraz ponad 10 000 adnotowanych zapytań SQL, pozyskanych w ramach symulowanych rozmów pomiędzy zwykłymi użytkownikami a ekspertami SQL na temat baz danych i domen pochodzących oryginalnie ze zbioru \code{Spider}. Każdy dialog odtwarza realistyczny scenariusz eksploracji bazy danych, w którym użytkownik zadaje pytania, a ekspert SQL stara się na nie odpowiedzieć, wyjaśniając niejednoznaczne kwestie lub informując o pytaniach bez odpowiedzi. Gdy pytania użytkownika dają się sformułować w języku SQL, ekspert opisuje je w tym języku i prezentuje wyniki, aby zachować naturalny przebieg interakcji.
 
-\subsubsection{Przykład próbki}
-
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=1.0\linewidth]{images/cosql_example.png}
-  \caption{Przykładowa konwersacja ze zbioru \code{SParC}}
+  \caption{Przykładowa konwersacja ze zbioru \code{CoSQL}}
   \label{fig:cosql-example}
 \end{figure}
 
-\section{Analiza istniejących tłumaczeń zbioru Spider}
-Jak zostało wspomniane podczas przeglądu literatury, obecnie istnieją cztery tłumaczenia zbioru Spider na języki narodowe. Jest to język chiński, wietnamski, portugalski oraz rosyjski. Autorzy tych zbiorów jednak pomimo wspólnego celu podeszli do zadania na różne sposoby. Celem niniejszej sekcji jest przedyskutowanie kluczowych różnic pomiędzy nimi. Jedną z najistotniejszych jest zastosowana metoda tłumaczenia. Rozbieżności zaobserwowano również jeśli chodzi o tłumaczenie schematu, zawartości baz danych oraz wartości w zapytaniach. Różnice w tych kwestiach zostały zestawione w tabeli \ref{tab:spider-trans-diffs} i zostaną przedyskutowane w poniższych sekcjach.
+\section{Istniejące tłumaczenia zbioru Spider}
+Jak zostało wspomniane podczas przeglądu literatury, obecnie istnieją cztery tłumaczenia zbioru Spider na języki narodowe. Jest to język chiński, wietnamski, portugalski oraz rosyjski. Autorzy tych zbiorów jednak pomimo wspólnego celu podeszli do zadania na różne sposoby. Celem niniejszej sekcji jest przedyskutowanie kluczowych różnic pomiędzy nimi. Jedną z najistotniejszych jest zastosowana metoda tłumaczenia. Rozbieżności zaobserwowano również jeśli chodzi o tłumaczenie schematu, zawartość baz danych oraz wartości w zapytaniach. Różnice w tych kwestiach zostały zestawione w tabeli \ref{tab:spider-trans-diffs} i zostaną dogłębnie omówione w poniższych sekcjach.
 
 
 \begin{table}[ht]
@@ -212,11 +204,11 @@ Jak zostało wspomniane podczas przeglądu literatury, obecnie istnieją cztery 
 \end{table}
 
 \subsection{Rodzaj tłumaczenia} \label{text:translation-method}
-Tłumaczenie maszynowe i manualne to dwa możliwe podejścia. Pierwsze sprowadza się do wykorzystania narzędzi, dostępnych najczęściej za pomocą webowych API, takich jak Google Cloud Translation API \cite{google-translation-api}, czy DeepL \cite{deepl}. Drugie natomiast oznacza ręczne tłumaczenie każdej próbki przez człowieka. Oczywiście tłumaczenie ręczne może być wspomagane przez metodę maszynową, aby ograniczyć się do poprawiania tłumaczeń zamiast pisania ich od początku.
+Tłumaczenie maszynowe i manualne to dwa możliwe podejścia. Pierwsze sprowadza się do wykorzystania narzędzi, dostępnych najczęściej za pomocą webowych API, takich jak \code{Google Cloud Translation API} \cite{google-translation-api}, czy \code{DeepL} \cite{deepl}. Drugie natomiast oznacza ręczne tłumaczenie każdej próbki przez człowieka. Oczywiście tłumaczenie ręczne może być wspomagane przez metodę maszynową, aby ograniczyć się do poprawiania tłumaczeń zamiast pisania ich od początku.
 
 Największą zaletą tłumaczenia maszynowego jest szybkie uzyskanie przetłumaczonego zbioru. Wiąże się to najczęściej z naliczeniem pewnych kosztów, o których trzeba wspomnieć, lecz mimo wszystko koszt ten jest niewspółmierny do ceny wynajęcia profesjonalnego ludzkiego tłumacza. Jest on również pomijalny w stosunku do czasu, który trzeba by poświęcić, by dokonać tłumaczenia samemu.
 
-Tłumaczenie maszynowe ma jednak istotne wady - dostępne narzędzia stają się coraz lepsze, lecz jednak wciąż nie dorównują człowiekowi. Sprawia to, że uzyskiwane zbiory danych są bezsprzecznie niższej jakości. Narzędzia te dokonując tłumaczenia zbioru Spider nie biorą pod uwagę wielu istotnych elementów, które ludzki adnotator by uwzględnił. Przykładem jest ignorowanie domeny podczas tłumaczenia pytania naturalnego. Ludzki tłumacz pytanie "list all parties" w domenie rządowej przetłumaczy jako "zwróć wszystkie partie", natomiast tłumacz maszynowy przetłumaczy to bez wątpienia jako "zwróć wszystkie imprezy".
+Tłumaczenie maszynowe ma jednak istotne wady - dostępne narzędzia stają się coraz lepsze, lecz jednak wciąż nie dorównują człowiekowi. Sprawia to, że uzyskiwane zbiory danych są bezsprzecznie niższej jakości. Narzędzia te dokonując tłumaczenia zbioru Spider nie biorą pod uwagę wielu istotnych elementów, które ludzki adnotator by uwzględnił. Przykładem jest ignorowanie domeny podczas tłumaczenia pytania naturalnego. Ludzki tłumacz pytanie \enquote{list all parties} w domenie politycznej przetłumaczy jako \enquote{zwróć wszystkie partie}, natomiast tłumacz maszynowy przetłumaczy to bez wątpienia jako \enquote{zwróć wszystkie imprezy}.
 
 Dotychczasowe tłumaczenia zbioru Spider, z powodu ograniczeń metody maszynowej, w większości korzystają z ręcznego tłumaczenia zbioru. Jest to prawdą dla rosyjskiego \code{PAUQ}, wietnamskiego \code{ViText2SQL} oraz chińskiego \code{CSpider}, jedyny wyjątek stanowi zbiór portugalski. Autorzy każdego z tych manualnie tłumaczonych zbiorów dla porównania dokonali również tłumaczenia maszynowego. Zestawienie wyników osiąganych przez modele trenowane na zbiorach tłumaczonych maszynowo i manualnie zostało przedstawione w tabeli \ref{tab:manual-vs-machine}. Wszystkie wyniki potwierdzają, że tłumaczenie manualne pozwala uzyskać lepsze wyniki, aczkolwiek w przypadku względnie nowych modeli \code{RAT-SQL} oraz \code{BRIDGE} procentowy spadek skuteczności na zbiorach maszynowych nie jest tak znaczący jak dla modeli wcześniejszych.
 

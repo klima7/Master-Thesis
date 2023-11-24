@@ -82,6 +82,17 @@
 % Usuwa odstępy pomiędzy rozdziałąmi na listach obrazków
 \usepackage[figurewithin=none]{caption}
 
+% Naprawia przełamywanie linii wewnątrz \texttt
+\usepackage[htt]{hyphenat}
+
+% Dodaje możliwość używania zaawansowanych obramowań w tabelach
+\usepackage{hhline}
+
+\usepackage{array}
+\usepackage{multirow}
+
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
 % ================== Konfiguracja =====================
 
 % Ustawienie domyślnych czcionek

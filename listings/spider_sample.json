@@ -1,9 +1,9 @@
 {
- "db_id": "concert_singer",
- "question": "How many female singers do we have?",
- "question_toks": ["How","many","singers","do","we","have","?"],
- "query": "SELECT count(*) FROM singer WHERE gender = 'female'",
- "query_toks": ["SELECT","count","(","*",")","FROM","singer","WHERE","gender","=","female"],
- "query_toks_no_value":["select","count","(","*",")","from","singer","WHERE","gender","=","value"],
+ "db_id": "cre_Doc_Template_Mgt",
+ "question": "List all document ids with at least two paragraphs.",
+ "question_toks": ["List", "all", "document", "ids", "with", "at", "least", "two", "paragraphs", "."],
+ "query": "SELECT document_id FROM Paragraphs GROUP BY document_id HAVING count(*)  >=  2",
+ "query_toks": ["SELECT", "document_id", "FROM", "Paragraphs", "GROUP", "BY", "document_id", "HAVING", "count", "(", "*", ")", ">", "=", "2"],
+ "query_toks_no_value": ["select","document_id","from","paragraphs","group","by","document_id","having","count","(","*",")",">","=","value"],
  "sql": {...}
 }
