@@ -1,0 +1,26 @@
+\definecolor{code_color}{RGB}{138,0,0}
+
+% Komenda do zakreślania
+\newcommand{\todolater}[1]{\todo[color=yellow,inline]{TODO: #1}}
+
+% Komenda do zaznaczanie niepewnych fragmentów
+\newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
+
+% Komendy do tworzenia sztucznych rodziałów i sekcji
+\newcommand{\fchapter}[1]{\chapter{#1}\lipsum[3]}
+\newcommand{\ftchapter}[2]{\chapter{#1}\todolater{#2}\lipsum[3]}
+\newcommand{\fsection}[1]{\section{#1}\lipsum[3]}
+\newcommand{\ftsection}[2]{\section{#1}\todolater{#2}\lipsum[3]}
+
+\newcommand{\s}{\hphantom{0}}
+
+\newcommand{\bibtitle}[1]{\textit{\enquote{#1}}}
+
+\newcommand{\code}[1]{\texttt{\color{code_color}{#1}}}
+
+\newcommand{\sql}[1]{\texttt{\textcolor{code_color}{#1}}}
+
+% Komenda do tworzenia wykazu skrótów
+\newcommand{\abbrev}[2]{\item \textbf{#1} - {#2}}
+
+\newcommand{\filename}[1]{\texttt{#1}}

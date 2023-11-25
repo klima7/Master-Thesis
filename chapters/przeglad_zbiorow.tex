@@ -176,7 +176,7 @@ caption=Przykład próbki ze zbioru \code{Spider-DK}, label={lst:spider-dk-examp
   \label{fig:cosql-example}
 \end{figure}
 
-\section{Istniejące tłumaczenia zbioru Spider}
+\section{Tłumaczenia zbioru Spider}
 Jak zostało wspomniane podczas przeglądu literatury, obecnie istnieją cztery tłumaczenia zbioru Spider na języki narodowe. Jest to język chiński, wietnamski, portugalski oraz rosyjski. Autorzy tych zbiorów jednak pomimo wspólnego celu podeszli do zadania na różne sposoby. Celem niniejszej sekcji jest przedyskutowanie kluczowych różnic pomiędzy nimi. Jedną z najistotniejszych jest zastosowana metoda tłumaczenia. Rozbieżności zaobserwowano również jeśli chodzi o tłumaczenie schematu, zawartość baz danych oraz wartości w zapytaniach. Różnice w tych kwestiach zostały zestawione w tabeli \ref{tab:spider-trans-diffs} i zostaną dogłębnie omówione w poniższych sekcjach.
 
 
@@ -208,7 +208,7 @@ Tłumaczenie maszynowe i manualne to dwa możliwe podejścia. Pierwsze sprowadza
 
 Największą zaletą tłumaczenia maszynowego jest szybkie uzyskanie przetłumaczonego zbioru. Wiąże się to najczęściej z naliczeniem pewnych kosztów, o których trzeba wspomnieć, lecz mimo wszystko koszt ten jest niewspółmierny do ceny wynajęcia profesjonalnego ludzkiego tłumacza. Jest on również pomijalny w stosunku do czasu, który trzeba by poświęcić, by dokonać tłumaczenia samemu.
 
-Tłumaczenie maszynowe ma jednak istotne wady - dostępne narzędzia stają się coraz lepsze, lecz jednak wciąż nie dorównują człowiekowi. Sprawia to, że uzyskiwane zbiory danych są bezsprzecznie niższej jakości. Narzędzia te dokonując tłumaczenia zbioru Spider nie biorą pod uwagę wielu istotnych elementów, które ludzki adnotator by uwzględnił. Przykładem jest ignorowanie domeny podczas tłumaczenia pytania naturalnego. Ludzki tłumacz pytanie \enquote{list all parties} w domenie politycznej przetłumaczy jako \enquote{zwróć wszystkie partie}, natomiast tłumacz maszynowy przetłumaczy to bez wątpienia jako \enquote{zwróć wszystkie imprezy}.
+Tłumaczenie maszynowe ma jednak istotne wady - dostępne narzędzia stają się coraz lepsze, lecz wciąż nie dorównują człowiekowi. Sprawia to, że uzyskiwane zbiory danych są bezsprzecznie niższej jakości. Narzędzia te dokonując tłumaczenia zbioru Spider nie biorą pod uwagę wielu istotnych elementów, które ludzki adnotator by uwzględnił. Przykładem jest ignorowanie domeny podczas tłumaczenia pytania naturalnego. Ludzki tłumacz pytanie \enquote{list all parties} w domenie politycznej przetłumaczy jako \enquote{zwróć wszystkie partie}, natomiast tłumacz maszynowy przetłumaczy to bez wątpienia jako \enquote{zwróć wszystkie imprezy}.
 
 Dotychczasowe tłumaczenia zbioru Spider, z powodu ograniczeń metody maszynowej, w większości korzystają z ręcznego tłumaczenia zbioru. Jest to prawdą dla rosyjskiego \code{PAUQ}, wietnamskiego \code{ViText2SQL} oraz chińskiego \code{CSpider}, jedyny wyjątek stanowi zbiór portugalski. Autorzy każdego z tych manualnie tłumaczonych zbiorów dla porównania dokonali również tłumaczenia maszynowego. Zestawienie wyników osiąganych przez modele trenowane na zbiorach tłumaczonych maszynowo i manualnie zostało przedstawione w tabeli \ref{tab:manual-vs-machine}. Wszystkie wyniki potwierdzają, że tłumaczenie manualne pozwala uzyskać lepsze wyniki, aczkolwiek w przypadku względnie nowych modeli \code{RAT-SQL} oraz \code{BRIDGE} procentowy spadek skuteczności na zbiorach maszynowych nie jest tak znaczący jak dla modeli wcześniejszych.
 

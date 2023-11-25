@@ -7,5 +7,5 @@
  "query": {
   "en": "SELECT count(*) FROM participants WHERE type_code='Organizer'",
   "pl": "SELECT count(*) FROM participants WHERE type_code='Organizator'"
- }
+ } 
 }
