@@ -20,11 +20,23 @@ Najbardziej pożądaną podczas realizacji niniejszej pracy funkcją okazało si
 
 \begin{figure}[ht!]
   \centering
-  \includegraphics[width=0.6\linewidth]{images/ast_example.png}
+  \includegraphics[width=0.55\linewidth]{images/ast_example.png}
   \caption{Drzewo AST dla przykładowego zapytania SQL}
   \label{fig:sql-ast-example}
 \end{figure}
 
-\fsection{Microsoft Visual Studio Code}
+\section{Visual Studio Code}
+Visual Studio Code to wszechstronny edytor stworzony przez Microsoft. Zgodnie z tegoroczną ankietą \bibtitle{2023 Developer Survey} \cite{stackoverflow-survey} przeprowadzoną przez Stack Overflow jest on najczęściej wybieranym przez deweloperów środowiskiem programistycznym. Tym co je wyróżnia jest prostota przy jednoczesnej potędze płynącej z niespotykanej elastyczności. Dostępna jest bowiem ogromna liczba łatwych w instalacji rozszerzeń. Pozwalają one dostosować to środowisko niemal do każdego możliwego scenariusza wykorzystania.
 
-\fsection{Docker}
+Podczas realizacji pracy szczególnie użyteczne okazały się rozszerzenia dla języka Python dodające kolorowanie składni, dokończanie kodu, debugowanie, czy też wsparcie dla interaktywnych notesów Jupyter. Poza tym intensywnie wykorzystywane było rozszerzenie do pracy z narzędziem Docker. Jeśli chodzi o podstawowe funkcje środowiska to bardzo użyteczna okazała się integracja z systemem kontroli wersji oraz zaawansowane wyszukiwanie i zastępowanie.
+
+\section{Docker}
+Docker to bardzo potężne i powszechnie wykorzystywane narzędzie na którym opiera się znaczna część funkcjonującego oprogramowania. Umożliwia on tworzenie, zarządzanie i uruchamianie aplikacji w izolowanych kontenerach. Pozwalają one deweloperom na zapakowanie aplikacji z zależnościami i środowiskiem uruchomieniowym, co zapewnia spójność działania na różnych platformach.
+
+Podczas realizacji niniejszego projektu Docker okazał się szczególnie użyteczny w kontekście uruchamiania istniejących modeli uczenia maszynowego. Część z nich była od razu gotowa do działania w kontenerze, a inne zostały przystosowane. Okres czasu w którym te rozwiązania powstawały jest bowiem bardzo rozległy, więc zależności z których korzystają znacznie się różnią i trudno jest je ze sobą pogodzić. W przypadku różnic jedynie w pakietach języka Python możliwe by było skorzystanie ze znacznie prostszego narzędzia \code{conda}, lecz poziom izolacji tworzonych za jego pomocą środowisk jest znacznie ograniczony i jak się okazało niewystarczający.
+
+\begin{comment}
+Inne narzędzia:
+- git
+- conda
+\end{comment}
