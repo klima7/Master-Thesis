@@ -115,5 +115,29 @@
 % Domyślnie nagłówki tabel będą pogrubione
 \renewcommand\theadfont{\bfseries\sffamily}
 
-% Nowy typ kolumny - wyrównanie do prawej i umożliwia ustalenie szerokości
+% Nowy typ kolumny - z wyrównaniem do prawej i umożliwia ustalenie szerokości
 \newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+
+% Usunięcie odstępów pomiędzy rozdziałami w spisie tabel
+\makeatletter
+\def\@chapter[#1]#2{\ifnum \c@secnumdepth >\m@ne
+       \if@mainmatter
+         \refstepcounter{chapter}
+         \typeout{\@chapapp\space\thechapter.}
+         \addcontentsline{toc}{chapter}
+            {\protect\numberline{\thechapter}#1}
+       \else
+         \addcontentsline{toc}{chapter}{#1}
+       \fi
+    \else
+      \addcontentsline{toc}{chapter}{#1}
+    \fi
+    \chaptermark{#1}
+    \if@twocolumn
+      \@topnewpage[\@makechapterhead{#2}]
+    \else
+      \@makechapterhead{#2}
+      \@afterheading
+    \fi}
+\makeatother

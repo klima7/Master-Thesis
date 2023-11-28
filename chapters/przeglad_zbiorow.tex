@@ -139,7 +139,7 @@ Jedną z ważniejszych zasług zbioru Spider było zgromadzenie pokaźnej liczby
 Jako, że część ze wspomnianych powyżej zbiorów pokrewnych do zbioru \code{Spider} odegrało istotną rolę w procesie tworzenia polskiego zbioru danych, to zostaną one pobieżnie opisane w poniższych podsekcjach.
 
 \subsection{Spider-Syn}
-\code{Spider-Syn} jest zbiorem danych powstałym ze zbioru \code{Spider} poprzez zmodyfikowanie próbek w taki sposób, aby ograniczyć dosłowne wymienianie w pytaniach nazw kolumn, tabel i wartości z bazy. Odzwierciedla to scenariusz w którym z interfejsu tekstowego do bazy korzysta osoba, która dokładnie jej nie zna, więc często posługuję się synonimami. Stworzenie tego typu zbioru było istotne, ponieważ okazało się, że duża część istniejących algorytmów opiera się na powiązywaniu pytania z elementami bazy poprzez znajdywanie dosłownych powtórzeń i w przedstawionym scenariuszu ich skuteczność radykalnie spada. Zmodyfikowana została jednak jedynie nieco ponad połowa próbek, ponieważ dla dużej części przykładów ciężkim było znalezienie odpowiednich synonimów.
+\code{Spider-Syn} jest zbiorem danych powstałym ze zbioru \code{Spider} poprzez zmodyfikowanie próbek w taki sposób, aby ograniczyć dosłowne wymienianie w pytaniach nazw kolumn, tabel i wartości z baz danych. Odzwierciedla to scenariusz w którym z interfejsu tekstowego do bazy korzysta osoba, która dokładnie jej nie zna, więc często posługuję się mimowolnie synonimami. Stworzenie tego typu zbioru było istotne, ponieważ okazało się, że duża część istniejących algorytmów opiera się na powiązywaniu pytania z elementami baz danych poprzez znajdywanie dosłownych powtórzeń i w przedstawionym scenariuszu ich skuteczność radykalnie spada. Zbiór ten posiada część treningową oraz walidacyjną, lecz częstym scenariuszem jest potraktowanie wszystkich próbek jako walidacyjne. Na listingu \ref{lst:spider-syn-example} została przedstawiona jedna z nich.
 
 \begin{minipage}{\linewidth}
 \lstinputlisting[
@@ -148,7 +148,14 @@ caption=Przykład próbki ze zbioru \code{Spider-Syn}, label={lst:spider-syn-exa
 \end{minipage}
 
 \subsection{Spider-DK}
-Zbiór danych \code{Spider-DK} (skrót od Domain Knowledge) został zbudowany w oparciu o zbiór testowy \code{Spider} w celu oceny uogólniania modeli \code{Text-to-SQL}, ze szczególnym uwzględnieniem rozumienia wiedzy dziedzinowej. \code{Spider-DK} zawiera 535 par pytań w języku naturalnym i zapytań SQL, z czego 270 par jest identycznych jak w oryginalnym Spiderze, a pozostałe 265 par zostało zmodyfikowanych tak, aby uwzględnić wiedzę dziedzinową. Pytania w \code{Spider-DK} wymagają zrozumienia 5 typów wiedzy dziedzinowej: pomijanie wymieniania kolumn, proste wnioskowanie, synonimy wartości komórek, generowanie warunków na podstawie słów spoza wartości komórek oraz wiedza, która łatwo kłóci się z innymi dziedzinami. \code{Spider-DK} symuluje scenariusz, w którym w zapytaniu użytkownika wykorzystywana jest konkretna wiedza dziedzinowa.
+Zbiór danych \code{Spider-DK} (skrót od ang. Domain Knowledge) został zbudowany w oparciu o część testową \code{Spider} w celu oceny tworzonych modeli pod kątem znajomości wiedzy domenowej. Składa się na niego skromna ilość próbek w liczbie 535, gdzie prawie połowa została wybrana ze zbioru \code{Spider} i przeniesiona bez zmian, a druga połowa powstała poprzez zmodyfikowania przykładów tak, aby dodać wiedzę domenową. Przykładowa próbka została przedstawiona na listingu \ref{lst:spider-dk-example}. Posiada ona atrybut \code{type}, który wskazuje jeden z pięciu przewidzianych typów wiedzy domenowej, które może zawierać. Są one następujące:
+\begin{itemize}
+    \item \textbf{Typ 1} - Pomijanie wymieniania kolumn
+    \item \textbf{Typ 2} - Proste wnioskowanie
+    \item \textbf{Typ 3} - Synonimy wartości komórek
+    \item \textbf{Typ 4} - Generowanie warunków na podstawie słów spoza wartości komórek
+    \item \textbf{Typ 5} - Wiedza, która łatwo kłóci się z innymi dziedzinami
+\end{itemize}
 
 \begin{minipage}{\linewidth}
 \lstinputlisting[
@@ -157,22 +164,24 @@ caption=Przykład próbki ze zbioru \code{Spider-DK}, label={lst:spider-dk-examp
 \end{minipage}
 
 \subsection{SParC}
-\code{SParC} jest zbiorem danych zawierającym sekwencje pytań w języku naturalnym oraz odpowiadające im zapytania SQL. Zbiór zawiera 4298 spójnych sekwencji pytań (łącznie ponad 12 tysięcy pojedynczych pytań), dotyczących baz danych \code{Spider}. Został stworzony przez 15 studentów posiadających doświadczenie w SQL. Pytania są tematycznie powiązane i wymagają wykorzystania informacji z poprzednich pytań, aby poprawnie sformułować odpowiednie zapytanie SQL.
+\code{SParC} jest zbiorem danych zawierającym sekwencje pytań w języku naturalnym przeplatanych z instrukcjami SQL otrzymywanymi w odpowiedzi. Zawiera 4298 spójnych sekwencji wiadomości na które składa się łącznie ponad 12 tysięcy pojedynczych pytań, dotyczących baz danych \code{Spider}. Są one tematycznie powiązane i wymagają wykorzystania informacji z poprzednich wiadomości, aby poprawnie sformułować odpowiednie zapytanie SQL. Przykładowa konwersacja pochodząca ze zbioru \code{SParC} została przedstawiona na rysunku \ref{fig:sparc-example}. Wyraźnie widać na niej, że kolejne pary wiadomości bazują na kontekście wprowadzonym przez poprzednie.
 
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=0.6\linewidth]{images/sparc_example.png}
-  \caption{Przykładowa konwersacja ze zbioru \code{SParC}}
+  \caption[Przykładowa konwersacja ze zbioru \code{SParC}]{Przykładowa konwersacja ze zbioru \code{SParC}}
+  \source{artykuł wprowadzający zbiór \code{SParC} \cite{Yu2019}}
   \label{fig:sparc-example}
 \end{figure}
 
 \subsection{CoSQL}
-\code{CoSQL} to pierwszy duży korpus tekstowych zapytań SQL zebranych w konwersacyjnej formie. Zawiera on ponad 30 000 fragmentów dialogów oraz ponad 10 000 adnotowanych zapytań SQL, pozyskanych w ramach symulowanych rozmów pomiędzy zwykłymi użytkownikami a ekspertami SQL na temat baz danych i domen pochodzących oryginalnie ze zbioru \code{Spider}. Każdy dialog odtwarza realistyczny scenariusz eksploracji bazy danych, w którym użytkownik zadaje pytania, a ekspert SQL stara się na nie odpowiedzieć, wyjaśniając niejednoznaczne kwestie lub informując o pytaniach bez odpowiedzi. Gdy pytania użytkownika dają się sformułować w języku SQL, ekspert opisuje je w tym języku i prezentuje wyniki, aby zachować naturalny przebieg interakcji.
+\code{CoSQL} jest zbiorem w znacznym stopniu podobnym do \code{SParC}, ponieważ zawiera dane o charakterze konwersacyjnym. Został do niego dodany jednak kolejny poziom złożoności, gdyż konwersacje nie stanowią już naprzemiennie powtarzających się pytań i instrukcji SQL lecz powstały w drodze dalece swobodniejszych symulowanych rozmów pomiędzy zwykłymi użytkownikami, a ekspertami SQL. Każdy dialog odtwarza realistyczny scenariusz eksploracji bazy danych w którym użytkownik zadaje pytania, a ekspert stara się na nie odpowiedzieć, wyjaśniając niejednoznaczne kwestie, czy też informując o pytaniach bez odpowiedzi. Gdy pytania użytkownika dają się sformułować w języku SQL to ekspert tego dokonuje i prezentuje wyniki w sposób pozwalający zachować naturalny przebieg interakcji. Przykładowa konwersacja która to demonstruje została przedstawiona na rysunku \ref{fig:cosql-example}. Kompletny zbiór liczy 30 000 dialogów podzielonych na część treningową i testową. Łącznie zawierają 10 000 adnotowanych zapytań.
 
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=1.0\linewidth]{images/cosql_example.png}
-  \caption{Przykładowa konwersacja ze zbioru \code{CoSQL}}
+  \caption[Przykładowa konwersacja ze zbioru \code{CoSQL}]{Przykładowa konwersacja ze zbioru \code{CoSQL}}
+  \source{artykuł wprowadzający zbiór \code{CoSQL} \cite{Yu2019}}
   \label{fig:cosql-example}
 \end{figure}
 
