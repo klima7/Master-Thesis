@@ -1,0 +1,17 @@
+\section{RAT-SQL}
+\code{RAT-SQL} to bardzo rozpoznawalny model, który był krzyżowany na przestrzeni czasu z różnymi innymi algorytmami i jego warianty można znaleźć w rankingu zbioru \code{Spider} na wielu pozycjach. Rozwiązanie to zostało zaproponowane w 2021 roku przez Bailin Wang oraz Richarda Shin \cite{Wang2019}. Doczekało się dwóch kolejnych iteracji, określanych jako \code{RAT-SQL v2} oraz \code{RAT-SQL v3}. W niniejszej pracy rozważana jest ta ostatnia, której kod dostępny jest na platformie Github w repozytorium Microsoftu \cite{ratsql-repository}. Model ten produkuje jednak zapytania bez wartości, co ogranicza jego praktyczne zastosowanie.
+
+\subsection{Działanie}
+Nazwa modelu \code{RAT-SQL} pochodzi od angielskiego wyrażenia "Relation Aware Transformer", które doskonale opisuje to, co jest w tym rozwiązaniu najważniejsze. Wykorzystuję ono bowiem enkodowanie oparte na grafie, które zostało zrealizowane przy pomocy sieci typu transformer. Standardowo sieci takie potrafią analizować jedynie sekwencje, więc konieczne było zmodyfikowanie ich w ten sposób, aby działały również dla grafów. Dzięki dokonanym zmianom stały się one świadome relacji pomiędzy poszczególnymi elementami sekwencji.
+
+Wszystkie sieci typu transformer posiadają element odpowiedzialny za uczenie się powiązań pomiędzy elementami wejściowymi w postaci mechanizmu uwagi (ang. attention). Autorzy \code{RAT-SQL} zbadali eksperymentalnie działanie tego mechanizmu dla problemu generowania zapytań SQL i zauważyli, że znajdywane połączenia są jednak dość słabe. Postanowili więc zmodyfikować mechanizm uwagi tak, aby poza znajdywaniem powiązań w standardowy, rozmyty sposób można było jako dodatkowe wejście podać powiązania z góry znane. 
+
+Relacje, które postanowiono jawnie zakodować poprzez zmodyfikowany mechanizm uwagi to przede wszystkim przynależność poszczególnych kolumn do tabel i powiązania tworzone przez klucze obce. Wykorzystano również etap \code{schema linking} w celu znalezienia połączeń pomiędzy fragmentami pytania i elementami bazy danych. Zrealizowano to poprzez wydobycie z pytania wszystkich n-gramów o długości od 1 do 5 i wyszukane ich dokładnych lub częściowych dopasowań wśród nazw tabel i kolumn. Połączenia typu \code{value link} znaleziono natomiast poprzez rozważenie każdego słowa z pytania osobno i wyszukiwanie go w każdej z dostępnych kolumn. Wszystkie te relacje tworzą skomplikowany graf, który \code{RAT-SQL} pozwala zakodować.
+
+Przed przekazaniem wszystkich informacji wejściowych do transformera dokonującego enkodowania konieczna jest zamiana wartości tekstowych do postaci wektorowej. Uwaga ta tyczy się nazw tabel i kolumn oraz pytania. \code{RAT-SQL} pozwala dokonać takiej konwersji na dwa sposoby: z wykorzystaniem gotowych embeddingów uzyskanych metodą \code{GloVe} lub pretrenowanym modelem \code{BERT}. Po enkodowaniu musi nastąpić dekodowanie, w którym wykorzystano rekurencyjne komórki \code{LSTM} do generowania akcji pozwalających zbudować drzewo \code{AST}.
+
+
+
+\subsection{Modyfikacje dla języka polskiego}
+
+\subsection{Eksperymenty z wynikami}
