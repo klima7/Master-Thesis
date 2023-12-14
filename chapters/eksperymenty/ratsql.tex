@@ -11,10 +11,92 @@ Relacje, które postanowiono jawnie zakodować poprzez zmodyfikowany mechanizm u
 Przed przekazaniem wszystkich informacji wejściowych do transformera dokonującego enkodowania konieczna jest zamiana wartości tekstowych do postaci wektorowej. Uwaga ta tyczy się nazw tabel i kolumn oraz pytania. \code{RAT-SQL} pozwala dokonać takiej konwersji na dwa sposoby: z wykorzystaniem gotowych embeddingów uzyskanych metodą \code{GloVe} lub pretrenowanym modelem \code{BERT}. Po enkodowaniu musi nastąpić dekodowanie, w którym wykorzystano rekurencyjne komórki \code{LSTM} do generowania akcji pozwalających zbudować drzewo \code{AST}.
 
 \subsection{Modyfikacje dla języka polskiego}
-Przystosowanie \code{RAT-SQL} do języka polskiego okazało się dość wymagające ze względu na dużą bazę kodu. Po pierwsze konieczne było uruchomienie oryginalnego rozwiązania, co już sprawiło problemy. W repozytorium autorów dostępny jest plik \code{Dockerfile}, który powinien umożliwić bezproblemowe uruchomienie, lecz budowa obrazu dockerowego zwracała błędy ze względu na wygaśnięte klucze \code{GPG}. Po naprawieniu tego problemu niezbędna okazała się zmiana wersji kilku pakietów języka Python. Konieczna była w tym aktualizacja biblioteki \code{pytorch} wykorzystanej do tworzenia sieci neuronowych, gdyż wcześniejsza była na tyle stara, iż wydawała się nie wspierać architektury posiadanej karty graficznej.
+Przystosowanie \code{RAT-SQL} do języka polskiego okazało się dość wymagające ze względu na dużą bazę kodu. W pierwszej kolejności koniecznym było testowe uruchomienie tego rozwiązania, co sprawiło problemy. W repozytorium autorów dostępny jest plik \code{Dockerfile} teoretycznie umożliwiający proste wystartowanie środowiska, lecz budowa obrazu dockerowego okazała się zwracać błędy ze względu na wygaśnięte klucze \code{GPG}. Po naprawieniu tego problemu niezbędna była zmiana wersji kilku pakietów języka Python ze względu na niezgodności. W ramach tego zmieniono na bardziej aktualną bibliotekę \code{pytorch}, która jest wykorzystywana do tworzenia sieci neuronowych, gdyż starsza wydawała się nie wspierać architektury posiadanej karty graficznej.
 
-Najważniejszą wśród dokonanych modyfikacji była ta związana z aktualizacją mechanizmu tworzenia wektorowych reprezentacji tekstów. W oryginalnej implementacji wykorzystany został do tego celu model \code{BERT} wytrenowany na tekstach angielskich, co go dla wersji polskiej dyskwalifikowało. Postanowiono zastąpić go wielojęzycznym odpowiednikiem, trenowanym na 104 językach, dokładnie modelem \code{bert-base-multilingual-uncased} upowszechnionym poprzez platformę \code{Hugging Face}. Dostępne są również warianty trenowane tylko na języku polskim, lecz je wykluczono, ponieważ jak wcześniej zauważono, nazwy tabel i kolumn nawet w polskich bazach są najczęściej utrzymywane po angielsku. Jako alternatywną metodę tworzenia reprezentacji tekstów \code{RAT-SQL} wykorzystuję embeddingi nauczone metodą \code{GloVe}. Nie udało się niestety znaleźć dla nich odpowiednika wielojęzycznego, więc dla testów zastąpiono je wersją jedynie polską, która dostępna jest w repozytorium \code{polish-nlp-resources}. 
+Najważniejszą wśród dokonanych modyfikacji była ta związana z aktualizacją mechanizmu tworzenia wektorowych reprezentacji tekstów na etapie enkodowania. W oryginalnej implementacji wykorzystany został w tym celu model \code{BERT}, a dokładnie wariant \code{bert-large-uncased-whole-word-masking} z platformy \code{Hugging Face}. Był on trenowany na tekstach angielskich, co go dla wersji polskiej dyskwalifikuje, a ponadto wprowadzana przez niego duża liczba parametrów sprawiała problemy z uruchomieniem na posiadanym sprzęcie. Postanowiono zastąpić go wielojęzycznym odpowiednikiem, trenowanym na 104 językach, oznaczonym na platformie HF nazwą \code{bert-base-multilingual-uncased}. Posiada on trzykrotnie mniejszą liczbę parametrów, co umożliwia uruchomienie, lecz z pewnością wpływa na mniejszą skuteczność finalnego rozwiązania. Dostępne są również warianty trenowane tylko na języku polskim, lecz je wykluczono, ponieważ jak wcześniej zauważono, nazwy tabel i kolumn nawet w polskich bazach są najczęściej utrzymywane po angielsku - całkowicie polski wariant modelu \code{BERT} nie pokryłby tego przypadku. Jako alternatywną metodę tworzenia reprezentacji tekstów \code{RAT-SQL} wykorzystuję embeddingi nauczone metodą \code{GloVe}. Nie udało się niestety znaleźć dla nich odpowiednika wielojęzycznego, więc wykorzystano embeddingi całkowicie polskie, zamieszczone w repozytorium \code{polish-nlp-resources}. Dokładnie wybrano wariant \code{300d} w którym są one wektorami o długości trzystu elementów, ponieważ takiej długości były również oryginalnie zastosowanie embeddingi angielskie.
 
-Wśród innych dokonanych zmian znalazła się modyfikacja listy słów nazywanych \code{stop words}, czyli powszechnie występujących, lecz nie niosących w sobie wiele informacji (i, w, z, na, do, się, o). Wykorzystane były tam oczywiście słowa angielskie i należało zastąpić je polskimi. Pewien fragment kodu wykorzystywał również lematyzację, czyli zamianę słów na ich bazowe formy. Opierał się on na języku angielskim, więc należało stworzyć polską implementację, do czego wykorzystano bibliotekę \code{stanza}. Ostatecznie etap \code{schema linking} bazował na znajdywaniu częściowych powtórzeń pomiędzy elementami bazy, a fragmentami pytania. Nazwy tabel i kolumn często nie zawierają polskich znaków, a pytania je posiadają, więc należało zmodyfikować mechanizm porównywania tak, aby ignorował różnicę w znakach specjalnych.
+Wśród innych dokonanych zmian znalazła się modyfikacja listy słów nazywanych \code{stop words}, czyli powszechnie występujących, lecz nie niosących w sobie wiele informacji (i, w, z, na, do, się, o). Słowa takie są pomijane podczas poszukiwania częściowych dopasowań na etapie \code{schema linking} i należało podmienić je na polskie odpowiedniki. Ponadto w rozważanej bazie kodu kilka fragmentów wykorzystuję lematyzację, czyli zamianę słów na ich bazowe formy. W oryginalnej postaci zakłada ona pracę na tekstach angielskich, więc należało dostarczyć polską implementację, do czego wykorzystano bibliotekę \code{stanza}. Ostatecznie etap \code{schema linking} bazował na znajdywaniu częściowych powtórzeń pomiędzy elementami bazy, a fragmentami pytania. Jako, że nazwy tabel i kolumn często nie zawierają polskich znaków, a pytania je posiadają, to słusznym działaniem było zmodyfikowanie mechanizmu porównywania tak, aby ignorował różnicę w znakach specjalnych.
 
-\subsection{Eksperymenty z wynikami}
+\subsection{Eksperymenty}
+
+\subsubsection{Opis eksperymentów}
+W ramach eksperymentów postanowiono wytrenować i przetestować model \code{RAT-SQL} w obu wariantach: z enkodowaniem tekstów za pomocą pretrenowanego modelu \code{BERT} oraz z enkodowaniem za pomocą embeddingów \code{GloVe}. 
+
+Dla wariantu z \code{BERT} zdecydowano się wytrenować dwie wersje, gdzie jedna zostanie nauczona na polskim zbiorze \code{pol-spider}, a druga na zbiorze \code{mix-spider}, który zawiera dodatkowo oryginalny zbiór angielski. Niektóre artykuły podają bowiem, że modele trenowane na tego typu połączonych zbiorach tłumaczonych i angielskich osiągają lepsze wyniki niż te trenowane jedynie na tłumaczeniach, co postanowiono zweryfikować.
+
+Po wariancie modelu z \code{GloVe} spodziewano się, że osiągnie słabsze wyniki od tego drugiego, gdyż w zgodnie z artykułem wprowadzającym \code{RAT-SQL} tak właśnie powinno się stać. Jak zostało wcześniej wspomniane, wykorzystane embeddingi \code{GloVe} trenowane były jedynie na tekstach polskich. Z tego powodu ten wariant postanowiono nauczyć dla bardziej ograniczonego i prostszego scenariusza, w którym nazwy tabel i kolumn zawsze będą w języku polskim i trening przeprowadzono na zbiorze \code{pol-spider-pl}.
+
+\subsubsection{Przebieg treningu}
+
+\begin{figure}[ht]
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{axis}[
+        width=\linewidth,
+        height=\fpeval{0.5*\linewidth},
+        xmin=0, xmax=40700,
+        grid=major,
+        xlabel=krok treningu,
+        ylabel=EM without values,
+        legend cell align={left},
+        legend pos=south east,
+      ]
+        \addplot table[x=step,y=em,col sep=comma] {plots/ratsql_training.csv}; 
+        \addplot table[x=step,y=em,col sep=comma] {plots/ratsql_training_glove.csv}; 
+        \legend{BERT + mix-spider, GloVe}
+      \end{axis}
+    \end{tikzpicture}
+    \caption{Wyniki modeli na zbiorze testowym dla kolejnych kroków treningu}
+    \label{plot:ratsql-accuracy}
+  \end{center}
+\end{figure}
+
+Autorzy {RAT-SQL} oryginalnie trenowali wariant \code{BERT} przez 80 000 kroków, co postanowiono skrócić o połowę. Pomimo tego równoległy trening na obu wspomnianych zbiorach, na dwóch kartach graficznych, zajął prawie trzy doby. Wariant \code{GloVe} trenowany był natomiast oryginalnie przez 40 000 kroków, co postanowiono pozostawić bez zmian i w tym przypadku zajęło to niecałe dwie doby. 
+
+Podczas treningu wagi modeli były regularnie zapisywane na dysku w odstępie 1000 kroków. Po zakończeniu treningu każdy taki zestaw wag został przetestowany z wykorzystaniem metryki \code{EM without values}, co zajęło sumarycznie kilkanaście godzin obliczeń. Warianty z \code{BERT} testowane były na części walidacyjnej zbioru \code{pol-spider}, natomiast wariant z \code{GloVe} na zbiorze \code{pol-spider-pl}. Wykres przedstawiający zmianę skuteczności modeli wraz z kolejnymi krokami treningu przedstawiono na rysunku \ref{plot:ratsql-accuracy}. Ostatecznie z każdego z trzech zestawów wag wybrano do dalszych testów ten, który podczas przedstawionej ewaluacji otrzymał najlepsze rezultaty. 
+
+\subsubsection{Wyniki}
+Trzy wytrenowane modele przetestowano na różnych konfiguracjach zbioru \code{Spider}. Wyniki tej analizy przedstawiono w tabeli \ref{tab:ratsql-results}. Można z niej odczytać, że w każdym przypadku najlepiej nauczył się wariant \code{BERT} trenowany na zbiorze \code{mix-spider}, nieco niższą skuteczność osiągnął wariant \code{BERT} uczony na zbiorze \code{pol-spider}, natomiast model wykorzystujący embeddingi \code{GloVe} znacznie od tych dwóch odstaję. Z wykorzystaniem najlepszego modelu przeprowadzono dalsze testy w których dokonano jego ewaluacji na wszystkich zbiorach pokrewnych z podziałem na poziomy trudności zapytań. Wyniki tych testów przedstawiono w tabeli \ref{tab:ratsql-difficulty}.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{|l|l|r|r|r|r|r|}
+        \hline
+        \multirow{2}{*}{\thead{\small{Wariant}}} &
+        \multirow{2}{*}{\small{\thead{zbiór\\treningowy}}} &
+        \multicolumn{4}{c|}{\thead{\small{Zbiór testowy}}} \\
+        \cline{3-6}
+        \multirow{2}{*}{} &
+        \multirow{2}{*}{} &
+        \thead{\small{pol-spider}} &
+        \thead{\small{pol-spider-pl}} &
+        \thead{\small{pol-spider-en}} &
+        \thead{\small{en-spider}} \\
+        \hline
+        BERT & pol-spider & 53,14 & 56,57 & 49,71 & 49,71 \\
+        BERT & mix-spider & 58,07 & 61,02 & 55,12 & 61,31 \\
+        GloVe & pol-spider-pl & 19,34 & 27,46 & 11,21 & \s2,80 \\
+        \hline
+    \end{tabular}
+    \caption{Wyniki modeli otrzymane metodą \code{RAT-SQL} na wariantach zbioru \code{Spider}}
+    \label{tab:ratsql-results}
+\end{table}
+
+\begin{table}[ht!]
+    \centering
+    \begin{tabular}{|l|R{0.10\textwidth}|R{0.10\textwidth}|R{0.10\textwidth}|R{0.10\textwidth}|R{0.10\textwidth}|}
+        \hline
+        \thead{Zbiór} & \thead{Easy} & \thead{Medium} & \thead{Hard} & \thead{Extra} & \thead{Razem} \\
+        \hline
+        pol-spider & 73,79 & 58,74 & 50,86 & 40,36 & 58,07 \\
+        pol-spiderdk & 60,91 & 36,38 & 31,81 & 17,62 & 37,00 \\
+        pol-spidersyn & 58,48 & 45,07  & 41,18  & 26,86  & 44,50 \\
+        pol-cosql & 59,58 & 47.46  & 22,06  & 29,41  & 48.70 \\
+        pol-sparc & 62,08 & 42,23  & 10,00  & 25,00  & 53,56 \\
+        \hline
+    \end{tabular}
+    \caption{Wyniki najlepszego modelu \code{RAT-SQL} na zbiorach pokrewnych z podziałem na poziomy trudności zapytań SQL}
+    \label{tab:ratsql-difficulty}
+\end{table}
+
+\subsubsection{Analiza}

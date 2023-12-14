@@ -1,1 +1,19 @@
-\fsection{BRIDGE}
+\section{BRIDGE}
+
+\begin{figure}[ht!]
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{axis}[
+        width=\linewidth,
+        height=\fpeval{0.5*\linewidth},
+        xmin=0, xmax=290,
+        grid=major,
+        xlabel=krok treningu,
+        ylabel=EM without values,
+      ]
+        \addplot table[x=step,y=dev_exact_match,col sep=comma] {plots/bridge_training.csv}; 
+      \end{axis}
+    \end{tikzpicture}
+    \caption{Wyniki metryki \code{EM} na części testowej zbioru \code{pol-spider} w czasie trwania treningu modelu}
+  \end{center}
+\end{figure}
