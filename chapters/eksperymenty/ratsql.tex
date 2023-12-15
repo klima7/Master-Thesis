@@ -41,9 +41,10 @@ Po wariancie modelu z \code{GloVe} spodziewano się, że osiągnie słabsze wyni
         legend cell align={left},
         legend pos=south east,
       ]
-        \addplot table[x=step,y=em,col sep=comma] {plots/ratsql_training.csv}; 
+        \addplot table[x=step,y=em,col sep=comma] {plots/ratsql_training_bert.csv}; 
+        \addplot table[x=step,y=em,col sep=comma] {plots/ratsql_training_bert_mix.csv}; 
         \addplot table[x=step,y=em,col sep=comma] {plots/ratsql_training_glove.csv}; 
-        \legend{BERT + mix-spider, GloVe}
+        \legend{BERT + pol-spider, BERT + mix-spider, GloVe}
       \end{axis}
     \end{tikzpicture}
     \caption{Wyniki modeli na zbiorze testowym dla kolejnych kroków treningu}
@@ -100,3 +101,31 @@ Trzy wytrenowane modele przetestowano na różnych konfiguracjach zbioru \code{S
 \end{table}
 
 \subsubsection{Analiza}
+Istotną obserwacją jest to, że model trenowany na połączeniu zbioru polskiego i angielskiego nauczył się lepiej przewidywać zapytania SQL od modelu uczonego wyłącznie na zbiorze polskim. Jest to zgodne z eksperymentami przeprowadzonymi i opisanymi również przez innych badaczy, które podsumowano w tabeli \ref{tab:ratsql-translations-results}. Można z niej odczytać rezultaty, które udało się osiągnąć twórcom dwóch innych tłumaczeń zbioru \code{Spider}, którzy także eksperymentowali z metodą \code{RAT-SQL} i nauką na różnych zbiorach. W przypadku zbioru portugalskiego zysk uzyskany na poszerzonym zbiorze jest dość niewielki, natomiast dla zbioru Rosyjskiego wynosi aż 6 punktów procentowych - przyczyny tej rozbieżności są dość niejasne. Korzyść uzyskana w przypadku tłumaczenia polskiego jest bliższa temu ostatniemu. 
+
+% Bazując na tej tabeli można również wyciągnąć wniosek, że wprowadzone modyfikacje wariantu \code{BERT} dla języka polskiego są jak najbardziej poprawne, ponieważ osiągnięte wyniki w żadnym stopniu nie odstają od tych osiągniętych na innych tłumaczeniach.
+
+\begin{table}[ht!]
+    \centering
+    \begin{tabular}{|l|r|r|}
+        \hline
+        \multirow{2}{*}{\thead{Tłumaczenie\\zbioru Spider}} & \multicolumn{2}{c|}{\thead{Zbiór treningowy}} \\
+        \cline{2-3}
+        \multirow{2}{*}{} & \thead{Tłumaczenie} & \thead{Tłumaczenie + angielski} \\
+        \hline
+        Rosyjskie (\code{PAUQ}) & 51,0 & 57,0 \\
+        Portugalskie & 58,8 & 59,5 \\
+        Polskie (\code{Pol-Spider}) & 53,1 & 58,1 \\
+        \hline
+    \end{tabular}
+    \caption{Zestawienie wyników osiągniętych przez wariant \code{BERT} modelu \code{RAT-SQL} dla różnych tłumaczeń zbioru \code{Spider} i zbiorów treningowych}
+    \label{tab:ratsql-translations-results}
+\end{table}
+
+Dane liczbowe w tabeli \ref{tab:ratsql-difficulty} pokazują, że wraz ze zwiększaniem się poziomu trudności zapytań maleje skuteczność modelu, co jest spodziewanym zachowaniem. Niewielkie rozbieżności od tej reguły można zaobserwować jedynie dla zbiorów \code{pol-cosql} oraz \code{pol-sparc}. Przyczyną tego jest zapewne niewielka liczba znajdujących się w nich trudnych zapytań, przez co kilka pozornie wymagających mogło znacząco zachwiać wynikami.
+
+W dalszym ciągu odwołując się do tabeli \ref{tab:ratsql-difficulty} trzeba zauważyć, że wyniki osiągane na wszystkich zbiorach pokrewnych są niższe od uzyskanych na zbiorze \code{pol-spider}. Jedną z przyczyn tego jest fakt, że finalne wagi modelu wybrano tak, aby maksymalizowały wyniki właśnie dla zbioru \code{pol-spider}. Dla pozostałych zbiorów model też powinien osiągać wysokie wyniki, lecz nie tak optymalne.
+
+Efekty uzyskane na zbiorze \code{pol-spidersyn} okazały się wyraźnie słabsze w porównaniu do tych na \code{pol-spider}, bo różnica wynosi aż 13,57 punktów procentowych. Potwierdza to obserwację przedstawioną w artykule wprowadzającym \code{Spider-Syn}. Mówi ona, że modele mają duże problemy z odpowiadaniem na pytania w których użytkownik nie znając dokładnie schematu bazy danych posługuję się synonimami.
+
+Niskie wyniki, chociaż spodziewane, osiągnął model również na zbiorze \code{Spider-DK}. Zawiera on bowiem pytania wymagające znajomości wiedzy domenowej, z którą uważa się, że modele sobie często nie radzą. Spadek, który nastąpił w tym przypadku względem zbioru \code{pol-spider} wynosi 21,07 punktów procentowych.
