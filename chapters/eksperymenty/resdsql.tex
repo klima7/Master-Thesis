@@ -1,0 +1,127 @@
+\section{RESDSQL}
+\code{RESDSQL} to dość nowe rozwiązanie, gdyż powstało na początku 2023 roku. Zostało opublikowane w artykule \bibtitle{RESDSQL: Decoupling Schema Linking and Skeleton Parsing for Text-to-SQL} \cite{Li2023resdsql} przez Haoyang Li i innych. Na chwilę pisania niniejszej pracy jest to najwyżej znajdujące się w rankingu \code{Spider} rozwiązanie, które nie opiera się na wykorzystaniu dużych pretrenowanych modeli językowych od \code{OpenAI} i do którego dostępny jest kod źródłowy \cite{resdsql-repository}.
+
+\subsection{Działanie}
+
+\subsection{Modyfikacje dla języka polskiego}
+
+\subsection{Eksperymenty}
+
+\begin{figure}[ht!]
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{axis}[
+        width=\linewidth,
+        height=\fpeval{0.5*\linewidth},
+        xmin=0, xmax=4.1,
+        grid=major,
+        xlabel={Czas treningu [godziny]},
+        ylabel=AUC,
+        legend cell align={left},
+        legend pos=south east,
+      ]
+        \addplot table[x=time,y=table,col sep=comma] {plots/resdsql_classifier_training.csv}; 
+        \addplot table[x=time,y=column,col sep=comma] {plots/resdsql_classifier_training.csv}; 
+        \legend{AUC dla tabel, AUC dla kolumn}
+      \end{axis}
+    \end{tikzpicture}
+    \caption{RESDSQL Klasyfikator}
+    \label{plot:resdsql-classifier-accuracy}
+  \end{center}
+\end{figure}
+
+\begin{figure}[ht!]
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{axis}[
+        width=\linewidth,
+        height=\fpeval{0.5*\linewidth},
+        xmin=0, xmax=15,
+        grid=major,
+        xlabel={Czas treningu [godziny]},
+        ylabel=EM without values,
+      ]
+        \addplot table[x=step,y=em,col sep=comma] {plots/resdsql_t5_training.csv}; 
+      \end{axis}
+    \end{tikzpicture}
+    \caption{Wyniki metryki \code{EM} na części testowej zbioru \code{pol-spider} w czasie trwania treningu modelu}
+    \label{plot:resdsql-accuracy}
+  \end{center}
+\end{figure}
+
+\subsection{Wyniki}
+
+\newcommand{\slashsep}{\textcolor{red}{\textbf{/}}}
+\newcommand{\threevals}[3]{\small{#1}\slashsep\small{#2}\slashsep\small{#3}}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|r|r|r|r|r|}
+        \hline
+        \thead{Zbiór} & \thead{Easy} & \thead{Medium} & \thead{Hard} & \thead{Extra} & \thead{Razem} \\
+        \hline
+        pol-spider & 
+        \threevals{76,2}{70,6}{83,5} &
+        \threevals{61,9}{56,3}{73,1} &
+        \threevals{50,0}{46,0}{62,9} &
+        \threevals{35,8}{30,4}{53,3} &
+        \threevals{59,1}{53,8}{70,7} \\
+        
+        pol-spider-pl &
+        \threevals{78,6}{72,6}{85,1} &
+        \threevals{64,1}{58,5}{74,4} &
+        \threevals{50,0}{44,8}{62,1} &
+        \threevals{32,5}{27,1}{50,0} &
+        \threevals{60,2}{54,5}{71,0} \\
+        
+        pol-spider-en &
+        \threevals{73,8}{68,5}{81,9} &
+        \threevals{59,6}{54,0}{71,7} &
+        \threevals{50,0}{47,1}{63,8} &
+        \threevals{39,2}{33,7}{56,6} &
+        \threevals{58,1}{53,1}{70,4} \\
+        
+        en-spider &
+        \threevals{81,5}{79,4}{86,3} &
+        \threevals{69,3}{66,4}{75,8} &
+        \threevals{51,7}{50,6}{65,5} &
+        \threevals{47,0}{45,8}{50,0} &
+        \threevals{65,7}{63,5}{72,4} \\
+        
+        \hline
+        
+        pol-spidersyn &
+        \threevals{61,7}{57,6}{72,5} &
+        \threevals{52,2}{48,7}{65,8} &
+        \threevals{42,6}{41,9}{57,0} &
+        \threevals{26,4}{21,9}{44,6} &
+        \threevals{48,6}{45,3}{62,4} \\
+        
+        pol-spiderdk &
+        \threevals{52,7}{48,2}{62,3} &
+        \threevals{34,8}{31,5}{50,2} &
+        \threevals{20,9}{20,9}{37,8} &
+        \threevals{17,6}{13,3}{32,4} &
+        \threevals{33,2}{29,9}{47,5} \\
+        
+        pol-sparc &
+        \threevals{61,3}{59,0}{72,3} &
+        \threevals{38,3}{33,0}{60,2} &
+        \threevals{13,3}{13,3}{43,3} &
+        \threevals{43,8}{43,8}{50,0} &
+        \threevals{52,5}{49,5}{67,2} \\
+        
+        pol-cosql &
+        \threevals{61,7}{56,7}{71,3} &
+        \threevals{54,2}{48,3}{63,6} &
+        \threevals{26,5}{25,0}{51,5} &
+        \threevals{20,6}{20,6}{55,9} &
+        \threevals{51,5}{47,2}{65,2} \\
+        
+        \hline
+    \end{tabular}
+    \caption{...}
+    \label{tab:resdsql-difficulty}
+\end{table}
+
+\subsection{Analiza}

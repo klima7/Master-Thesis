@@ -1,10 +1,22 @@
 \section{BRIDGE}
+\code{BRIDGE} jest to rozwiązanie, które zostało opublikowane w roku 2020 przez Xi Victoria Lin, Richarda Socher oraz Caiming Xiong \cite{Lin2020}. Powstało więc nieco ponad rok po \code{RAT-SQL} i w odróżnieniu od niego generuje kompletne zapytania SQL z wartościami, co jest istotną zaletą. Jego kod źródłowy jest umieszczony na platformie Github \cite{bridge-repository}.
 
 \subsection{Działanie}
+Działanie \code{BRIDGE} znacząco odbiega od \code{RAT-SQL}. W tym przypadku wykorzystano enkodowanie oparte na serializacji informacji wejściowych do długiego tekstu i przekazaniu go do pretrenowanego modelu \code{BERT}. Dekodowanie opiera się natomiast na generowaniu słów jedno po drugim, zamiast generowania akcji tworzących drzewo \code{AST}. Na obu etapach zastosowano ciekawe techniki, które dodatkowo poprawiają skuteczność.
+
+Enkodowanie opiera się na skonstruowaniu sekwencji tekstowej zawierającej wszystkie nazwy tabel, gdzie po każdej nazwie tabeli znajduję się lista zawartych w niej kolumn. Na początku tej sekwencji doklejane jest dodatkowo rozpatrywane pytanie. Wcześniej wykonywany jest etap \code{schema linking} w celu znalezienia połączeń typu \code{value link} i odnalezione dopasowania w zawartości bazy danych są  wstawiane po nazwie odpowiedniej kolumny. W celu zachowania znaczenia poszczególnych części stworzonej sekwencji wykorzystywane są specjalne tokeny \code{[T]}, \code{[C]} oraz \code{[V]}, które są wstawiane odpowiednio przed każdą nazwą tabeli, kolumny i wartością. Stworzony tekst jest następnie przetwarzany przez model językowy \code{BERT} i dodane po nim dwie lekkie warstwy \code{LSTM}. W ten sposób uzyskiwane są wykorzystywane przez dekoder wektorowe reprezentacje wszystkich tabel, kolumn i pytania. Reprezentacje kolumn są jednak dodatkowo wzbogacane za pomocą trenowanych równolegle wektorów reprezentujących metainformację, takie jak bycie kluczem podstawowym, bycie kluczem obcym, czy posiadanie konkretnego typu danych. Łącznie podstawowych reprezentacji z tymi metainformacjami dokonuję się prostą warstwą liniową.
+
+Wykorzystany dekoder generuje wyjściowe zapytanie słowo po słowie. Nie jest to jednak typowy dekoder, jak te wykorzystywane w modelach językowych, ponieważ na każdym kroku dekodowania poza wyprodukowaniem jednego tokena ze słownika może dokonać także kopiowania go z pytania lub spośród nazw tabel i kolumn. Aby umożliwić takie zachowanie standardowy dekoder bazujący na \code{LSTM} został połączony z siecią typu \code{pointer network} \cite{Vinyals2015}, która potrafi wskazywać konkretne pozycje w sekwencjach wejściowych. Poza tym dekoder został nauczony w taki sposób, aby produkować zapytania w kolejności wykonywania, czyli takiej w której wykonałby je silnik bazodanowy. Powoduje to, że nazwy tabel generowane są przed nazwami kolumn i dzięki temu podczas generowania nazwy kolumny można ograniczyć się jedynie do kolumn dostępnych we wcześniej wymienionych tabelach.
 
 \subsection{Modyfikacje dla języka polskiego}
+Przystosowanie \code{BRIDGE} do języka polskiego okazało się znacznie prostsze niż to było w przypadku \code{RAT-SQL}. Tutaj również pracę rozpoczęto od uruchomienia oryginalnego rozwiązania, więc napisano plik \code{Dockerfile}, który tworzy obraz dockerowy zawierający kompletne środowisko. Jedynym problemem okazał się brak wśród zależności projektu biblioteki \code{numpy}, która była wykorzystywana. Naprawiono to poprzez dodanie odpowiedniej linii kodu.
+
+Jedyną ważną modyfikacją dla języka polskiego, której dokonano, jest zmiana wykorzystywanego modelu \code{BERT} z wariantu \code{bert-large-uncased} na \code{bert-base-multilingual-uncased}. Zmiana ta jest bardzo podobna do tej zaaplikowanej w \code{RAT-SQL}. Uzasadnienie również jest podobne: zmieniono model na wersję wielojęzyczną, by poradziła sobie z językiem polskim oraz wykorzystano wersję mniejszą, by umożliwić naukę na posiadanym sprzęcie. 
 
 \subsection{Eksperymenty}
+W ramach eksperymentów postanowiono dokonać treningu modelu \code{BRIDGE} i go przetestować. Nauki postanowiono dokonać na zbiorze \code{pol-spider-mix}, ponieważ wcześniej przeprowadzone eksperymenty z \code{RAT-SQL} pokazały, że model nauczony na połączonym zbiorze polskim i angielskim nauczył się lepiej. Oczywiście nie można założyć na tej podstawie, że każdy jeden model uczony na połączonym zbiorze będzie skuteczniejszy. Można jednak przypuszczać, że zwykle tak jest.
+
+Model uczono przez 36 godzin, a zaimplementowany wewnątrz procedury treningu kod dokonywał w tym czasie regularnego obliczania metryki \code{exact set match without values} na części testowej zbioru \code{pol-spider}. Wykres przedstawiający jak zmieniała się wartość tej metryki na przestrzeni czasu przedstawiono na rysunku \ref{plot:bridge-accuracy}. Na wykresie tym widać, że skuteczność modelu rosła wyraźnie przez połowę czasu treningu, a w drugiem połowie już nie widać tendencji wzrostowej - dlatego naukę postanowiono przerwać. Jako finalny został wybrany model w punkcie w którym wartość wspomnianej metryki była najwyższa.
 
 \begin{figure}[ht!]
   \begin{center}
@@ -12,14 +24,44 @@
       \begin{axis}[
         width=\linewidth,
         height=\fpeval{0.5*\linewidth},
-        xmin=0, xmax=290,
+        xmin=0, xmax=37,
         grid=major,
-        xlabel=krok treningu,
+        xlabel={Czas treningu [godziny]},
         ylabel=EM without values,
       ]
-        \addplot table[x=step,y=dev_exact_match,col sep=comma] {plots/bridge_training.csv}; 
+        \addplot table[x=time,y=dev_exact_match,col sep=comma] {plots/bridge_training.csv}; 
       \end{axis}
     \end{tikzpicture}
     \caption{Wyniki metryki \code{EM} na części testowej zbioru \code{pol-spider} w czasie trwania treningu modelu}
+    \label{plot:bridge-accuracy}
   \end{center}
 \end{figure}
+
+\subsection{Wyniki}
+
+\lipsum[1][1-7]
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|R{0.10\textwidth}|R{0.10\textwidth}|R{0.10\textwidth}|R{0.10\textwidth}|R{0.10\textwidth}|}
+        \hline
+        \thead{Zbiór} & \thead{Easy} & \thead{Medium} & \thead{Hard} & \thead{Extra} & \thead{Razem} \\
+        \hline
+        pol-spider & ? & ? & ? & ? & ? \\
+        pol-spider-pl & ? & ? & ? & ? & ? \\
+        pol-spider-en & ? & ? & ? & ? & ? \\
+        en-spider & ? & ? & ? & ? & ? \\
+        \hline
+        pol-spidersyn & ? & ? & ? & ? & ? \\
+        pol-spiderdk & ? & ? & ? & ? & ? \\
+        pol-sparc & ? & ? & ? & ? & ? \\
+        pol-sparc & ? & ? & ? & ? & ? \\
+        \hline
+    \end{tabular}
+    \caption{...}
+    \label{tab:bridge-difficulty}
+\end{table}
+
+\subsection{Analiza}
+
+\lipsum[1-4]
