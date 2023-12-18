@@ -2,17 +2,33 @@
 \code{RESDSQL} to dość nowe rozwiązanie, gdyż powstało na początku 2023 roku. Zostało opublikowane w artykule \bibtitle{RESDSQL: Decoupling Schema Linking and Skeleton Parsing for Text-to-SQL} \cite{Li2023resdsql} przez Haoyang Li i innych. Na chwilę pisania niniejszej pracy jest to najwyżej znajdujące się w rankingu \code{Spider} rozwiązanie, które nie opiera się na wykorzystaniu dużych pretrenowanych modeli językowych od \code{OpenAI} i do którego dostępny jest kod źródłowy \cite{resdsql-repository}.
 
 \subsection{Działanie}
+\code{RESDSQL} bazuje w dużej mierzę na pretrenownym modelu językowym \code{T5} \cite{Raffel2019}. Jest to kompletny model typu transformer, który służy do generowania tekstowych odpowiedzi na podstawie tekstowych informacji wejściowych i został już wcześniej wytrenowany na obszernym zbiorze, więc zawiera dużą ilość wiedzy. Występuje  \code{RESDSQL} dokonuje dotrenowania tego modelu tak, aby zwracał zapytania SQL będące odpowiedzią na podawane pytania. Podczas konstruowania sekwencji wejściowej oraz dekodowania sekwencji wyjściowej dodaje jednak ciekawe techniki, które poprawiają jego skuteczność dla rozważanego problemu \code{text-to-SQL}. Ich głównym celem jest rozdzielenie od siebie generowania szkieletu zapytań i uzupełniania go konkretnymi nazwami tabel i kolumn, co z resztą zostało podkreślone w tytule artykułu.
+
+Ważnym elementem, odróżniającym \code{RESDSQL} od wcześniej opisanych rozwiązań jest to, że do enkodera zawartego wewnątrz \code{T5} nie są przekazywane wszystkie nazwy tabel i kolumn, lecz tylko te, które zostały uznane w kontekście danego pytania za najbardziej istotne. Celem tego działania jest odciążenie enkodera z wykonywania skomplikowanego procesu \code{schema linking}. Aby dostać potrzebną informację o istotności poszczególnych tabel i kolumn dla podanego pytania trenowana jest wcześniej całkowicie niezależna sieć, która przyjmuję pytanie oraz wszystkie nazwy tabel i kolumn i dla każdej z nich zwraca prawdopodobieństwo, które może być interpretowane jako stopień istotności. Sieć ta określana jest przez swoich autorów mianem \code{cross-encoder}. Ostatecznie do modelu \code{T5} przekazywane są 4 najistotniejsze tabele, a dla każdej z nich 5 najważniejszych kolumn.
+
+Z punktu widzenia dekodowania najważniejszą nowością jest to, że model \code{T5} nie jest dotrenowywany tak, aby od razu produkować kompletne zapytania, lecz na początku zwrócić jego szkielet, a dopiero za nim wykonywalne zapytanie. Uzasadnieniem opisanego zachowania jest to, że początkowe stworzenie szkieletu jest w miarę prostym problemem, więc powinno mieć dużą dokładność. Dekodery w modelach językowych posiadają własność nazywaną autoregresyjnością, która polega na tym, że podczas generowania kolejnych fragmentów odpowiedzi brany jest pod uwagę tekst wygenerowany do tej pory. Dzięki temu model \code{T5} podczas produkowania drugiem części odpowiedzi, która zawiera kompletne zapytanie SQL, może odwoływać się do wcześniejszej części z szablonem i traktując ją jako pewnego rodzaju notatnik uzupełnić brakujące elementy.
+
+Ciekawą techniką z którą \code{RESDSQL} można łączyć jest \code{NatSQL} \cite{Gan2021natsql}. Wprowadza ona alternatywną reprezentację dla zapytań SQL, która bardziej przypomina język naturalny i w związku z tym jest łatwiejsza do nauczenia i generowania przez większość modeli. Jednocześnie jest ona na tyle jednoznaczna, że można przekonwertować ją na tradycyjne zapytania SQL. Zgodnie z \cite{Li2023resdsql} zastąpienie tradycyjnych zapytań za pomocą \code{NatSQL} pozwoliło na zbiorze \code{Spider} zwiększyć skuteczności mierzonej metryką \code{EM} o około 2 procent.
 
 \subsection{Modyfikacje dla języka polskiego}
+Rozwiązanie \code{RESDSQL} okazało się wyjątkowo proste do przystosowania dla języka polskiego, bo nie trzeba było wykonywać żadnych kreatywnych modyfikacji. Metoda ta została bowiem już wcześniej wykorzystana do pracy na rosyjskim zbiorze \code{PAUQ} i stosowny kod znajdywał się w repozytorium. Wystarczyło dodać kilka nowych skryptów, które nieznacznie różnią się od istniejących.
+
+Najbardziej istotną modyfikacją, niezbędną do nauki na polskim, czy też rosyjskim tłumaczeniu jest zmiana wykorzystywanego modelu \code{T5} na \code{mT5} \cite{Xue2020}. Różnica pomiędzy nimi jest jedynie taka, że pierwszy został nauczony na tekstach angielskich, natomiast drugi na zbiorze zawierającym 101 różnych języków, w tym wspomniane dwa.
+
+Okazuję się, że niestety dla języka polskiego nie można łatwo wykorzystać obiecującego połączenia niniejszej metody z \code{NatSQL}. Przyczyną tego jest brak udostępnienia przez autorów \code{NatSQL} skryptu przekształcającego tradycyjne zapytania SQL do zaprojektowanej przez nich postaci. Opublikowane są jedynie zapytania ze zbioru \code{Spider} po dokonaniu takiej konwersji. W przypadku rosyjskiego tłumaczenia udało się zastosować \code{NatSQL}, lecz wymagało to przekształcenia każdego zapytania w sposób ręczny. Dla zbioru polskiego należałoby postąpić analogicznie, co wymagałoby wiele żmudnej pracy, której postanowiono uniknąć.
 
 \subsection{Eksperymenty}
+W ramach eksperymentu postanowiono dokonać nauki \code{RESDSQL} na zbiorze \code{mix-spider}, ponieważ jak wcześniej zauważono, nauka na dwujęzycznych zbiorach wydaje się mieć lepsze efekty niż na zbiorach jednojęzycznych. Konieczny był wybór konkretnego wariantu dotrenowywanego modelu \code{mT5}, ponieważ występuje on w kilku rozmiarach. Na mocniejszej z dwóch posiadanych kart graficznych, czyli \code{RTX 3080}, udało się uruchomić jedynie wariant najmniejszy - \code{mt5-base}. Sprawdzając poszczególne rozmiary stosowano minimalną wielkość wsadu (ang. batch size), czyli ilość danych jednocześnie przekazywanych do modelu, aby zmniejszyć zapotrzebowanie na pamięć VRAM. Po dokonaniu głębszej ingerencji w procedurę treningu udało się ostatecznie uruchomić ją także dla większego modelu. Wymagało to jednak załadowania wag i treningu z wykorzystaniem arytmetyki 16 bitowej zamiast powszechnie stosowanej 32 bitowej. Może się to wiązać z pojawieniem podczas nauki różnych niestabilności, więc z powodu braku doświadczenia z tego typu treningiem postanowiono pozostać przy 
+
+Zgodnie z wcześniejszym opisem wykorzystanie \code{RESDSQL} wymaga w pierwszej kolejności wytrenowania sieci \code{cross-encoder}, która dokonuje oceny istotności tabel i kolumn. Trening ten wykonywano przez 4 godziny, a wykres przedstawiający zmianę skuteczności modelu w jego trakcie na części testowej umieszczono na rysunku \ref{plot:resdsql-classifier-accuracy}. Wspomniana skuteczność jest tutaj wyrażana za pomocą metryki \code{AUC} \cite{Ling2003}, popularnej dla zadań klasyfikacji. Po 4 godzinach trening został automatycznie przerwany, ponieważ od dłuższego czasu nie nastąpiło zwiększenie skuteczności rozumianej jako sumy \code{AUC} dla tabel i kolumn. Jako produkt tego etapu został wybrany model z zestawem wag, dla którego metryka ta była najwyższa.
 
 \begin{figure}[ht!]
-  \begin{center}
+\centering
+\begin{subfigure}{0.49\textwidth}
     \begin{tikzpicture}
       \begin{axis}[
         width=\linewidth,
-        height=\fpeval{0.5*\linewidth},
+        height=\linewidth,
         xmin=0, xmax=4.1,
         grid=major,
         xlabel={Czas treningu [godziny]},
@@ -22,21 +38,19 @@
       ]
         \addplot table[x=time,y=table,col sep=comma] {plots/resdsql_classifier_training.csv}; 
         \addplot table[x=time,y=column,col sep=comma] {plots/resdsql_classifier_training.csv}; 
-        \legend{AUC dla tabel, AUC dla kolumn}
+        \legend{dla tabel, dla kolumn}
       \end{axis}
     \end{tikzpicture}
-    \caption{RESDSQL Klasyfikator}
+    \caption{model oceniający istotność tabel i kolumn}
     \label{plot:resdsql-classifier-accuracy}
-  \end{center}
-\end{figure}
-
-\begin{figure}[ht!]
-  \begin{center}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.49\textwidth}
     \begin{tikzpicture}
       \begin{axis}[
         width=\linewidth,
-        height=\fpeval{0.5*\linewidth},
-        xmin=0, xmax=15,
+        height=\linewidth,
+        xmin=0, xmax=14,
         grid=major,
         xlabel={Czas treningu [godziny]},
         ylabel=EM without values,
@@ -44,15 +58,17 @@
         \addplot table[x=step,y=em,col sep=comma] {plots/resdsql_t5_training.csv}; 
       \end{axis}
     \end{tikzpicture}
-    \caption{Wyniki metryki \code{EM} na części testowej zbioru \code{pol-spider} w czasie trwania treningu modelu}
-    \label{plot:resdsql-accuracy}
-  \end{center}
+    \caption{model przewidujący zapytania}
+    \label{plot:resdsql-t5-accuracy}
+\end{subfigure}
+\caption{Wykresy skuteczności modeli \code{RESDSQL} na części testowej zbioru \code{pol-spider} wraz z kolejnymi krokami treningu}
+\label{plot:resdsql-accuracy}
 \end{figure}
 
-\subsection{Wyniki}
+Drugim etapem nauki było dotrenowywanie modelu \code{T5} dla zadania generowania zapytań SQL. Tą część treningu zakończono po 14 godzinach. Tak jak jest to ukazane na rysunku \ref{plot:resdsql-t5-accuracy} przez pierwsze 7 godzin dokładność generowanych zapytań rosła, lecz potem zaczęła regularnie spadać i w godzinie 14 osiągnęła na tyle niską wartość, że dalszego treningu zaprzestano. Podejrzewa się, że przyczyną tego jest przetrenowanie modelu, czyli zbytnie przystosowanie do danych treningowych lub zjawisko katastroficznego zapominania (ang. catastrophic forgetting) \cite{Kirkpatrick2016}. Pierwotny model \code{T5} mógł bowiem zawierać istotną wiedzę, która została podczas dotrenowywania nadpisana. Modele są bowiem dość ograniczone pod kątem sekwencyjnej nauki zadań. Jako finalny został wybrany model z punktu w którym wartość rozważanej metryki była najwyższa.
 
-\newcommand{\slashsep}{\textcolor{red}{\textbf{/}}}
-\newcommand{\threevals}[3]{\small{#1}\slashsep\small{#2}\slashsep\small{#3}}
+\subsection{Wyniki}
+W tabeli \ref{tab:resdsql-difficulty} przedstawione zostały wyniki osiągnięte na częściach testowych kilkunastu zbiorów. W górnej części są to warianty zbioru \code{Spider}, natomiast w dolnej zbiory pokrewne. 
 
 \begin{table}[H]
     \centering
@@ -120,7 +136,7 @@
         
         \hline
     \end{tabular}
-    \caption{...}
+    \caption{Wyniki modelu \code{RESDSQL} na poszczególnych zbiorach. Wartości w każdej komórce posiadają format EM \slashsep{ EM with values} \slashsep{ EX}}
     \label{tab:resdsql-difficulty}
 \end{table}
 
