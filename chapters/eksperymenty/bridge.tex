@@ -124,12 +124,12 @@ Metoda \code{BRIDGE} nie jest już tak popularna w literaturze jak \code{RAT-SQL
         \multirow{2}{*}{} & \thead{Tłumaczenie} & \thead{Tłumaczenie\\ + angielski} \\
         \hline
         \multicolumn{1}{|l|}{Rosyjskie (\code{PAUQ})} & \twovals{52,0}{48,0} & \twovals{55,0}{50,0} \\
-        \multicolumn{1}{|l|}{Polskie (\code{Pol-Spider})} & --- & \twovals{57,6}{69,1} \\
+        \multicolumn{1}{|l|}{Polskie (\code{Pol-Spider})} & \twovals{---}{---} & \twovals{57,6}{69,1} \\
         \hline
     \end{tabular}
     \caption{Zestawienie wyników osiągniętych przez model \code{BRIDGE} dla różnych tłumaczeń zbioru \code{Spider} i zbiorów treningowych}
     \label{tab:bridge-translations-results}
 \end{table}
 
-Analizując dalej tabelę \ref{tab:bridge-difficulty} można zauważyć, że wyniki metryki \code{EM with values} są zawsze mniejsze od wyników metryki \code{EM without values}, co jest oczywiście spodziewane i zawsze tak być powinno. Różnica pomiędzy nimi wynosi średnio 5,6 punktów procentowych, co oznacza, że ponad pięć procent generowanych zapytań jest poprawnych pod względem struktury, lecz posiada błąd w przewidzianych wartościach. Widać więc, że generowanie wartości stanowi istotne wyzwanie.
+Analizując dalej tabelę \ref{tab:bridge-difficulty} można zauważyć, że wyniki metryki \code{EM with values} są mniejsze od \code{EM without values}, co jest oczywiście spodziewane i zawsze tak być powinno. Różnica pomiędzy nimi wynosi średnio 5,6 punktów procentowych, co oznacza, że ponad pięć procent generowanych zapytań jest poprawnych pod względem struktury, lecz posiada błąd w przewidzianych wartościach. Widać więc, że generowanie wartości stanowi istotne wyzwanie. Dla \code{RESDSQL} aktualne są również spostrzeżenia poczynione dla poprzedniego modelu, takie jak spadek skuteczności wraz ze wzrostem poziomu trudności, czy niższa dokładność w przypadku zbiorów pokrewnych.
 

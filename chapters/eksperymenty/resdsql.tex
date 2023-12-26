@@ -68,7 +68,7 @@ Zgodnie z wcześniejszym opisem wykorzystanie \code{RESDSQL} wymaga w pierwszej 
 Drugim etapem nauki było dotrenowywanie modelu \code{T5} dla zadania generowania zapytań SQL. Tą część treningu zakończono po 14 godzinach. Tak jak jest to ukazane na rysunku \ref{plot:resdsql-t5-accuracy} przez pierwsze 7 godzin dokładność generowanych zapytań rosła, lecz potem zaczęła regularnie spadać i w godzinie 14 osiągnęła na tyle niską wartość, że dalszego treningu zaprzestano. Podejrzewa się, że przyczyną tego jest przetrenowanie modelu, czyli zbytnie przystosowanie do danych treningowych lub zjawisko katastroficznego zapominania (ang. catastrophic forgetting) \cite{Kirkpatrick2016}. Pierwotny model \code{T5} mógł bowiem zawierać istotną wiedzę, która została podczas dotrenowywania nadpisana. Modele są bowiem dość ograniczone pod kątem sekwencyjnej nauki zadań. Jako finalny został wybrany model z punktu w którym wartość rozważanej metryki była najwyższa.
 
 \subsection{Wyniki}
-W tabeli \ref{tab:resdsql-difficulty} przedstawione zostały wyniki osiągnięte na częściach testowych kilkunastu zbiorów. W górnej części są to warianty zbioru \code{Spider}, natomiast w dolnej zbiory pokrewne. 
+W tabeli \ref{tab:resdsql-difficulty} przedstawione zostały wyniki przeprowadzonego eksperymentu. Rozważany model, czyli \code{RESDSQL}, podobnie jak poprzedni, generuje kompletne zapytania SQL z wartościami. Możliwe więc było obliczenie dodatkowych metryk \code{EM with values} oraz \code{EX}, co też uczyniono.
 
 \begin{table}[H]
     \centering
@@ -141,3 +141,26 @@ W tabeli \ref{tab:resdsql-difficulty} przedstawione zostały wyniki osiągnięte
 \end{table}
 
 \subsection{Analiza}
+W porównaniu z dwoma wcześniej analizowanymi rozwiązaniami \code{RESDSQL} wydaję się wypadać najlepiej. Inaczej mówią jedynie wyniki dwóch testów. W przypadku zbiorów \code{pol-sparc} oraz \code{pol-spiderdk} patrząc na metrykę \code{EM} najlepiej wypadł bowiem model pierwszy, czyli \code{RAT-SQL}. W pozostałych przypadkach to jednak \code{RESDSQL} dominuje.
+
+Warto zwrócić uwagę na fakt, że tak dobre wyniki udało się osiągnąć w stosunkowo niedługim czasie. Pomimo tego, że nauka odbywała się w sposób dwuetapowy to sumaryczny czas po którym modele osiągnęły maksymalną skuteczność okazał się dla \code{RESDSQL} najkrótszy spośród rozwiązań do tej pory rozważanych.
+
+Tak jak zostało wcześniej zauważone, \code{RESDSQL} jest dość świeżym rozwiązaniem, które zostało opublikowane już po stworzeniu wszystkich istniejących tłumaczeń zbioru \code{Spider}, więc ich twórcy nie mieli nawet możliwości go przetestować. Autorzy metody \code{RESDSQL} kilka miesięcy od wydania swojego artykułu wyszli jednak z taką inicjatywą i postanowili dokonać treningu i testów swojego modelu na chińskim tłumaczeniu, czyli zbiorze \code{CSpider}. Dokonali tego dla wszystkich możliwych konfiguracji, czyli z wykorzystaniem modelu językowego \code{T5} we wszystkich rozmiarach oraz z użyciem techniki \code{NatSQL} i bez niej. W tabeli \ref{tab:resdsql-translations-results} zestawiono wyniki osiągnięte z wykorzystaniem modelu \code{RESDSQL} na polskim zbiorze oraz chińskim za pomocą modelu o odpowiadającej mu konfiguracji.
+
+\begin{table}[ht!]
+    \centering
+    \begin{tabular}{|c|r|r|}
+        \hline
+        \multirow{2}{*}[-0.8em]{\thead{Tłumaczenie \\zbioru Spider}} & \multicolumn{2}{c|}{\thead{Zbiór treningowy}} \\
+        \cline{2-3}
+        \multirow{2}{*}{} & \thead{Tłumaczenie} & \thead{Tłumaczenie\\ + angielski} \\
+        \hline
+        \multicolumn{1}{|l|}{Rosyjskie (\code{PAUQ})} & \twovals{71,7}{77,9} & \twovals{---}{---} \\
+        \multicolumn{1}{|l|}{Polskie (\code{Pol-Spider})} & \twovals{---}{---} & \twovals{59,1}{70,7} \\
+        \hline
+    \end{tabular}
+    \caption{Zestawienie wyników osiągniętych przez model \code{RESDSQL} dla różnych tłumaczeń zbioru \code{Spider} i zbiorów treningowych}
+    \label{tab:resdsql-translations-results}
+\end{table}
+
+ Zgodnie z zawartymi w tabeli \ref{tab:resdsql-translations-results} danymi liczbowymi na rosyjskim zbiorze udało się osiągnąć wartość metryki \code{EM} większą o ponad 10 p.p. niż dla zbioru polskiego. Do tego treningu dokonano wyłącznie na tekstach rosyjskich, bez połączenia ze zbiorem angielskim, co przypuszczalnie powinno dać jeszcze lepsze rezultaty. Duża różnica pomiędzy wynikami otrzymanymi na polskim i rosyjskim tłumaczeniu jest bardzo zastanawiająca i doszukano się dwóch możliwych jej przyczyn. Pierwsza to hipotetycznie niższy poziom skomplikowania języka rosyjskiego, co jednak jest trudnym do zweryfikowania. Drugim, zdecydowanie istotnym powodem jest fakt, że wykorzystywany w obu przypadkach wielojęzyczny model \code{mT5} był trenowany na zbiorze zawierającym większą ilość tekstów w języku rosyjskim niż polskim. Dokładny procentowy udział każdego języka w zbiorze treningowym można znaleźć w załączniku artykułu wprowadzającego model \code{mT5} \cite{Xue2020}. Zgodnie z nim zbiór treningowy zawierał 3,71\% danych w języku rosyjskim i tylko 2,15\% w języku polskim.
