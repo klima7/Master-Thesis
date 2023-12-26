@@ -67,9 +67,9 @@ Trzy wytrenowane modele przetestowano na różnych konfiguracjach zbioru \code{S
         \thead{\small{pol-spider-en}} &
         \thead{\small{en-spider}} \\
         \hline
-        BERT & pol-spider & 53,14 & 56,57 & 49,71 & 49,71 \\
-        BERT & mix-spider & 58,07 & 61,02 & 55,12 & 61,31 \\
-        GloVe & pol-spider-pl & 19,34 & 27,46 & 11,21 & \s2,80 \\
+        BERT & pol-spider & 53,1 & 56,6 & 49,7 & 42,8 \\
+        BERT & mix-spider & 58,1 & 61,0 & 55,1 & 68,8 \\
+        GloVe & pol-spider-pl & 19,3 & 27,5 & 11,2 & \s2,8 \\
         \hline
     \end{tabular}
     \caption{Wyniki modeli otrzymane metodą \code{RAT-SQL} na wariantach zbioru \code{Spider}}
@@ -82,11 +82,11 @@ Trzy wytrenowane modele przetestowano na różnych konfiguracjach zbioru \code{S
         \hline
         \thead{Zbiór} & \thead{Easy} & \thead{Medium} & \thead{Hard} & \thead{Extra} & \thead{Razem} \\
         \hline
-        pol-spider & 73,79 & 58,74 & 50,86 & 40,36 & 58,07 \\
-        pol-spiderdk & 60,91 & 36,38 & 31,81 & 17,62 & 37,00 \\
-        pol-spidersyn & 58,48 & 45,07  & 41,18  & 26,86  & 44,50 \\
-        pol-cosql & 59,58 & 47.46  & 22,06  & 29,41  & 48.70 \\
-        pol-sparc & 62,08 & 42,23  & 10,00  & 25,00  & 53,56 \\
+        pol-spider & 73,8 & 58,7 & 50,9 & 40,4 & 58,1 \\
+        pol-spiderdk & 60,9 & 36,4 & 31,1 & 17,6 & 37,0 \\
+        pol-spidersyn & 58,5 & 45,1  & 41,2  & 26,9  & 44,5 \\
+        pol-cosql & 59,6 & 47.5  & 22,1  & 29,4  & 48.7 \\
+        pol-sparc & 62,1 & 42,2  & 10,0  & 25,0  & 53,6 \\
         \hline
     \end{tabular}
     \caption{Wyniki najlepszego modelu \code{RAT-SQL} na zbiorach pokrewnych z podziałem na poziomy trudności zapytań SQL}
@@ -100,15 +100,15 @@ Istotną obserwacją jest to, że model trenowany na połączeniu zbioru polskie
 
 \begin{table}[ht!]
     \centering
-    \begin{tabular}{|l|r|r|}
+    \begin{tabular}{|c|r|r|}
         \hline
-        \multirow{2}{*}{\thead{Tłumaczenie\\zbioru Spider}} & \multicolumn{2}{c|}{\thead{Zbiór treningowy}} \\
+        \multirow{2}{*}[-0.8em]{\thead{Tłumaczenie \\zbioru Spider}} & \multicolumn{2}{c|}{\thead{Zbiór treningowy}} \\
         \cline{2-3}
-        \multirow{2}{*}{} & \thead{Tłumaczenie} & \thead{Tłumaczenie + angielski} \\
+        \multirow{2}{*}{} & \thead{Tłumaczenie} & \thead{Tłumaczenie\\ + angielski} \\
         \hline
-        Rosyjskie (\code{PAUQ}) & 51,0 & 57,0 \\
-        Portugalskie & 58,8 & 59,5 \\
-        Polskie (\code{Pol-Spider}) & 53,1 & 58,1 \\
+        \multicolumn{1}{|l|}{Rosyjskie (\code{PAUQ})} & 51,0 & 57,0 \\
+        \multicolumn{1}{|l|}{Portugalskie} & 58,8 & 59,5 \\
+        \multicolumn{1}{|l|}{Polskie (\code{Pol-Spider})} & 53,1 & 58,1 \\
         \hline
     \end{tabular}
     \caption{Zestawienie wyników osiągniętych przez wariant \code{BERT} modelu \code{RAT-SQL} dla różnych tłumaczeń zbioru \code{Spider} i zbiorów treningowych}

@@ -38,8 +38,7 @@ Model uczono przez 36 godzin, a zaimplementowany wewnątrz procedury treningu ko
 \end{figure}
 
 \subsection{Wyniki}
-
-\lipsum[1][1-7]
+Wyniki przeprowadzonego eksperymentu przedstawiono w tabeli \ref{tab:bridge-difficulty}. Jest ona znacznie bardziej rozbudowana niż to było w przypadku rozwiązania \code{RAT-SQL}, ponieważ ten model zwraca zapytania z wartościami. Możliwe więc stało się obliczenie metryk \code{EM with values} oraz \code{EX}.
 
 \begin{table}[H]
     \centering
@@ -112,5 +111,25 @@ Model uczono przez 36 godzin, a zaimplementowany wewnątrz procedury treningu ko
 \end{table}
 
 \subsection{Analiza}
+Zestawiając ze sobą wyniki osiągnięte metodą \code{BRIDGE} oraz \code{RAT-SQL} trudno jest wskazać pod względem metryki \code{EM without values} model lepszy. Na częściach testowych wszystkich wariantów zbioru \code{Spider} analizowany teraz model \code{BRIDGE} okazuję się działać lepiej. Na zbiorach pokrewnych \code{pol-spiderdk}, \code{pol-sparc} oraz \code{pol-cosql} jednak to \code{RAT-SQL} jest skuteczniejszy. Można z tego wyciągnąć wniosek, że \code{BRIDGE} sprawdza się lepiej, jeżeli trenowany i testowany jest na podobnych danych. \code{RAT-SQL} wydaje się natomiast posiadać bardziej rozwiniętą umiejętność generalizacji i wykorzystania wiedzy domenowej, przez co osiąga lepsze wyniki na zbiorach wyraźnie odbiegających od treningowego. 
 
-\lipsum[1-4]
+Metoda \code{BRIDGE} nie jest już tak popularna w literaturze jak \code{RAT-SQL} i eksperymenty z jej wykorzystaniem przeprowadzili jedynie autorzy rosyjskiego tłumaczenia zbioru \code{Spider}, czyli autorzy zbioru \code{PAUQ}. Zestawienie osiągniętych przez nich wyników z niniejszymi przedstawiono w tabeli \ref{tab:bridge-translations-results}. Widać, że zgodnie z metryką \code{EM} na zbiorze polskim udało się osiągnąć wyniki nieco lepsze. Jednym z możliwych powodów jest przypuszczalnie wyższy stopień skomplikowania języka rosyjskiego. Różnica w wynikach metryki \code{EX} jest natomiast znacznie większa i co zaskakujące, dla odmiany na korzyść zbioru rosyjskiego. Przyczyną tego jest pewne zakłamanie metryki \code{EX} dla języka polskiego, o czym wcześniej wspomniano. W pełni uzasadnione jej zaaplikowanie wymagałoby bowiem przetłumaczenia zawartości wszystkich baz danych, czego dla polskiego zbioru nie zrobiono, a w przypadku zbioru rosyjskiego zostało to dokonane częściowo. Generalnie przedstawione zestawienie stanowi potwierdzenie tego, że modyfikacji metody \code{BRIDGE} dla języka polskiego dokonano poprawnie.
+
+\begin{table}[ht!]
+    \centering
+    \begin{tabular}{|c|r|r|}
+        \hline
+        \multirow{2}{*}[-0.8em]{\thead{Tłumaczenie \\zbioru Spider}} & \multicolumn{2}{c|}{\thead{Zbiór treningowy}} \\
+        \cline{2-3}
+        \multirow{2}{*}{} & \thead{Tłumaczenie} & \thead{Tłumaczenie\\ + angielski} \\
+        \hline
+        \multicolumn{1}{|l|}{Rosyjskie (\code{PAUQ})} & \twovals{52,0}{48,0} & \twovals{55,0}{50,0} \\
+        \multicolumn{1}{|l|}{Polskie (\code{Pol-Spider})} & --- & \twovals{57,6}{69,1} \\
+        \hline
+    \end{tabular}
+    \caption{Zestawienie wyników osiągniętych przez model \code{BRIDGE} dla różnych tłumaczeń zbioru \code{Spider} i zbiorów treningowych}
+    \label{tab:bridge-translations-results}
+\end{table}
+
+Analizując dalej tabelę \ref{tab:bridge-difficulty} można zauważyć, że wyniki metryki \code{EM with values} są zawsze mniejsze od wyników metryki \code{EM without values}, co jest oczywiście spodziewane i zawsze tak być powinno. Różnica pomiędzy nimi wynosi średnio 5,6 punktów procentowych, co oznacza, że ponad pięć procent generowanych zapytań jest poprawnych pod względem struktury, lecz posiada błąd w przewidzianych wartościach. Widać więc, że generowanie wartości stanowi istotne wyzwanie.
+
