@@ -65,3 +65,21 @@
    breaklines=true,
    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
 }
+
+\lstdefinelanguage{prompt}{
+   morekeywords={SYSTEM,UŻYTKOWNIK,ASYSTENT},
+   sensitive=true,
+}
+
+\lstset{
+   language=prompt,
+   showstringspaces=false,
+   breaklines=true,
+   numbers=none,
+   postbreak=,
+   tabsize=2,
+   breakindent=0pt,
+   alsoletter=\\\{\}\*\[\]\-,
+   breakatwhitespace,
+   extendedchars=true, 
+}

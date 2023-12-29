@@ -1,0 +1,8 @@
+UŻYTKOWNIK:
+Given the database schema and @\highprompt{polish}@ question, perform the following actions: 
+1 - Rank all the tables based on the possibility of being used in the SQL according to the question from the most relevant to the least relevant, Table or its column that matches more with the question words is highly relevant and must be placed ahead.
+2 - Check whether you consider all the tables.
+3 - Output a list object in the order of step 2, Your output should contain all the tables. The format should be like: 
+[
+    "table_1", "table_2", ...
+]
