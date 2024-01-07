@@ -19,7 +19,7 @@
 
 % Bibliografia
 \usepackage{csquotes}
-\usepackage[backend=biber,style=authoryear]{biblatex}
+\usepackage[backend=biber,style=authoryear,mincitenames=1,maxcitenames=1]{biblatex}
 
 % Stylizacja nagłówków
 \usepackage{titlesec}
@@ -32,7 +32,7 @@
 \usepackage{indentfirst}
 
 % Hiperlinki
-\usepackage[draft=false]{hyperref}
+\usepackage[draft=false,hidelinks]{hyperref}
 
 % Unikanie przełamania strony w akapicie
 \usepackage[defaultlines=2,all]{nowidow}
@@ -105,3 +105,6 @@
 
 % Dodaje appendixy
 \usepackage[toc]{appendix}  % toc,page - jeżli chcemy stronę "Appendix" przed
+
+% Pakiet potrzebny do automatycznego sortowania
+\usepackage{datatool}

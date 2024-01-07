@@ -1,6 +1,9 @@
+% Kolory
 \definecolor{code_color}{RGB}{138,0,0}
+% \definecolor{citation_color}{RGB}{0,51,204}
+\definecolor{citation_color}{RGB}{138,0,0}
 
-% Komenda do zakreślania
+% Komenda do zaznaczania rzeczy do zrobienia później
 \newcommand{\todolater}[1]{\todo[color=yellow,inline]{TODO: #1}}
 
 % Komenda do zaznaczanie niepewnych fragmentów
@@ -12,21 +15,21 @@
 \newcommand{\fsection}[1]{\section{#1}\lipsum[3]}
 \newcommand{\ftsection}[2]{\section{#1}\todolater{#2}\lipsum[3]}
 
+% Komenda robiąca puste miejsce
 \newcommand{\s}{\hphantom{0}}
 
+% Stylowanie do tytułów z bibliografii
 \newcommand{\bibtitle}[1]{\textit{\enquote{#1}}}
 
+% Komendy do formatowania fragmentów tekstów
 \newcommand{\code}[1]{\texttt{\color{code_color}{#1}}}
-
 \newcommand{\sql}[1]{\texttt{\textcolor{code_color}{#1}}}
-
-% Komenda do tworzenia wykazu skrótów
-\newcommand{\abbrev}[2]{\item \textbf{#1} - {#2}}
-
 \newcommand{\filename}[1]{\texttt{#1}}
 
+% Komenda do tworzenia wykazu skrótów
+\newcommand{\abbrev}[2]{\sortitem{\textbf{#1} - {#2}}}
+
 % Komenda dodająca źródło do podpisów
-% https://tex.stackexchange.com/questions/95029
 \newcommand{\source}[1]{\caption*{\small \hfill Źródło: {#1}} }
 
 % Komendy używane do tabelek z wynikami
@@ -36,3 +39,26 @@
 
 % Zakreślanie tekstu w prompcie
 \newcommand{\highprompt}[1]{\colorbox{yellow}{#1}}
+
+% Cytowanie
+\newcommand{\mycite}[1]{({\color{citation_color}\cite{#1}})}
+
+% Komendy do automatycznie sortujących się list
+\newcommand{\sortitem}[2][\relax]{%
+  \DTLnewrow{list}
+  \ifx#1\relax
+    \DTLnewdbentry{list}{sortlabel}{#2}
+  \else
+    \DTLnewdbentry{list}{sortlabel}{#1}
+  \fi%
+  \DTLnewdbentry{list}{description}{#2}
+}
+\newenvironment{sortedlist}{%
+  \DTLifdbexists{list}{\DTLcleardb{list}}{\DTLnewdb{list}}
+}{%
+  \DTLsort*{sortlabel}{list}
+  \begin{itemize}%
+    \DTLforeach*{list}{\theDesc=description}{%
+      \item \theDesc}
+  \end{itemize}%
+}
