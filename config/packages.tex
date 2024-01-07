@@ -3,7 +3,7 @@
 \usepackage[T1]{fontenc}
 
 % Marginesy
-\usepackage[a4paper, top=2.5cm, bottom=2.5cm, inner=3cm, outer=2cm]{geometry}
+\usepackage[a4paper, top=2.5cm, bottom=2.5cm, inner=3cm, outer=2cm, footskip=1.25cm]{geometry}
 
 % Stylizacja spisu treści
 \usepackage{tocloft}
@@ -19,7 +19,7 @@
 
 % Bibliografia
 \usepackage{csquotes}
-\usepackage[backend=biber]{biblatex}
+\usepackage[backend=biber,style=authoryear]{biblatex}
 
 % Stylizacja nagłówków
 \usepackage{titlesec}
@@ -77,8 +77,8 @@
 % Dodatkowe narzędzia do tabel
 \usepackage{makecell}
 
-% Usuwa odstępy pomiędzy rozdziałąmi na listach obrazków
-\usepackage[figurewithin=none]{caption} % justification=centering
+% Usuwa odstępy pomiędzy rozdziałąmi na listach obrazków i zmienia format nagłówków
+\usepackage[figurename=Rys.,font=footnotesize,labelfont=bf]{caption}
 
 % Naprawia przełamywanie linii wewnątrz \texttt
 \usepackage[htt]{hyphenat}
