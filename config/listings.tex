@@ -1,3 +1,5 @@
+% COLORS
+
 \colorlet{punct}{red!60!black}
 \definecolor{background}{HTML}{EEEEEE}
 \definecolor{delim}{RGB}{20,105,176}
@@ -6,6 +8,10 @@
 \definecolor{delim}{RGB}{20,105,176}
 \definecolor{numb}{RGB}{106, 109, 32}
 \definecolor{string}{rgb}{0.64,0.08,0.08}
+
+\definecolor{darkgreen}{rgb}{0.08, 0.592, 0.251}
+
+% Languages
 
 \lstdefinelanguage{json}{
     morestring=[b]",
@@ -36,7 +42,14 @@
   morestring=[b]",
 }
 
-\lstset{
+\lstdefinelanguage{prompt}{
+   morekeywords={SYSTEM,UŻYTKOWNIK,ASYSTENT},
+   sensitive=true,
+}
+
+% STYLES
+
+\lstdefinestyle{general}{
    backgroundcolor=\color{lightgray},
    extendedchars=true,
    basicstyle=\footnotesize\ttfamily,
@@ -47,6 +60,7 @@
    numbersep=9pt,
    tabsize=2,
    breaklines=true,
+   postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
    showtabs=false,
    captionpos=b,
    frame=single,
@@ -54,32 +68,27 @@
    aboveskip=2em,
 }
 
-\definecolor{darkgreen}{rgb}{0.08, 0.592, 0.251}
+\lstdefinestyle{json}{
+    style=general,
+    language=json,
+}
 
-\lstset{
+\lstdefinestyle{sql}{
+   style=general,
    language=SQL,
    keywordstyle=\color{blue}\bfseries,
    commentstyle=\color{darkgreen},
    stringstyle=\color{red},
-   showstringspaces=false,
-   breaklines=true,
-   postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
 }
 
-\lstdefinelanguage{prompt}{
-   morekeywords={SYSTEM,UŻYTKOWNIK,ASYSTENT},
-   sensitive=true,
-}
-
-\lstset{
+\lstdefinestyle{prompt}{
+   style=general,
    language=prompt,
-   showstringspaces=false,
-   breaklines=true,
    numbers=none,
    postbreak=,
-   tabsize=2,
    breakindent=0pt,
    alsoletter=\\\{\}\*\[\]\-,
    breakatwhitespace,
-   extendedchars=true, 
+   extendedchars=true,
+   keywordstyle=\color{red}\bfseries,
 }

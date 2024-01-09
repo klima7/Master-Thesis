@@ -1,16 +1,16 @@
 \chapter{Przegląd istniejących zbiorów}
-Zbiory danych w kontekście uczenia maszynowego stanowią fundamentalny element wymagany do podejmowania wszelakich zadań. Mają one bardzo duży wpływ na skuteczność każdego modelu i z tego powodu przed przystąpieniem do tworzenia polskich wariantów zostało poświęcone wiele wysiłku na przeanalizowanie zbiorów istniejących.
+Zbiory danych w kontekście uczenia maszynowego stanowią fundamentalny element wymagany do podejmowania wszelakich zadań. Mają bardzo duży wpływ na skuteczność każdego modelu i z tego powodu przed przystąpieniem do tworzenia polskich wariantów zostało poświęcone wiele wysiłku na przeanalizowanie zbiorów istniejących.
 
-Na początku bieżącego rozdziału dokładnie przedstawiony zostanie zbiór \code{Spider} ze szczególnym zwróceniem uwagi na jego format, którego należy przestrzegać podczas tworzenia wersji polskiej. W kolejnej części nastąpi przegląd zbiorów pokrewnych, czyli takich które powstały na fundamencie baz danych \code{Spider} i także postanowiono poddać je tłumaczeniu. Na koniec nastąpi dogłębna analiza istniejących tłumaczeń zbioru Spider, aby dokonać świadomych decyzji podczas tworzenia polskiego odpowiednika.
+Na początku bieżącego rozdziału dokładnie przedstawiony zostanie zbiór \code{Spider} ze szczególnym zwróceniem uwagi na jego format, którego należy przestrzegać podczas tworzenia wersji polskiej. W kolejnej części nastąpi przegląd zbiorów pokrewnych, czyli takich które powstały na fundamencie baz danych \code{Spider} i także postanowiono poddać je tłumaczeniu. Na koniec nastąpi dogłębna analiza istniejących tłumaczeń zbioru \code{Spider}, aby dokonać świadomych decyzji podczas tworzenia polskiego odpowiednika.
 
 \section{Angielski Spider}
-Spider to zbiór danych przeznaczony do zadania \code{Text-to-SQL}, składający się z 10181 próbek. Są one podzielone na część treningową, walidacyjną oraz testową. Cześć testowa nie jest jednak powszechnie dostępna. Ewaluowane są na niej modele wysyłane do publicznie dostępnego rankingu. Dzięki temu jest pewność, że dobre rezultaty modeli nie są skutkiem przypadkowego, ani celowego wycieku danych testowych do zbioru treningowego.
+\code{Spider} to zbiór danych przeznaczony do zadania \code{Text-to-SQL}, składający się z 10181 próbek. Są one podzielone na część treningową, walidacyjną oraz testową. Cześć testowa nie jest jednak powszechnie dostępna. Ewaluowane są na niej modele wysyłane do publicznie dostępnego rankingu. Dzięki temu jest pewność, że dobre rezultaty modeli nie są skutkiem przypadkowego, ani celowego wycieku danych testowych do zbioru treningowego.
 
-Próbki ze zbioru spider opierają się na 200 bazach danych. Są one bardzo różnorodne, ponieważ obejmują 138 domen. Bardzo ważne jest to, że są rozdzielone pomiędzy 3 części zbioru, co oznacza, że próbki w części testowej dotyczą baz danych, których w części treningowej nie mogło być. Wymusza to na tworzonych modelach posiadanie umiejętności uogólniania do nowych domen.
+Próbki ze zbioru \code{Spider} opierają się na 200 bazach danych, które są bardzo różnorodne, ponieważ obejmują 138 domen, takich jak uczelnie, programy telewizyjne, czy rząd. W niektórych przypadach ta sama tematyka poruszana jest przez kilka baz danych, co tłumaczy fakt, że jest ich więcej niż samych domen. Bardzo ważne jest to, że bazy są rozdzielone na poszczególne części zbioru. Oznacza to, że żadna baza wykorzystywana w części treningowej nie jest używana w częśti walidacyjnej, ani testowej. Wymusza to na uczonych za pomocą tego zbioru modelach posiadanie umiejętności uogólniania na nowe domeny.
 
 \subsection{Format zbioru}
 
-Ze względu na unikatowość zbioru \code{Spider} wiele istniejących modeli go wykorzystuję i co za tym idzie, reprezentowany przez niego format stał się w pewien sposób standardem. Nie jest to prosty format tabelaryczny, jak to wygląda w postaci wielu zbiorów danych, lecz składają się na niego cztery jakościowo różne komponenty. Są to próbki same w sobie, poprawne zapytania SQL (ang. gold queries), schemat baz danych oraz same bazy. Nieco uproszczona struktura plików zbioru została zwizualizowana na rysunku \ref{fig:spider-structure} 
+Ze względu na unikatowość zbioru \code{Spider} wiele istniejących modeli go wykorzystuje i co za tym idzie, reprezentowany przez niego format stał się w pewien sposób standardem. Nie jest to prosty format tabelaryczny, jak to wygląda w postaci wielu zbiorów danych, lecz składają się na niego cztery jakościowo różne komponenty. Są to próbki same w sobie, poprawne zapytania SQL (ang. gold queries), schemat baz danych oraz same bazy. Nieco uproszczona struktura plików zbioru została zwizualizowana na rysunku \ref{fig:spider-structure} 
 
 \begin{figure}[ht]
   \centering
@@ -58,7 +58,9 @@ Próbki przechowywane są w formacie json i podzielone zostały na trzy pliki. W
 
 \begin{minipage}{\linewidth}
 \lstinputlisting[
-caption=Przykładowa próbka ze zbioru Spider z pliku \code{dev.json}, label={lst:spider-sample}, language=json
+style=json,
+caption=Przykładowa próbka ze zbioru \code{Spider} z pliku \code{dev.json},
+label={lst:spider-sample},
 ]{listings/spider_sample.json}
 \end{minipage}
 
@@ -78,21 +80,26 @@ Poprawne zapytania SQL zgodnie z powyższym opisem stanowią jeden z atrybutów 
 
 \begin{minipage}{\linewidth}
 \lstinputlisting[
-caption=Fragment pliku \code{dev\_gold.json} zawierającego poprawne zapytania SQL, label={lst:spider-gold}, language=SQL
+style=sql,
+caption=Fragment pliku \code{dev\_gold.json} zawierającego poprawne zapytania SQL,
+label={lst:spider-gold}
 ]{listings/spider_gold.txt}
 \end{minipage}
 
 \subsubsection{Schemat (\code{tables.json})}
-Plik \code{tables.json}, którego fragment został przedstawiony na listingu \ref{lst:spider-tables}, opisuję strukturę każdej zawartej w zbiorze Spider bazy danych. Obejmuję to nazwy wszystkich tabel i kolumn, typy kolumn, wskazane są kolumny stanowiące klucze podstawowe oraz obce.
+Plik \code{tables.json}, którego fragment został przedstawiony na listingu \ref{lst:spider-tables}, opisuję strukturę każdej zawartej w zbiorze \code{Spider} bazy danych. Obejmuję to nazwy wszystkich tabel i kolumn, typy kolumn, wskazane są kolumny stanowiące klucze podstawowe oraz obce.
 
-Co ciekawe, oprócz oryginalnie występujących w bazie nazw tabel i kolumn w pliku schematu znajdują się również ich odpowiedniki w języku naturalnym. Oznacza to, że nazwy składające się z kilku słów i zapisywane oryginalnie za pomocą różnych konwencji, takich jak Camel Case, Snake Case, czy Pascal Case, są zamieniane na naturalną postać słów odseparowanych spacjami. Poza tym, część oryginalnych, skrótowych nazw jest rozwijana do zrozumiałej postaci. Jest to dodatkowa informacja, która nie jest dostępna w większości baz danych, a mimo wszystko jest wykorzystywana przez wiele algorytmów.
+Co ciekawe, oprócz oryginalnie występujących w bazie nazw tabel i kolumn w pliku schematu znajdują się również ich odpowiedniki w języku naturalnym. Oznacza to, że nazwy składające się z kilku słów i zapisywane oryginalnie za pomocą różnych konwencji, takich jak Camel Case (np. \code{playerName}), Snake Case (np. \code{player\_name}), czy Pascal Case (np. \code{PlayerName}), są zamieniane na naturalną postać słów odseparowanych spacjami. Poza tym, część oryginalnych, skrótowych nazw jest rozwijana do zrozumiałej postaci. Jest to dodatkowa informacja, która nie jest dostępna w większości baz danych, a mimo wszystko jest wykorzystywana przez wiele algorytmów.
 
 \lstinputlisting[
-float, caption=Fragment pliku \code{tables.json} opisujący schemat pojedynczej bazy danych, label={lst:spider-tables}, language=json
+float,
+style=json,
+caption=Fragment pliku \code{tables.json} opisujący schemat pojedynczej bazy danych,
+label={lst:spider-tables},
 ]{listings/spider_tables.json}
 
 \subsubsection{Bazy danych (\code{database/*})}
-Ostatnim komponentem zbioru Spider jest katalog \code{database} zwierający szereg podkatalogów o nazwach odpowiadających identyfikatorom baz danych. Wewnątrz każdego z tych podkatalogów umieszczona jest baza danych SQLite oraz opcjonalnie dodatkowe pliki, takie jak skrypt SQL pozwalający zbudować daną bazę od zera. Większość baz, z nielicznymi wyjątkami, jest wypełniona danymi. Jest to istotne, ponieważ duża część nowoczesnych algorytmów opiera się na tych danych, by generowane zapytania SQL były dokładniejsze.
+Ostatnim komponentem zbioru \code{Spider} jest katalog \code{database} zwierający szereg podkatalogów o nazwach odpowiadających identyfikatorom baz danych. Wewnątrz każdego z tych podkatalogów umieszczona jest baza danych SQLite oraz opcjonalnie dodatkowe pliki, takie jak skrypt SQL pozwalający zbudować daną bazę od zera. Większość baz, z nielicznymi wyjątkami, jest wypełniona danymi. Jest to istotne, ponieważ duża część nowoczesnych algorytmów opiera się na tych danych, by generowane zapytania SQL były dokładniejsze.
 
 % \begin{figure}[ht]
 %   \centering
@@ -134,16 +141,18 @@ Ostatnim komponentem zbioru Spider jest katalog \code{database} zwierający szer
 
 
 \section{Angielskie zbiory pokrewne} \label{text:related-datasets}
-Jedną z ważniejszych zasług zbioru Spider było zgromadzenie pokaźnej liczby baz danych pochodzących z bardzo różnych domen. Było to trudne ponieważ stanowią one informacje poufne dla wykorzystujących je firm i niewielka ich liczba jest dostępna w internecie. Nic więc dziwnego, że na fundamencie baz danych \code{Spider} powstało kilka nowych zbiorów. Doskonałym tego przykładem są zbiory \code{CoSQL} oraz \code{SParC}, gdzie zachowano te same bazy danych, lecz stworzone zostały całkowicie nowe przykłady. Pojawiło się również odmienne podejście polegające na stworzeniu nowych zbiorów poprzez dokonanie w próbkach ze zbioru Spider pewnych ukierunkowanych modyfikacji, czego przykładem są zbiory \code{Spider-Syn}, \code{Spider-DK} oraz \code{Dr.Spider}.
+Jedną z ważniejszych zasług zbioru \code{Spider} było zgromadzenie pokaźnej liczby baz danych pochodzących z bardzo różnych domen. Było to trudne ponieważ stanowią one informacje poufne dla wykorzystujących je firm i niewielka ich liczba jest dostępna w internecie. Nic więc dziwnego, że na fundamencie baz danych \code{Spider} powstało kilka nowych zbiorów. Doskonałym tego przykładem są zbiory \code{CoSQL} oraz \code{SParC}, gdzie zachowano te same bazy danych, lecz stworzone zostały całkowicie nowe przykłady. Pojawiło się również odmienne podejście polegające na stworzeniu nowych zbiorów poprzez dokonanie w próbkach ze zbioru \code{Spider} pewnych ukierunkowanych modyfikacji, czego przykładem są zbiory \code{Spider-Syn}, \code{Spider-DK} oraz \code{Dr.Spider}.
 
 Jako, że część ze wspomnianych powyżej zbiorów pokrewnych do zbioru \code{Spider} odegrało istotną rolę w procesie tworzenia polskiego zbioru danych, to zostaną one pobieżnie opisane w poniższych podsekcjach.
 
 \subsection{Spider-Syn}
-\code{Spider-Syn} jest zbiorem danych powstałym ze zbioru \code{Spider} poprzez zmodyfikowanie próbek w taki sposób, aby ograniczyć dosłowne wymienianie w pytaniach nazw kolumn, tabel i wartości z baz danych. Odzwierciedla to scenariusz w którym z interfejsu tekstowego do bazy korzysta osoba, która dokładnie jej nie zna, więc często posługuję się mimowolnie synonimami. Stworzenie tego typu zbioru było istotne, ponieważ okazało się, że duża część istniejących algorytmów opiera się na powiązywaniu pytania z elementami baz danych poprzez znajdywanie dosłownych powtórzeń i w przedstawionym scenariuszu ich skuteczność radykalnie spada. Zbiór ten posiada część treningową oraz walidacyjną, lecz częstym scenariuszem jest potraktowanie wszystkich próbek jako walidacyjne. Na listingu \ref{lst:spider-syn-example} została przedstawiona jedna z nich.
+\code{Spider-Syn} jest zbiorem danych powstałym ze zbioru \code{Spider} poprzez zmodyfikowanie próbek w taki sposób, aby ograniczyć dosłowne wymienianie w pytaniach nazw kolumn, tabel i wartości z baz danych. Odzwierciedla to scenariusz w którym z interfejsu tekstowego do bazy korzysta osoba, która dokładnie jej nie zna, więc często posługuje się mimowolnie synonimami. Stworzenie tego typu zbioru było istotne, ponieważ okazało się, że duża część istniejących algorytmów opiera się na powiązywaniu pytania z elementami baz danych poprzez znajdywanie dosłownych powtórzeń i w przedstawionym scenariuszu ich skuteczność radykalnie spada. Zbiór ten posiada część treningową oraz walidacyjną, lecz częstym scenariuszem jest potraktowanie wszystkich próbek jako walidacyjne. Na listingu \ref{lst:spider-syn-example} została przedstawiona jedna z nich.
 
 \begin{minipage}{\linewidth}
 \lstinputlisting[
-caption=Przykład próbki ze zbioru \code{Spider-Syn}, label={lst:spider-syn-example}, language=json
+style=json,
+caption=Przykład próbki ze zbioru \code{Spider-Syn},
+label={lst:spider-syn-example}
 ]{listings/spider_syn_example.json}
 \end{minipage}
 
@@ -159,7 +168,9 @@ Zbiór danych \code{Spider-DK} (skrót od ang. Domain Knowledge) został zbudowa
 
 \begin{minipage}{\linewidth}
 \lstinputlisting[
-caption=Przykład próbki ze zbioru \code{Spider-DK}, label={lst:spider-dk-example}, language=json
+style=json,
+caption=Przykład próbki ze zbioru \code{Spider-DK},
+label={lst:spider-dk-example}
 ]{listings/spider_dk_example.json}
 \end{minipage}
 
@@ -186,7 +197,7 @@ caption=Przykład próbki ze zbioru \code{Spider-DK}, label={lst:spider-dk-examp
 \end{figure}
 
 \section{Tłumaczenia zbioru Spider}
-Jak zostało wspomniane podczas przeglądu literatury, obecnie istnieją cztery tłumaczenia zbioru Spider na języki narodowe. Jest to język chiński, wietnamski, portugalski oraz rosyjski. Autorzy tych zbiorów jednak pomimo wspólnego celu podeszli do zadania na różne sposoby. Celem niniejszej sekcji jest przedyskutowanie kluczowych różnic pomiędzy nimi. Jedną z najistotniejszych jest zastosowana metoda tłumaczenia. Rozbieżności zaobserwowano również jeśli chodzi o tłumaczenie schematu, zawartość baz danych oraz wartości w zapytaniach. Różnice w tych kwestiach zostały zestawione w tabeli \ref{tab:spider-trans-diffs} i zostaną dogłębnie omówione w poniższych sekcjach.
+Jak zostało wspomniane podczas przeglądu literatury, obecnie istnieją cztery tłumaczenia zbioru \code{Spider} na języki narodowe. Jest to język chiński, wietnamski, portugalski oraz rosyjski. Autorzy tych zbiorów jednak pomimo wspólnego celu podeszli do zadania na różne sposoby. Celem niniejszej sekcji jest przedyskutowanie kluczowych różnic pomiędzy nimi. Jedną z najistotniejszych jest zastosowana metoda tłumaczenia. Rozbieżności zaobserwowano również jeśli chodzi o tłumaczenie schematu, zawartość baz danych oraz wartości w zapytaniach. Różnice w tych kwestiach zostały zestawione w tabeli \ref{tab:spider-trans-diffs} i zostaną dogłębnie omówione w poniższych sekcjach.
 
 
 \begin{table}[ht]
@@ -217,9 +228,9 @@ Tłumaczenie maszynowe i manualne to dwa możliwe podejścia. Pierwsze sprowadza
 
 Największą zaletą tłumaczenia maszynowego jest szybkie uzyskanie przetłumaczonego zbioru. Wiąże się to najczęściej z naliczeniem pewnych kosztów, o których trzeba wspomnieć, lecz mimo wszystko koszt ten jest niewspółmierny do ceny wynajęcia profesjonalnego ludzkiego tłumacza. Jest on również pomijalny w stosunku do czasu, który trzeba by poświęcić, by dokonać tłumaczenia samemu.
 
-Tłumaczenie maszynowe ma jednak istotne wady - dostępne narzędzia stają się coraz lepsze, lecz wciąż nie dorównują człowiekowi. Sprawia to, że uzyskiwane zbiory danych są bezsprzecznie niższej jakości. Narzędzia te dokonując tłumaczenia zbioru Spider nie biorą pod uwagę wielu istotnych elementów, które ludzki adnotator by uwzględnił. Przykładem jest ignorowanie domeny podczas tłumaczenia pytania naturalnego. Ludzki tłumacz pytanie \enquote{list all parties} w domenie politycznej przetłumaczy jako \enquote{zwróć wszystkie partie}, natomiast tłumacz maszynowy przetłumaczy to bez wątpienia jako \enquote{zwróć wszystkie imprezy}.
+Tłumaczenie maszynowe ma jednak istotne wady - dostępne narzędzia stają się coraz lepsze, lecz wciąż nie dorównują człowiekowi. Sprawia to, że uzyskiwane zbiory danych są bezsprzecznie niższej jakości. Narzędzia te dokonując tłumaczenia zbioru \code{Spider} nie biorą pod uwagę wielu istotnych elementów, które ludzki adnotator by uwzględnił. Przykładem jest ignorowanie domeny podczas tłumaczenia pytania naturalnego. Ludzki tłumacz pytanie \enquote{list all parties} w domenie politycznej przetłumaczy jako \enquote{zwróć wszystkie partie}, natomiast tłumacz maszynowy przetłumaczy to bez wątpienia jako \enquote{zwróć wszystkie imprezy}.
 
-Dotychczasowe tłumaczenia zbioru Spider, z powodu ograniczeń metody maszynowej, w większości korzystają z ręcznego tłumaczenia zbioru. Jest to prawdą dla rosyjskiego \code{PAUQ}, wietnamskiego \code{ViText2SQL} oraz chińskiego \code{CSpider}, jedyny wyjątek stanowi zbiór portugalski. Autorzy każdego z tych manualnie tłumaczonych zbiorów dla porównania dokonali również tłumaczenia maszynowego. Zestawienie wyników osiąganych przez modele trenowane na zbiorach tłumaczonych maszynowo i manualnie zostało przedstawione w tabeli \ref{tab:manual-vs-machine}. Wszystkie wyniki potwierdzają, że tłumaczenie manualne pozwala uzyskać lepsze wyniki, aczkolwiek w przypadku względnie nowych modeli \code{RAT-SQL} oraz \code{BRIDGE} procentowy spadek skuteczności na zbiorach maszynowych nie jest tak znaczący jak dla modeli wcześniejszych.
+Dotychczasowe tłumaczenia zbioru \code{Spider}, z powodu ograniczeń metody maszynowej, w większości korzystają z ręcznego tłumaczenia zbioru. Jest to prawdą dla rosyjskiego \code{PAUQ}, wietnamskiego \code{ViText2SQL} oraz chińskiego \code{CSpider}, jedyny wyjątek stanowi zbiór portugalski. Autorzy każdego z tych manualnie tłumaczonych zbiorów dla porównania dokonali również tłumaczenia maszynowego. Zestawienie wyników osiąganych przez modele trenowane na zbiorach tłumaczonych maszynowo i manualnie zostało przedstawione w tabeli \ref{tab:manual-vs-machine}. Wszystkie wyniki potwierdzają, że tłumaczenie manualne pozwala uzyskać lepsze wyniki, aczkolwiek w przypadku względnie nowych modeli \code{RAT-SQL} oraz \code{BRIDGE} procentowy spadek skuteczności na zbiorach maszynowych nie jest tak znaczący jak dla modeli wcześniejszych.
 
 \begin{table}[ht]
     \centering
@@ -252,7 +263,7 @@ Fakt, że w praktyce nazwy tabel i kolumn są zapisywane w języku angielskim w 
 
 Należy zwrócić uwagę, że reprezentowanie pytań i schematu baz danych w dwóch różnych językach znacząco komplikuję rozwiązywany problem. W wersji, gdy wszystkie komponenty są w tym samym języku to dość łatwo jest znaleźć powiązania pomiędzy nimi, ponieważ wystarczy przeanalizować ich podobieństwo jako łańcuchów znaków. W innym przypadku to jednak nie wystarczy - wykorzystywany model musi posiadać dodatkowo pewne cechy tłumacza.
 
-Podsumowując, pozostawienie schematu bazy danych w języku oryginalnym jest uzasadnione z praktycznego punktu widzenia, jednak dodatkowo komplikuje zadanie. Zbiór danych z przetłumaczonym schematem, chociaż pomija aspekt praktyczny, stanowi lepszy odpowiednik oryginalnego Spidera i pozwala na wykonywanie względem niego sprawiedliwych porównań.
+Podsumowując, pozostawienie schematu bazy danych w języku oryginalnym jest uzasadnione z praktycznego punktu widzenia, jednak dodatkowo komplikuje zadanie. Zbiór danych z przetłumaczonym schematem, chociaż pomija aspekt praktyczny, stanowi lepszy odpowiednik oryginalnego zbioru \code{Spider} i pozwala na wykonywanie względem niego sprawiedliwych porównań.
 
 \subsection{Tłumaczenie zawartości baz danych}
 Kolejną niespójnością jaką można zaobserwować pomiędzy istniejącymi tłumaczeniami zbioru \code{Spider} jest kwestia tłumaczenia zawartości baz danych. Dokonanie takiego tłumaczenia ma istotne zalety przedstawione w kolejnych akapitach, jednak jest to zadanie problematyczne, przez co nie wszyscy autorzy zbiorów się go podjęli.
