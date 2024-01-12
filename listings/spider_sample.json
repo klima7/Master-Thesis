@@ -1,9 +1,9 @@
 {
- "db_id": "cre_Doc_Template_Mgt",
- "question": "List all document ids with at least two paragraphs.",
- "question_toks": ["List", "all", "document", "ids", "with", "at", "least", "two", "paragraphs", "."],
- "query": "SELECT document_id FROM Paragraphs GROUP BY document_id HAVING count(*)  >=  2",
- "query_toks": ["SELECT", "document_id", "FROM", "Paragraphs", "GROUP", "BY", "document_id", "HAVING", "count", "(", "*", ")", ">", "=", "2"],
- "query_toks_no_value": ["select","document_id","from","paragraphs","group","by","document_id","having","count","(","*",")",">","=","value"],
- "sql": {...}
+ "db_id": "concert_singer",
+ "question": "What is the average age of all singers from France?",
+ "question_toks": ["What", "is", "the", "average", "age", "of", "all", "singers", "from", "France", "?"],
+ "query": "SELECT avg(age) FROM singer WHERE country = 'France'",
+ "query_toks": ["SELECT", "avg", "(", "age", ")", "FROM", "singer", "WHERE", "country", "=", "'France'"],
+ "query_toks_no_value": ["select", "avg", "(", "age", ")", "from", "singer", "where", "country", "=", "value"],
+ "sql": {}
 }

@@ -1,16 +1,18 @@
 \chapter{Przegląd istniejących zbiorów}
-Zbiory danych w kontekście uczenia maszynowego stanowią fundamentalny element wymagany do podejmowania wszelakich zadań. Mają bardzo duży wpływ na skuteczność każdego modelu i z tego powodu przed przystąpieniem do tworzenia polskich wariantów zostało poświęcone wiele wysiłku na przeanalizowanie zbiorów istniejących.
+Zbiory danych w kontekście uczenia maszynowego stanowią fundamentalny element, wymagany do podejmowania wszelakich problemów. Mają bardzo duży wpływ na skuteczność każdego modelu i z tego powodu przed przystąpieniem do tworzenia polskich odpowiedników zostało poświęcone wiele wysiłku na przeanalizowanie zbiorów istniejących.
 
-Na początku bieżącego rozdziału dokładnie przedstawiony zostanie zbiór \code{Spider} ze szczególnym zwróceniem uwagi na jego format, którego należy przestrzegać podczas tworzenia wersji polskiej. W kolejnej części nastąpi przegląd zbiorów pokrewnych, czyli takich które powstały na fundamencie baz danych \code{Spider} i także postanowiono poddać je tłumaczeniu. Na koniec nastąpi dogłębna analiza istniejących tłumaczeń zbioru \code{Spider}, aby dokonać świadomych decyzji podczas tworzenia polskiego odpowiednika.
+Na początku bieżącego rozdziału dokładnie przedstawiony zostanie zbiór \code{Spider}, ze szczególnym zwróceniem uwagi na jego format, którego polskie zbiory będą musiały przestrzegać. W kolejnej części nastąpi przegląd zbiorów do niego pokrewnych, czyli takich, które powstały na fundamencie baz danych \code{Spider} i również odegrały w niniejszej pracy istotną rolę. Na koniec nastąpi dogłębna analiza istniejących tłumaczeń zbioru \code{Spider}, aby dokonać świadomych decyzji podczas tworzenia tłumaczenia polskiego.
 
 \section{Angielski Spider}
-\code{Spider} to zbiór danych przeznaczony do zadania \code{Text-to-SQL}, składający się z 10181 próbek. Są one podzielone na część treningową, walidacyjną oraz testową. Cześć testowa nie jest jednak powszechnie dostępna. Ewaluowane są na niej modele wysyłane do publicznie dostępnego rankingu. Dzięki temu jest pewność, że dobre rezultaty modeli nie są skutkiem przypadkowego, ani celowego wycieku danych testowych do zbioru treningowego.
+\code{Spider} to przede wszystkim zbiór danych przeznaczony do zadania \code{Text-to-SQL}, ale również wyzwanie z publicznie dostępnym rankingiem\footnote{\url{https://yale-lily.github.io/spider}}, które pozwala konkurować badaczom w tworzeniu coraz lepszych modeli oraz śledzić czynione postępy na przestrzeni czasu.
 
-Próbki ze zbioru \code{Spider} opierają się na 200 bazach danych, które są bardzo różnorodne, ponieważ obejmują 138 domen, takich jak uczelnie, programy telewizyjne, czy rząd. W niektórych przypadach ta sama tematyka poruszana jest przez kilka baz danych, co tłumaczy fakt, że jest ich więcej niż samych domen. Bardzo ważne jest to, że bazy są rozdzielone na poszczególne części zbioru. Oznacza to, że żadna baza wykorzystywana w części treningowej nie jest używana w częśti walidacyjnej, ani testowej. Wymusza to na uczonych za pomocą tego zbioru modelach posiadanie umiejętności uogólniania na nowe domeny.
+Na zbiór składa się \numprint{10181} próbek, które są podzielone na trzy części: treningową, walidacyjną (zwaną również deweloperską) oraz testową. Ta ostatnia nie jest jednak powszechnie dostępna i sprawność swojego modelu można uzyskać na niej jedynie poprzez wysłanie go do wyzwania. Daje to pewność, że przypuszczalnie dobre wyniki wysyłanych modeli nie są skutkiem przypadkowego, ani celowego włączenia próbek testowych do zbioru treningowego, czyli zjawiska tak zwanego wycieku danych. Brak swobodnego dostępu do części testowej sprawia, że w praktyce część walidacyjna często przejmuję jej rolę.
+
+Próbki ze zbioru \code{Spider} opierają się na 200 bazach danych, które są bardzo różnorodne, ponieważ obejmują 138 domen, takich jak uczelnie, programy telewizyjne, czy rząd. W niektórych przypadkach ta sama tematyka poruszana jest przez kilka baz danych, co tłumaczy fakt, że jest ich więcej niż samych domen. Bardzo ważne jest to, że bazy są rozdzielone na poszczególne części zbioru. Między innymi żadna baza wykorzystywana w części treningowej nie jest używana w części walidacyjnej ani testowej. Wymusza to na uczonych za pomocą tego zbioru modelach posiadanie umiejętności uogólniania na nowe domeny.
 
 \subsection{Format zbioru}
 
-Ze względu na unikatowość zbioru \code{Spider} wiele istniejących modeli go wykorzystuje i co za tym idzie, reprezentowany przez niego format stał się w pewien sposób standardem. Nie jest to prosty format tabelaryczny, jak to wygląda w postaci wielu zbiorów danych, lecz składają się na niego cztery jakościowo różne komponenty. Są to próbki same w sobie, poprawne zapytania SQL (ang. gold queries), schemat baz danych oraz same bazy. Nieco uproszczona struktura plików zbioru została zwizualizowana na rysunku \ref{fig:spider-structure} 
+Wiele istniejących modeli wykorzystuję zbiór \code{Spider} ze względu na jego unikatowość i co za tym idzie, reprezentowany przez niego format stał się w pewien sposób standardem. Nie jest to prosty format tabelaryczny, jak to wygląda w postaci wielu innych zbiorów, lecz składają się na niego cztery jakościowo różne komponenty. Są to przykłady, poprawne zapytania SQL (ang. gold queries), schemat baz danych oraz same bazy. Nieco uproszczona struktura plików zbioru została przedstawiona na rysunku \ref{fig:spider-structure} 
 
 \begin{figure}[ht]
   \centering
@@ -54,29 +56,29 @@ Ze względu na unikatowość zbioru \code{Spider} wiele istniejących modeli go 
 \end{figure}
 
 \subsubsection{Próbki (\code{dev.json}, \code{train\_spider.json}, \code{train\_others.json})} 
-Próbki przechowywane są w formacie json i podzielone zostały na trzy pliki. W pliki \code{dev.json} znajdują się próbki odpowiadające zbiorowi walidacyjnemu, natomiast w plikach \code{train\_spider.json} oraz \code{train\_others.json} umieszczono próbki treningowe. Są one rozdzielone dodatkowo na dwa pliki, ponieważ w pierwszym twórcy zbioru umieścili swoje autorskie próbki, natomiast w drugim próbki wyselekcjonowane z już istniejących zbiorów. Przykładowa próbka została przedstawiona na listingu \ref{lst:spider-sample}.
+Próbki przechowywane są w formacie JSON i podzielone zostały na trzy pliki. W \code{dev.json} znajdują się te odpowiadające zbiorowi walidacyjnemu, natomiast w plikach \code{train\_spider.json} oraz \code{train\_others.json} umieszczono próbki treningowe. Są one rozdzielone dodatkowo na dwa pliki, ponieważ w pierwszym twórcy zbioru umieścili swoje autorskie przykłady, natomiast w drugim te wyselekcjonowane z już istniejących zbiorów. Przykładowa próbka została przedstawiona na listingu \ref{lst:spider-sample}.
 
 \begin{minipage}{\linewidth}
 \lstinputlisting[
 style=json,
-caption=Przykładowa próbka ze zbioru \code{Spider} z pliku \code{dev.json},
+caption=Przykładowa próbka ze zbioru \code{Spider},
 label={lst:spider-sample},
 ]{listings/spider_sample.json}
 \end{minipage}
 
-Znaczenie poszczególnych atrybutów próbki jest następujące:
+Znaczenie poszczególnych atrybutów próbki jest następujące:\nobreakpar
 \begin{itemize}
-    \item \textbf{\code{db\_id}} - Identyfikator bazy danych, której próbka dotyczy.
-    \item \textbf{\code{question}} - Pytanie w języku naturalnym.
-    \item \textbf{\code{question\_toks}} - Pytanie podzielone na tokeny .
-    \item \textbf{\code{query}} - Zapytanie SQL.
-    \item \textbf{\code{query\_toks}} - Zapytanie SQL podzielone na tokeny.
-    \item \textbf{\code{query\_toks\_no\_value}} - Zapytanie SQL podzielone na tokeny, ale z zamaskowanymi wszystkimi wartościami, a dokładnie zastąpionymi tekstem \code{value}.
-    \item \textbf{\code{sql}} - Skomplikowany obiekt JSON będący sparsowanym zapytaniem SQL, pozwalający na szybkie liczenie metryk i umożliwiający łatwe wydobywanie różnych fragmentów zapytania.
+    \item \textbf{\code{db\_id}} -- identyfikator bazy danych,
+    \item \textbf{\code{question}} -- pytanie w języku naturalnym,
+    \item \textbf{\code{question\_toks}} -- pytanie podzielone na tokeny,
+    \item \textbf{\code{query}} -- zapytanie SQL,
+    \item \textbf{\code{query\_toks}} -- zapytanie SQL podzielone na tokeny,
+    \item \textbf{\code{query\_toks\_no\_value}} -- zapytanie SQL podzielone na tokeny, ale z zamaskowanymi wszystkimi wartościami, a dokładnie zastąpionymi tekstem \code{value},
+    \item \textbf{\code{sql}} -- skomplikowany obiekt JSON będący sparsowanym zapytaniem SQL, pozwalający na szybkie liczenie metryk i wydobywanie różnych fragmentów zapytania.
 \end{itemize}
 
 \subsubsection{Poprawne zapytania SQL (\code{dev\_gold.sql}, \code{train\_gold.sql})}
-Poprawne zapytania SQL zgodnie z powyższym opisem stanowią jeden z atrybutów próbek, lecz poza tym są one wyciągnięte do dwóch osobnych plików \code{dev\_gold.sql} oraz \code{train\_gold.sql}, które odpowiadają części walidacyjnej oraz treningowej. W każdej linii w tych plikach, jak przedstawiono na listingu \ref{lst:spider-gold}, umieszczone jest zapytanie SQL oraz nazwa bazy danych oddzielone od siebie za pomocą znaku tabulacji.
+Poprawne zapytania SQL, zgodnie z powyższym opisem, stanowią jeden z atrybutów próbek, lecz poza tym są również wyciągnięte do dwóch osobnych plików \code{dev\_gold.sql} oraz \code{train\_gold.sql}, które odpowiadają części walidacyjnej oraz treningowej. W każdej linii tych plików, jak przedstawiono na listingu \ref{lst:spider-gold}, umieszczone jest poprawne zapytanie SQL oraz identyfikator bazy danych oddzielony od zapytania znakiem tabulacji.
 
 \begin{minipage}{\linewidth}
 \lstinputlisting[
@@ -87,66 +89,40 @@ label={lst:spider-gold}
 \end{minipage}
 
 \subsubsection{Schemat (\code{tables.json})}
-Plik \code{tables.json}, którego fragment został przedstawiony na listingu \ref{lst:spider-tables}, opisuję strukturę każdej zawartej w zbiorze \code{Spider} bazy danych. Obejmuję to nazwy wszystkich tabel i kolumn, typy kolumn, wskazane są kolumny stanowiące klucze podstawowe oraz obce.
+Plik \code{tables.json}, którego fragment został przedstawiony na listingu \ref{lst:spider-tables}, opisuję strukturę każdej zawartej w zbiorze \code{Spider} bazy danych. Obejmuję to wskazanie nazw wszystkich tabel i kolumn, typów kolumn, kluczy podstawowych oraz relacji tworzonych przez klucze obce. 
 
-Co ciekawe, oprócz oryginalnie występujących w bazie nazw tabel i kolumn w pliku schematu znajdują się również ich odpowiedniki w języku naturalnym. Oznacza to, że nazwy składające się z kilku słów i zapisywane oryginalnie za pomocą różnych konwencji, takich jak Camel Case (np. \code{playerName}), Snake Case (np. \code{player\_name}), czy Pascal Case (np. \code{PlayerName}), są zamieniane na naturalną postać słów odseparowanych spacjami. Poza tym, część oryginalnych, skrótowych nazw jest rozwijana do zrozumiałej postaci. Jest to dodatkowa informacja, która nie jest dostępna w większości baz danych, a mimo wszystko jest wykorzystywana przez wiele algorytmów.
-
+\begin{minipage}{\linewidth}
 \lstinputlisting[
-float,
 style=json,
 caption=Fragment pliku \code{tables.json} opisujący schemat pojedynczej bazy danych,
 label={lst:spider-tables},
 ]{listings/spider_tables.json}
+\end{minipage}
+
+Znaczenie poszczególnych atrybutów obiektu opisującego schemat bazy danych jest następujące:\nobreakpar
+\begin{itemize}
+    \item \textbf{\code{db\_id}} -- identyfikator bazy danych,
+    \item \textbf{\code{table\_names\_original}} -- nazwy tabel występujących w bazie,
+    \item \textbf{\code{table\_names}} -- naturalne odpowiedniki nazw tabel występujących w bazie,
+    \item \textbf{\code{column\_names\_original}} -- sekwencja dwuelementowych list zawierających kolejno numer porządkowy tabeli oraz nazwę zawartej w niej kolumny,
+    \item \textbf{\code{column\_names}} -- tak jak wyżej, lecz z naturalnymi odpowiednikami nazw kolumn,
+    \item \textbf{\code{column\_types}} -- typy danych posiadane przez wyżej wymieniane kolumny,
+    \item \textbf{\code{primary\_keys}} -- numery porządkowe kolumn będących kluczami podstawowymi,
+    \item \textbf{\code{foreign\_keys}} -- sekwencja dwuelementowych list zawierających kolejno numer porządkowy kolumny będącej kluczem obcym oraz numer porządkowy kolumny będącej powiązanym kluczem podstawowym.
+\end{itemize}
+
+Warto zwrócić uwagę na fakt, że w pliku schematu, oprócz oryginalnie występujących w bazie nazw tabel i kolumn, znajdują się również ich odpowiedniki w języku naturalnym. Oznacza to, że nazwy składające się z kilku słów i zapisywane oryginalnie za pomocą różnych konwencji, takich jak Camel Case (np. \code{playerName}), Snake Case (np. \code{player\_name}), czy Pascal Case (np. \code{PlayerName}) są zamieniane na naturalną postać, czyli słowa odseparowane spacjami. Poza tym część oryginalnie skrótowych nazw jest rozwijana do bardziej zrozumiałej postaci. Stanowi to dodatkową informację, która nie jest dostępna w samych bazach danych.
 
 \subsubsection{Bazy danych (\code{database/*})}
-Ostatnim komponentem zbioru \code{Spider} jest katalog \code{database} zwierający szereg podkatalogów o nazwach odpowiadających identyfikatorom baz danych. Wewnątrz każdego z tych podkatalogów umieszczona jest baza danych SQLite oraz opcjonalnie dodatkowe pliki, takie jak skrypt SQL pozwalający zbudować daną bazę od zera. Większość baz, z nielicznymi wyjątkami, jest wypełniona danymi. Jest to istotne, ponieważ duża część nowoczesnych algorytmów opiera się na tych danych, by generowane zapytania SQL były dokładniejsze.
-
-% \begin{figure}[ht]
-%   \centering
-%     \begin{forest}
-%       for tree={
-%         inner sep=2pt,l=10pt,l sep=10pt,
-%         font=\ttfamily,
-%         grow'=0,
-%         child anchor=west,
-%         parent anchor=south,
-%         anchor=west,
-%         calign=first,
-%         edge path={
-%           \noexpand\path [draw, \forestoption{edge}]
-%           (!u.south west) +(7.5pt,0) |- node[fill,inner sep=1.25pt] {} (.child anchor)\forestoption{edge label};
-%         },
-%         before typesetting nodes={
-%           if n=1
-%             {insert before={[,phantom]}}
-%             {}
-%         },
-%         fit=band,
-%         before computing xy={l=15pt},
-%       }[database
-%         [world\_1
-%             [world\_1.sqlite]
-%             [world\_1.sql]
-%         ]
-%         [wrestler
-%             [wrestler.sqlite]
-%             [schema.sql]
-%         ]
-%         [...]
-%       ]
-%     \end{forest}
-% \caption{Struktura katalogu Database zbioru Spider}
-%   \label{fig:crontab}
-% \end{figure}
-
+Ostatnim komponentem zbioru \code{Spider} jest katalog \code{database} zwierający szereg podkatalogów o nazwach odpowiadających identyfikatorom baz danych. Wewnątrz każdego z tych podkatalogów umieszczona jest baza danych \code{SQLite} oraz opcjonalnie dodatkowe pliki, takie jak skrypt SQL pozwalający zbudować daną bazę od zera. Większość baz, z nielicznymi wyjątkami, jest wypełniona danymi. Jest to istotne, ponieważ duża część nowoczesnych algorytmów opiera się na tych danych, by generowane zapytania SQL były dokładniejsze.
 
 \section{Angielskie zbiory pokrewne} \label{text:related-datasets}
-Jedną z ważniejszych zasług zbioru \code{Spider} było zgromadzenie pokaźnej liczby baz danych pochodzących z bardzo różnych domen. Było to trudne ponieważ stanowią one informacje poufne dla wykorzystujących je firm i niewielka ich liczba jest dostępna w internecie. Nic więc dziwnego, że na fundamencie baz danych \code{Spider} powstało kilka nowych zbiorów. Doskonałym tego przykładem są zbiory \code{CoSQL} oraz \code{SParC}, gdzie zachowano te same bazy danych, lecz stworzone zostały całkowicie nowe przykłady. Pojawiło się również odmienne podejście polegające na stworzeniu nowych zbiorów poprzez dokonanie w próbkach ze zbioru \code{Spider} pewnych ukierunkowanych modyfikacji, czego przykładem są zbiory \code{Spider-Syn}, \code{Spider-DK} oraz \code{Dr.Spider}.
+Jedną z ważniejszych zasług zbioru \code{Spider} jest zgromadzenie pokaźnej liczby baz danych pochodzących z bardzo różnych domen. Było to trudne, ponieważ stanowią informacje poufne dla wykorzystujących je firm i niewielka ich liczba jest dostępna w sieci. Nic więc dziwnego, że na fundamencie baz danych \code{Spider} powstało kilka kolejnych zbiorów. Doskonałym tego przykładem są zbiory \code{CoSQL} \mycite{cosql} oraz \code{SParC} \mycite{sparc}, gdzie zachowano te same bazy, lecz stworzone zostały całkowicie nowe przykłady. Pojawiło się również odmienne podejście polegające na skonstruowaniu zbiorów pochodnych poprzez dokonanie w próbkach ze zbioru \code{Spider} pewnych ukierunkowanych modyfikacji, czego przykładem są zbiory \code{Spider-Syn} \mycite{Gan2021spidersyn}, \code{Spider-DK} \mycite{Gan2021spiderdk}, czy \code{Dr.Spider} \mycite{Chang2023}.
 
-Jako, że część ze wspomnianych powyżej zbiorów pokrewnych do zbioru \code{Spider} odegrało istotną rolę w procesie tworzenia polskiego zbioru danych, to zostaną one pobieżnie opisane w poniższych podsekcjach.
+Jako że część ze wspomnianych powyżej zbiorów pokrewnych do zbioru \code{Spider} odegrało istotną rolę w dalszej części pracy to zostaną one pobieżnie opisane w poniższych sekcjach.
 
 \subsection{Spider-Syn}
-\code{Spider-Syn} jest zbiorem danych powstałym ze zbioru \code{Spider} poprzez zmodyfikowanie próbek w taki sposób, aby ograniczyć dosłowne wymienianie w pytaniach nazw kolumn, tabel i wartości z baz danych. Odzwierciedla to scenariusz w którym z interfejsu tekstowego do bazy korzysta osoba, która dokładnie jej nie zna, więc często posługuje się mimowolnie synonimami. Stworzenie tego typu zbioru było istotne, ponieważ okazało się, że duża część istniejących algorytmów opiera się na powiązywaniu pytania z elementami baz danych poprzez znajdywanie dosłownych powtórzeń i w przedstawionym scenariuszu ich skuteczność radykalnie spada. Zbiór ten posiada część treningową oraz walidacyjną, lecz częstym scenariuszem jest potraktowanie wszystkich próbek jako walidacyjne. Na listingu \ref{lst:spider-syn-example} została przedstawiona jedna z nich.
+\code{Spider-Syn} \mycite{Gan2021spidersyn} jest zbiorem danych powstałym ze zbioru \code{Spider} poprzez zmodyfikowanie próbek w taki sposób, aby ograniczyć dosłowne wymienianie w pytaniach nazw kolumn, tabel i wartości z baz danych. Odzwierciedla to scenariusz w którym z interfejsu tekstowego do bazy korzysta osoba, która dokładnie jej nie zna, więc często posługuje się mimowolnie synonimami. Przykładowa próbka została przedstawiona na listingu \ref{lst:spider-syn-example}. Stworzenie tego typu zbioru było istotne, ponieważ okazało się, że duża część istniejących algorytmów opiera się na powiązywaniu pytania z elementami baz danych poprzez znajdywanie dosłownych powtórzeń i w przedstawionym scenariuszu ich skuteczność radykalnie spada. Zbiór ten posiada część treningową oraz walidacyjną. Można w klasyczny sposób dokonać nauki modeli na części treningowej i ewaluację na części testowej, lecz również popularnym scenariuszem jest trening na zbiorze \code{Spider} i ewaluacja na obu częściach \code{Spider-Syn}.
 
 \begin{minipage}{\linewidth}
 \lstinputlisting[
@@ -157,13 +133,13 @@ label={lst:spider-syn-example}
 \end{minipage}
 
 \subsection{Spider-DK}
-Zbiór danych \code{Spider-DK} (skrót od ang. Domain Knowledge) został zbudowany w oparciu o część testową \code{Spider} w celu oceny tworzonych modeli pod kątem znajomości wiedzy domenowej. Składa się na niego skromna ilość próbek w liczbie 535, gdzie prawie połowa została wybrana ze zbioru \code{Spider} i przeniesiona bez zmian, a druga połowa powstała poprzez zmodyfikowania przykładów tak, aby dodać wiedzę domenową. Przykładowa próbka została przedstawiona na listingu \ref{lst:spider-dk-example}. Posiada ona atrybut \code{type}, który wskazuje jeden z pięciu przewidzianych typów wiedzy domenowej, które może zawierać. Są one następujące:
+Zbiór danych \code{Spider-DK} \mycite{Gan2021spiderdk} (skrót od ang. Domain Knowledge) został zbudowany na podstawie części testowej \code{Spider} w celu oceny tworzonych modeli pod kątem znajomości wiedzy domenowej. Składa się na niego skromna ilość próbek w liczbie 535, gdzie prawie połowa została wybrana ze zbioru \code{Spider} i przeniesiona bez zmian, a druga połowa powstała poprzez zmodyfikowanie przykładów tak, aby dodać wiedzę domenową. Przykładowa próbka została przedstawiona na listingu \ref{lst:spider-dk-example}. Posiada ona atrybut \code{type}, który wskazuje jeden z pięciu przewidzianych typów wiedzy domenowej. W celu dokładniejszego zrozumienia można odwołać się do artykułu wprowadzającego zbiór \code{Spider-DK}, lecz są one następujące:
 \begin{itemize}
-    \item \textbf{Typ 1} - Pomijanie wymieniania kolumn
-    \item \textbf{Typ 2} - Proste wnioskowanie
-    \item \textbf{Typ 3} - Synonimy wartości komórek
-    \item \textbf{Typ 4} - Generowanie warunków na podstawie słów spoza wartości komórek
-    \item \textbf{Typ 5} - Wiedza, która łatwo kłóci się z innymi dziedzinami
+    \item \textbf{Typ 1} - pomijanie wymieniania kolumn,
+    \item \textbf{Typ 2} - proste wnioskowanie,
+    \item \textbf{Typ 3} - synonimy wartości komórek,
+    \item \textbf{Typ 4} - generowanie warunków na podstawie słów spoza wartości komórek,
+    \item \textbf{Typ 5} - wiedza, która łatwo kłóci się z innymi dziedzinami.
 \end{itemize}
 
 \begin{minipage}{\linewidth}
@@ -175,24 +151,24 @@ label={lst:spider-dk-example}
 \end{minipage}
 
 \subsection{SParC}
-\code{SParC} jest zbiorem danych zawierającym sekwencje pytań w języku naturalnym przeplatanych z instrukcjami SQL otrzymywanymi w odpowiedzi. Zawiera 4298 spójnych sekwencji wiadomości na które składa się łącznie ponad 12 tysięcy pojedynczych pytań, dotyczących baz danych \code{Spider}. Są one tematycznie powiązane i wymagają wykorzystania informacji z poprzednich wiadomości, aby poprawnie sformułować odpowiednie zapytanie SQL. Przykładowa konwersacja pochodząca ze zbioru \code{SParC} została przedstawiona na rysunku \ref{fig:sparc-example}. Wyraźnie widać na niej, że kolejne pary wiadomości bazują na kontekście wprowadzonym przez poprzednie.
+\code{SParC} \mycite{sparc} jest zbiorem danych zawierającym sekwencje przeplatających się ze sobą pytań w języku naturalnym oraz instrukcji SQL otrzymanych w odpowiedzi. Obejmuje \numprint{4298} sekwencji wiadomości, na które składa się łącznie ponad 12 tysięcy pojedynczych pytań. Są one ze sobą powiązane w obrębie konwersacji i wymagają wykorzystania informacji z poprzednich wiadomości, aby poprawnie sformułować żądane zapytanie SQL. Zbiór ten służy więc do nauki modeli rozwiązujących konwersacyjny wariant problemu \code{Text-to-SQL}. Przykładową konwersację z niego pochodzącą przedstawiono na rysunku \ref{fig:sparc-example}. Widać na niej wyraźnie, że kolejne wiadomości bazują na kontekście wprowadzonym przez wiadomości wcześniejsze.
 
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=0.6\linewidth]{images/sparc_example.png}
   \caption[Przykładowa konwersacja ze zbioru \code{SParC}]{Przykładowa konwersacja ze zbioru \code{SParC}}
-  \source{artykuł wprowadzający zbiór \code{SParC} \mycite{sparc}}
+  \source{\code{SParC} \mycite{sparc}}
   \label{fig:sparc-example}
 \end{figure}
 
 \subsection{CoSQL}
-\code{CoSQL} jest zbiorem w znacznym stopniu podobnym do \code{SParC}, ponieważ zawiera dane o charakterze konwersacyjnym. Został do niego dodany jednak kolejny poziom złożoności, gdyż konwersacje nie stanowią już naprzemiennie powtarzających się pytań i instrukcji SQL lecz powstały w drodze dalece swobodniejszych symulowanych rozmów pomiędzy zwykłymi użytkownikami, a ekspertami SQL. Każdy dialog odtwarza realistyczny scenariusz eksploracji bazy danych w którym użytkownik zadaje pytania, a ekspert stara się na nie odpowiedzieć, wyjaśniając niejednoznaczne kwestie, czy też informując o pytaniach bez odpowiedzi. Gdy pytania użytkownika dają się sformułować w języku SQL to ekspert tego dokonuje i prezentuje wyniki w sposób pozwalający zachować naturalny przebieg interakcji. Przykładowa konwersacja która to demonstruje została przedstawiona na rysunku \ref{fig:cosql-example}. Kompletny zbiór liczy 30 000 dialogów podzielonych na część treningową i testową. Łącznie zawierają 10 000 adnotowanych zapytań.
+\code{CoSQL} \mycite{cosql} jest zbiorem w znacznym stopniu podobnym do \code{SParC}, ponieważ zawiera dane o charakterze konwersacyjnym. Został do niego dodany jednak kolejny poziom złożoności, gdyż konwersacje nie stanowią już naprzemiennie powtarzających się pytań i instrukcji SQL, lecz powstały w drodze dalece swobodniejszych symulowanych rozmów pomiędzy zwykłymi użytkownikami a ekspertami SQL. Każdy dialog odtwarza realistyczny scenariusz eksploracji bazy danych, w którym użytkownik zadaje pytania, a ekspert stara się na nie odpowiedzieć, wyjaśniając niejednoznaczne kwestie, czy też informując o pytaniach bez odpowiedzi. Gdy pytania użytkownika dają się sformułować w języku SQL to ekspert tego dokonuje i prezentuje wyniki w sposób pozwalający zachować naturalny przebieg interakcji. Przykładowa rozmowa, która to demonstruje, została przedstawiona na rysunku \ref{fig:cosql-example}. Kompletny zbiór liczy \numprint{30000} dialogów podzielonych na część treningową i testową. Łącznie zawierają \numprint{10000} zapytań.
 
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=1.0\linewidth]{images/cosql_example.png}
   \caption[Przykładowa konwersacja ze zbioru \code{CoSQL}]{Przykładowa konwersacja ze zbioru \code{CoSQL}}
-  \source{artykuł wprowadzający zbiór \code{CoSQL} \mycite{cosql}}
+  \source{\code{CoSQL} \mycite{cosql}}
   \label{fig:cosql-example}
 \end{figure}
 

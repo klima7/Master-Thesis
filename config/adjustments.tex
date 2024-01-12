@@ -43,7 +43,7 @@
 \makeatother
 
 % Zmniejsza automatycznie dodawane spacje między paragrafami
-\setlength{\parskip}{4pt plus 1.5pt minus0mm}
+\setlength{\parskip}{6pt plus 1.5pt minus0mm}
 
 % Usunięcie przerw przed rozdziałami i sekcjami
 \titlespacing{\chapter}{0pt}{-30pt}{0mm}
@@ -80,6 +80,9 @@
 % Domyślnie nagłówki
 \captionsetup[table]{name=Tabela}
 
+% Ciągłe numerowanie w stópce
+\counterwithout{footnote}{chapter}
+
 % Strony nie muszą być równej wysokości
 \raggedbottom
 
@@ -89,6 +92,7 @@
 % Konfiguracja wykresów
 \pgfplotsset{compat=newest}
 
+% Zmiana nazwy w spisie treści
 \renewcommand\appendixtocname{Dodatki}
 
 % Nowy typ kolumny - z wyrównaniem do prawej i umożliwia ustalenie szerokości

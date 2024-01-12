@@ -22,15 +22,14 @@
 \newcommand{\bibtitle}[1]{\textit{\enquote{#1}}}
 
 % Komendy do formatowania fragmentów tekstów
-\newcommand{\code}[1]{\texttt{\color{code_color}{#1}}}
+\newcommand{\code}[1]{\mbox{\texttt{\color{code_color}{#1}}}}
 \newcommand{\sql}[1]{\texttt{\textcolor{code_color}{#1}}}
-\newcommand{\filename}[1]{\texttt{#1}}
 
 % Komenda do tworzenia wykazu skrótów
 \newcommand{\abbrev}[2]{\sortitem{\textbf{#1} - {#2}}}
 
 % Komenda dodająca źródło do podpisów
-\newcommand{\source}[1]{\caption*{\small \hfill Źródło: {#1}} }
+\newcommand{\source}[1]{\caption*{\footnotesize \hfill Źródło: {#1}} }
 
 % Komendy używane do tabelek z wynikami
 \newcommand{\slashsep}{\textcolor{red}{\textbf{/}}}
@@ -62,3 +61,8 @@
       \item \theDesc}
   \end{itemize}%
 }
+
+% Komenda zabraniająca przełamywania strony
+\makeatletter 
+\newcommand\nobreakpar{\par\nobreak\@afterheading} 
+\makeatother
