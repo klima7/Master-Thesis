@@ -1,3 +1,21 @@
+@online{google-translation-api, 
+    title={Google Cloud Translation -- Automate with AI-powered translation},
+    url={https://cloud.google.com/translate},
+    author={Google},
+    urldate={2024-01-13}
+}
+@online{deepl, 
+    title={Tłumacz DeepL - najlepszy translator na świecie},
+    url={https://www.deepl.com/},
+    author={DeepL},
+    urldate={2024-01-13}
+}
+@online{stackoverflow-survey, 
+    title={Stack Overflow 2023 Developer Survey},
+    url={https://survey.stackoverflow.co/2023/},
+    author={Stack~Overflow},
+    urldate={2023-11-25}
+}
 @article{Quamar2022NaturalInterfacesBook,
    title={Natural language interfaces to data},
    author={Quamar, Abdul and Efthymiou, Vasilis and Lei, Chuan and {\"O}zcan, Fatma and others},
@@ -105,4 +123,23 @@
   year      = {2019},
   address   = {Florence, Italy},
   publisher = {Association for Computational Linguistics}
+}
+@inproceedings{shi-etal-2022-xricl,
+    title = "{XRICL}: Cross-lingual Retrieval-Augmented In-Context Learning for Cross-lingual Text-to-{SQL} Semantic Parsing",
+    author = "Shi, Peng  and
+      Zhang, Rui  and
+      Bai, He  and
+      Lin, Jimmy",
+    editor = "Goldberg, Yoav  and
+      Kozareva, Zornitsa  and
+      Zhang, Yue",
+    booktitle = "Findings of the Association for Computational Linguistics: EMNLP 2022",
+    month = dec,
+    year = "2022",
+    address = "Abu Dhabi, United Arab Emirates",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2022.findings-emnlp.384",
+    doi = "10.18653/v1/2022.findings-emnlp.384",
+    pages = "5248--5259",
+    abstract = "In-context learning using large language models has recently shown surprising results for semantic parsing tasks such as Text-to-SQL translation. Prompting GPT-3 or Codex using several examples of question-SQL pairs can produce excellent results, comparable to state-of-the-art finetuning-based models. However, existing work primarily focuses on English datasets, and it is unknown whether large language models can serve as competitive semantic parsers for other languages. To bridge this gap, our work focuses on cross-lingual Text-to-SQL semantic parsing for translating non-English utterances into SQL queries based on an English schema. We consider a zero-shot transfer learning setting with the assumption that we do not have any labeled examples in the target language (but have annotated examples in English).This work introduces the XRICL framework, which learns to retrieve relevant English exemplars for a given query to construct prompts. We also include global translation exemplars for a target language to facilitate the translation process for large language models. To systematically evaluate our model, we construct two new benchmark datasets, XSpider and XKaggle-dbqa, which include questions in Chinese, Vietnamese, Farsi, and Hindi.Our experiments show that XRICL effectively leverages large pre-trained language models to outperform existing baselines. Data and code are publicly available at \url{https://github.com/Impavidity/XRICL}.",
 }

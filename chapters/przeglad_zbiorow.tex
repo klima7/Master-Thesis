@@ -4,7 +4,7 @@ Zbiory danych w kontekście uczenia maszynowego stanowią fundamentalny element,
 Na początku bieżącego rozdziału dokładnie przedstawiony zostanie zbiór \code{Spider}, ze szczególnym zwróceniem uwagi na jego format, którego polskie zbiory będą musiały przestrzegać. W kolejnej części nastąpi przegląd zbiorów do niego pokrewnych, czyli takich, które powstały na fundamencie baz danych \code{Spider} i również odegrały w niniejszej pracy istotną rolę. Na koniec nastąpi dogłębna analiza istniejących tłumaczeń zbioru \code{Spider}, aby dokonać świadomych decyzji podczas tworzenia tłumaczenia polskiego.
 
 \section{Angielski Spider}
-\code{Spider} to przede wszystkim zbiór danych przeznaczony do zadania \code{Text-to-SQL}, ale również wyzwanie z publicznie dostępnym rankingiem\footnote{\url{https://yale-lily.github.io/spider}}, które pozwala konkurować badaczom w tworzeniu coraz lepszych modeli oraz śledzić czynione postępy na przestrzeni czasu.
+\code{Spider} to przede wszystkim zbiór danych przeznaczony do zadania \code{Text-to-SQL}, ale również wyzwanie z publicznie dostępnym rankingiem\furl{https://yale-lily.github.io/spider}, które pozwala konkurować badaczom w tworzeniu coraz lepszych modeli oraz śledzić czynione postępy na przestrzeni czasu.
 
 Na zbiór składa się \numprint{10181} próbek, które są podzielone na trzy części: treningową, walidacyjną (zwaną również deweloperską) oraz testową. Ta ostatnia nie jest jednak powszechnie dostępna i sprawność swojego modelu można uzyskać na niej jedynie poprzez wysłanie go do wyzwania. Daje to pewność, że przypuszczalnie dobre wyniki wysyłanych modeli nie są skutkiem przypadkowego, ani celowego włączenia próbek testowych do zbioru treningowego, czyli zjawiska tak zwanego wycieku danych. Brak swobodnego dostępu do części testowej sprawia, że w praktyce część walidacyjna często przejmuję jej rolę.
 
@@ -145,7 +145,7 @@ Zbiór danych \code{Spider-DK} \mycite{Gan2021spiderdk} (skrót od ang. Domain K
 \begin{minipage}{\linewidth}
 \lstinputlisting[
 style=json,
-caption=Przykład próbki ze zbioru \code{Spider-DK},
+caption={Przykład próbki ze zbioru \code{Spider-DK}},
 label={lst:spider-dk-example}
 ]{listings/spider_dk_example.json}
 \end{minipage}
@@ -173,7 +173,11 @@ label={lst:spider-dk-example}
 \end{figure}
 
 \section{Tłumaczenia zbioru Spider}
-Jak zostało wspomniane podczas przeglądu literatury, obecnie istnieją cztery tłumaczenia zbioru \code{Spider} na języki narodowe. Jest to język chiński, wietnamski, portugalski oraz rosyjski. Autorzy tych zbiorów jednak pomimo wspólnego celu podeszli do zadania na różne sposoby. Celem niniejszej sekcji jest przedyskutowanie kluczowych różnic pomiędzy nimi. Jedną z najistotniejszych jest zastosowana metoda tłumaczenia. Rozbieżności zaobserwowano również jeśli chodzi o tłumaczenie schematu, zawartość baz danych oraz wartości w zapytaniach. Różnice w tych kwestiach zostały zestawione w tabeli \ref{tab:spider-trans-diffs} i zostaną dogłębnie omówione w poniższych sekcjach.
+Tak jak zostało zaznaczone we wprowadzeniu, na chwilę obecną wydaje się istnieć pięć publicznie dostępnych zbiorów będących tłumaczeniami \code{Spider}. Cztery spośród nich dokonuje przekładu na konkretny język, a jeden zawiera tłumaczenia na kilka języków. Wspomniane zbiory jednojęzyczne to chiński \code{CSpider}, wietnamski \code{ViText2SQL}, rosyjski \code{PAUQ} oraz nie posiadający nazwy zbiór portugalski. \code{MultiSpider} to natomiast świeży zbiór, bo upowszechniony przez Microsoft w czasie pisanie niniejszej pracy, który zawiera niezależnie opracowane tłumaczenie chińskie, wietnamskie, niemieckie, francuskie, hiszpańskie oraz japońskie. 
+
+Poza publicznie dostępnymi zbiorami danych natrafiono również na wielojęzyczny zbiór \code{XSpider} \mycite{shi-etal-2022-xricl}, który zgodnie z artykułem zawiera między innymi przekłady na język hindi oraz farsi. Jego autorzy twierdzą w artykule, że wszystkie dane umieszczone zostały we wskazanym repozytorium, lecz jest ono całkowicie puste. Zmiana tego stanu jest wątpliwa biorąc pod uwagę fakt, że artykuł ukazał się już ponad dwa lata temu.
+
+Autorzy wymienionych zbiorów, pomimo wspólnego celu, podeszli do zadania na różne sposoby. Celem poniższych sekcji jest przedyskutowanie kluczowych różnic pomiędzy nimi. Jedną z najistotniejszych jest zastosowany rodzaj tłumaczenia. Rozbieżności zaobserwowano również w kwestii tłumaczenia schematu, zawartości baz danych oraz wartości w zapytaniach. Różnice te zostały zestawione w tabeli \ref{tab:spider-trans-diffs} i zostaną dokładnie omówione.
 
 
 \begin{table}[ht]
@@ -186,65 +190,70 @@ Jak zostało wspomniane podczas przeglądu literatury, obecnie istnieją cztery 
         \thead{Tłumaczenie\\zawartości\\baz danych} &
         \thead{Tłumaczenie\\wartości w\\zapytaniach} \\
         \hline
-        \makecell{Chiński\\(\code{CSpider})} & Manualne & Nie & Nie & Tak \\
+        \makecell{Chiński\\{\code{CSpider}}} & Manualne & Nie & Nie & Tak \\
         \hline
-        \makecell{Wietnamski\\(\code{ViText2SQL})} & Manualne & Tak & Nie & Tak \\
+        \makecell{Wietnamski\\{\code{ViText2SQL}}} & Manualne & Tak & Nie & Tak \\
         \hline
-        \makecell{Portugalski} & Maszynowe & Tak & Nie & Nie \\
+        \makecell{Portugalski\\{\code{Brak Nazwy}}} & Maszynowe & Tak & Nie & Nie \\
         \hline
-        \makecell{Rosyjski\\(\code{PAUQ})} & Manualne & Nie & Częściowo & Tak \\
+        \makecell{Rosyjski\\{\code{PAUQ}}} & Manualne & Nie & Częściowo & Tak \\
+        \hline
+        \makecell{Wielojęzyczny\\{\code{MultiSpider}}} & Manualne & Tak & Nie & Obie wersje \\
+        \hline
+        \makecell{Wielojęzyczny\\{\code{XSpider}}} & ------ & Nie & ------ & ------ \\
         \hline
     \end{tabular}
-    \caption{Zestawienie kluczowych różnic pomiędzy tłumaczeniami zbioru \code{Spider}}
+    \lcaption{Zestawienie kluczowych różnic pomiędzy tłumaczeniami zbioru \code{Spider}}{Pozioma kreska oznacza brak informacji na dany temat.}
     \label{tab:spider-trans-diffs}
 \end{table}
 
 \subsection{Rodzaj tłumaczenia} \label{text:translation-method}
-Tłumaczenie maszynowe i manualne to dwa możliwe podejścia. Pierwsze sprowadza się do wykorzystania narzędzi, dostępnych najczęściej za pomocą webowych API, takich jak \code{Google Cloud Translation API} \mycite{google-translation-api}, czy \code{DeepL} \mycite{deepl}. Drugie natomiast oznacza ręczne tłumaczenie każdej próbki przez człowieka. Oczywiście tłumaczenie ręczne może być wspomagane przez metodę maszynową, aby ograniczyć się do poprawiania tłumaczeń zamiast pisania ich od początku.
+Tłumaczenie maszynowe i manualne to dwa oczywiste podejścia. Pierwsze sprowadza się do wykorzystania gotowych narzędzi, dostępnych najczęściej za pomocą webowych API, takich jak \code{Google Cloud Translation API} \mycite{google-translation-api}, czy \code{DeepL} \mycite{deepl}. Drugie natomiast oznacza ręczne tłumaczenie każdej próbki przez człowieka. Oczywiście tłumaczenie ręczne może być wspomagane przez metodę maszynową, aby ograniczyć się do poprawiania tłumaczeń, zamiast pisania ich od początku.
 
-Największą zaletą tłumaczenia maszynowego jest szybkie uzyskanie przetłumaczonego zbioru. Wiąże się to najczęściej z naliczeniem pewnych kosztów, o których trzeba wspomnieć, lecz mimo wszystko koszt ten jest niewspółmierny do ceny wynajęcia profesjonalnego ludzkiego tłumacza. Jest on również pomijalny w stosunku do czasu, który trzeba by poświęcić, by dokonać tłumaczenia samemu.
+Największą zaletą tłumaczenia maszynowego jest szybkie uzyskanie przetłumaczonego zbioru. Wiąże się to najczęściej z naliczeniem pewnych kosztów, o których należy wspomnieć, lecz mimo wszystko koszt ten jest niewspółmierny do ceny wynajęcia profesjonalnego ludzkiego tłumacza. Jest on również niewiele znaczący w stosunku do czasu, który trzeba by poświęcić, by dokonać tłumaczenia samemu.
 
-Tłumaczenie maszynowe ma jednak istotne wady - dostępne narzędzia stają się coraz lepsze, lecz wciąż nie dorównują człowiekowi. Sprawia to, że uzyskiwane zbiory danych są bezsprzecznie niższej jakości. Narzędzia te dokonując tłumaczenia zbioru \code{Spider} nie biorą pod uwagę wielu istotnych elementów, które ludzki adnotator by uwzględnił. Przykładem jest ignorowanie domeny podczas tłumaczenia pytania naturalnego. Ludzki tłumacz pytanie \enquote{list all parties} w domenie politycznej przetłumaczy jako \enquote{zwróć wszystkie partie}, natomiast tłumacz maszynowy przetłumaczy to bez wątpienia jako \enquote{zwróć wszystkie imprezy}.
+Tłumaczenie maszynowe ma jednak istotne wady -- pomimo że dostępne narzędzia stają się coraz lepsze, to wciąż nie dorównują człowiekowi. Sprawia to, że uzyskiwane zbiory danych są bezsprzecznie niższej jakości. Narzędzia te dokonując tłumaczenia zbioru \code{Spider} nie biorą pod uwagę wielu istotnych elementów, które ludzki adnotator by uwzględnił. Przykładem jest ignorowanie domeny podczas tłumaczenia pytania naturalnego. Ludzki tłumacz pytanie \textit{list all parties} w domenie politycznej przetłumaczy jako \textit{zwróć wszystkie partie}. Tłumacz maszynowy natomiast może to przetłumaczyć jako \textit{zwróć wszystkie imprezy}.
 
-Dotychczasowe tłumaczenia zbioru \code{Spider}, z powodu ograniczeń metody maszynowej, w większości korzystają z ręcznego tłumaczenia zbioru. Jest to prawdą dla rosyjskiego \code{PAUQ}, wietnamskiego \code{ViText2SQL} oraz chińskiego \code{CSpider}, jedyny wyjątek stanowi zbiór portugalski. Autorzy każdego z tych manualnie tłumaczonych zbiorów dla porównania dokonali również tłumaczenia maszynowego. Zestawienie wyników osiąganych przez modele trenowane na zbiorach tłumaczonych maszynowo i manualnie zostało przedstawione w tabeli \ref{tab:manual-vs-machine}. Wszystkie wyniki potwierdzają, że tłumaczenie manualne pozwala uzyskać lepsze wyniki, aczkolwiek w przypadku względnie nowych modeli \code{RAT-SQL} oraz \code{BRIDGE} procentowy spadek skuteczności na zbiorach maszynowych nie jest tak znaczący jak dla modeli wcześniejszych.
+Dotychczasowe tłumaczenia zbioru \code{Spider}, z powodu ograniczeń metody maszynowej, w większości korzystają z ręcznego tłumaczenia zbioru. Jest to prawdą dla rosyjskiego \code{PAUQ}, wietnamskiego \code{ViText2SQL}, chińskiego \code{CSpider} oraz \code{MultiSpider}. Autorzy części z tych manualnie tłumaczonych zbiorów dla porównania dokonali również tłumaczenia maszynowego. Zestawienie wyników osiąganych przez modele trenowane na zbiorach tłumaczonych maszynowo i manualnie zostało przedstawione w tabeli \ref{tab:manual-vs-machine}. Wszystkie wyniki potwierdzają, że tłumaczenie manualne pozwala uzyskać lepsze rezultaty, aczkolwiek w przypadku względnie nowych modeli \code{RAT-SQL} oraz \code{BRIDGE} procentowy spadek skuteczności na zbiorach maszynowych nie jest tak znaczący, jak dla modeli wcześniejszych.
 
 \begin{table}[ht]
     \centering
-    \begin{tabular}{|c|c|c|c|c|}
+    \begin{tabular}{|l|l|R{0.15\textwidth}|R{0.15\textwidth}|R{0.15\textwidth}|}
         \hline
         \thead{Zbiór} & \thead{Model} & \thead{Maszynowe} & \thead{Manualne} &
         \thead{Różnica} \\
         \hline
-        CSpider & C-ML & \s7,9 & 12,1 & \s4,1 \\
+        \code{CSpider} & C-ML & \s7,9 & 12,1 & \s4,1 \\
         \hline
-        CSpider & W-ML & \s0,6 & 10,0 & \s2,4 \\
+        \code{CSpider} & W-ML & \s0,6 & 10,0 & \s2,4 \\
         \hline
-        ViText2SQL & EditSQL (Vi-Syllable) & 16,8 & 24,1 & \s7,3 \\
+        \code{ViText2SQL} & EditSQL (Vi-Syllable) & 16,8 & 24,1 & \s7,3 \\
         \hline
-        ViText2SQL & EditSQL (Vi-Word) & 17,4 & 30,2 & 12,8 \\
+        \code{ViText2SQL} & EditSQL (Vi-Word) & 17,4 & 30,2 & 12,8 \\
         \hline
-        PAUQ & RAT-SQL & 46,0 & 51,0 & \s5,0 \\
+        \code{PAUQ} & RAT-SQL & 46,0 & 51,0 & \s5,0 \\
         \hline
-        PAUQ & BRIDGE & 49,0 & 52,0 & \s3,0 \\
+        \code{PAUQ} & BRIDGE & 49,0 & 52,0 & \s3,0 \\
         \hline
     \end{tabular}
-    \caption[Zestawienie wyników dla tłumaczeń maszynowych i manualnych.]{Zestawienie wyników metryki exact match na części testowej dla tłumaczeń maszynowych i manualnych.}
+    \lcaption{Wyniki modeli trenowanych na zbiorach tłumaczonych manualnie i maszynowo}{W trzech ostatnich kolumnach zamieszczono wyrażoną procentowo metrykę Exact Match without values, która zostanie dokładnie opisana w części \ref{section:metrics}. Wyższe wartości metryki oznaczają lepsze rezultaty.}
+    % \caption[Zestawienie wyników dla tłumaczeń maszynowych i manualnych.]{Zestawienie wyników metryki exact match na części testowej dla tłumaczeń maszynowych i manualnych.}
     \label{tab:manual-vs-machine}
 \end{table}
 
 \subsection{Tłumaczenie schematu}
-Kolejną kwestią dokonującą podziału wśród istniejących tłumaczeń zbioru \code{Spider} jest obrane podejście co do wynikowego języka schematu baz danych, czyli nazw tabel i kolumn - mogą być one tłumaczone lub pozostawione bez zmian w języku angielskim. To drugie podejście jest uzasadnione faktem, że w praktyce, niezależnie od kraju, schemat baz danych jest często utrzymywany w języku angielskim. Ma takie zalety jak ułatwienie pracy wielonarodowemu zespołowi, czy też uniknięcie problemu ze znakami diakrytycznymi, których wykorzystywanie może być niemożliwe lub utrudnione.
+Kolejną kwestią dokonującą podziału wśród istniejących tłumaczeń zbioru \code{Spider} jest obrane podejście co do wynikowego języka schematu baz danych, czyli nazw tabel i kolumn -- mogą być one tłumaczone, albo pozostawione bez zmian w języku angielskim. Drugie podejście jest uzasadnione faktem, że w praktyce, niezależnie od kraju, schemat baz danych jest często utrzymywany w języku angielskim. Ma to takie zalety jak ułatwienie pracy wielonarodowemu zespołowi, czy też uniknięcie problemu ze znakami diakrytycznymi, których wykorzystywanie może być niemożliwe lub utrudnione.
 
-Fakt, że w praktyce nazwy tabel i kolumn są zapisywane w języku angielskim w swoich artykułach podkreślili autorzy tłumaczenia chińskiego oraz rosyjskiego i z uwagi na to postanowili schematu baz nie tłumaczyć. Twórcy zbioru wietnamskiego i portugalskiego postanowili jednak tłumaczenia dokonać, nie przedstawiając dla tego żadnego uzasadnienia.
+Fakt, że w praktyce nazwy tabel i kolumn zapisywane są w języku angielskim w swoich artykułach wyraźnie podkreślili autorzy tłumaczenia chińskiego, rosyjskiego oraz w pewnym stopniu zbioru \code{XSpider} i z uwagi na to postanowili schematu nie tłumaczyć. Twórcy zbioru wietnamskiego, portugalskiego oraz \code{MultiSpider} postanowili jednak tłumaczenia dokonać, nie przedstawiając dla takiego podejścia specjalnego uzasadnienia.
 
-Należy zwrócić uwagę, że reprezentowanie pytań i schematu baz danych w dwóch różnych językach znacząco komplikuję rozwiązywany problem. W wersji, gdy wszystkie komponenty są w tym samym języku to dość łatwo jest znaleźć powiązania pomiędzy nimi, ponieważ wystarczy przeanalizować ich podobieństwo jako łańcuchów znaków. W innym przypadku to jednak nie wystarczy - wykorzystywany model musi posiadać dodatkowo pewne cechy tłumacza.
+Należy zauważyć, że reprezentowanie pytań i schematu baz danych w dwóch różnych językach znacząco komplikuje rozwiązywany problem. W wariancie ze wszystkimi komponentami w tym samym języku dość łatwo jest znaleźć powiązania pomiędzy nimi, ponieważ wystarczy przeanalizować ich podobieństwo jako łańcuchów znaków. W przeciwnym przypadku to jednak nie wystarczy -- wykorzystywany model musi przejawiać dodatkowo pewne cechy tłumacza.
 
-Podsumowując, pozostawienie schematu bazy danych w języku oryginalnym jest uzasadnione z praktycznego punktu widzenia, jednak dodatkowo komplikuje zadanie. Zbiór danych z przetłumaczonym schematem, chociaż pomija aspekt praktyczny, stanowi lepszy odpowiednik oryginalnego zbioru \code{Spider} i pozwala na wykonywanie względem niego sprawiedliwych porównań.
+Podsumowując, pozostawienie schematu baz danych w języku angielskim jest uzasadnione z praktycznego punktu widzenia, jednak dodatkowo komplikuje zadanie. Zbiór danych z przetłumaczonym schematem, chociaż w dużym stopniu ignoruje aspekt praktyczny, stanowi lepszy odpowiednik oryginalnego zbioru \code{Spider} i pozwala na wykonywanie względem niego bardziej sprawiedliwych porównań.
 
 \subsection{Tłumaczenie zawartości baz danych}
 Kolejną niespójnością jaką można zaobserwować pomiędzy istniejącymi tłumaczeniami zbioru \code{Spider} jest kwestia tłumaczenia zawartości baz danych. Dokonanie takiego tłumaczenia ma istotne zalety przedstawione w kolejnych akapitach, jednak jest to zadanie problematyczne, przez co nie wszyscy autorzy zbiorów się go podjęli.
 
-Większość nowych podejść do problemu generowania SQL analizuje znajdujące się w bazach danych rekordy, aby zwiększyć swoją skuteczność. Przykładowo użytkownik systemu może poprosić o zwrócenie populacji Polski, a dwie możliwe odpowiedzi mogłyby zawierać fragmenty \sql{WHERE country = 'PL'} oraz \sql{WHERE country = 'polska'}. Widać tutaj, że schemat bazy nie mówi wszystkiego i bez dostępu do jej zawartości obie odpowiedzi są równie dobre, choć tylko jedna poprawna. W celu wytrenowania najlepszych modeli przygotowany zbiór powinien zawierać wypełnione bazy danych, a większość istniejących modeli korzystających z zwartości bazy, zakłada, że jest ona w tym samym języku co pytania.
+Większość nowych podejść do problemu generowania SQL analizuje znajdujące się w bazach danych rekordy, aby zwiększyć swoją skuteczność. Przykładowo użytkownik systemu może poprosić o zwrócenie populacji Polski, a dwie możliwe odpowiedzi mogłyby zawierać fragmenty \sql{WHERE country = 'PL'} oraz \sql{WHERE country = 'polska'}. Widać tutaj, że schemat bazy nie mówi wszystkiego i bez dostępu do jej zawartości obie odpowiedzi są równie dobre, choć tylko jedna poprawna. W celu wytrenowania najlepszych modeli przygotowany zbiór powinien zawierać wypełnione bazy danych, a większość istniejących modeli korzystających z zawartości bazy, zakłada, że jest ona w tym samym języku co pytania.
 
 Drugim zastosowaniem wartości w bazach danych jest umożliwienie ewaluacji przygotowanych algorytmów przy pomocy metryki execution accuracy. Została ona opisana dokładnie w dalszej części pracy w sekcji x.xx. Jej skrótowa zasada działania polega na wykonaniu prawidłowych zapytań oraz zapytań wygenerowanych i uznaniu poprawnymi tych, które zwróciły te same wyniki. Przetłumaczenie wartości w zapytaniach SQL bez tłumaczenia zawartości baz danych skutkuję tym, że wykonywane zapytania często nie zwracają żadnych wyników, a co za tym idzie, wiele nieprawidłowo wygenerowanych zapytań jest uznawanych omyłkowo za prawidłowe. Podsumowując, różne języki wartości w zapytaniach SQL i wartości w bazach danych skutkują upośledzeniem metryki execution accuracy i zmniejszeniem jej użyteczności.
 

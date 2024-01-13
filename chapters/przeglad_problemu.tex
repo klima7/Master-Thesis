@@ -2,6 +2,7 @@
 Celem niniejszego rozdziału jest przedstawienie zwięzłego przeglądu problemu \code{Text-to-SQL}. Najpierw wskazane zostaną popularne metryki wykorzystywane do pomiaru skuteczności tworzonych algorytmów, a następnie naszkicowane wysokopoziomowe podejścia do tego problemu, które ukształtowały się na przestrzeni lat. Zawarta wiedza stanowi podstawę do zrozumienia kolejnej części w ramach której dyskutowane i testowane będą różne modele uczenia maszynowego. 
 
 \section{Stosowane metryki}
+\label{section:metrics}
 Posiadając docelowe zapytanie, które w literaturze anglojęzycznej określane jest mianem \code{gold query}, oraz zapytanie wyprodukowane przez dowolny algorytm zachodzi potrzeba dokonania oceny w jakim stopniu one sobie odpowiadają. Pozwala to bowiem w liczbowy sposób wyrazić dokładność algorytmu i dokonać jego porównań z innymi. Manualna ocena zwykle nie wchodzi w grę ze względu na swoją czasochłonność, więc opracowanych zostało kilka metryk, które dokonują tego w sposób automatyczny. Te najważniejsze opisano poniżej.
 
 \subsection{Exact set match}
