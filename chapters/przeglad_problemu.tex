@@ -12,6 +12,7 @@ Problemem zwyczajnego porównywania ze sobą docelowych i przewidywanych zapyta�
 Okazuje się, że szczególnie trudnym do przewidywania fragmentem zapytań SQL są wartości, czyli występujące w nich łańcuchy tekstowe i liczby. W celu oceny poprawności zapytań, lecz z dopuszczeniem różnic w tych wartościach, opracowana została metryka \code{exact set match without values}. Działa ona niemal identycznie jak \code{exact set match}, ponieważ z tą jedyną różnicą, że rozbieżności pomiędzy zapytaniami w wartościach są pomijane.
 
 \subsection{Execution accuracy}
+\label{text:execution_accuracy}
 Metryka \code{Execution accuracy} wychodzi z prostego założenia, że jeżeli przewidziane zapytanie jest poprawne, to jego wykonanie musi zwrócić takie same rezultaty jak w przypadku zapytania referencyjnego. Ma ona jednak pewne wymagania. Przede wszystkim porównywane zapytania muszą być wykonywalne, więc zawierać wartości. Drugim warunkiem jest posiadanie wypełnionych baz danych, ponieważ w przeciwnym wypadku wszystkie zapytania będą zwracały pustą listę rekordów i tym samym zostawały błędnie uznawane za poprawne. Posiadając nawet duże bazy danych mogą zdarzyć się przypadki, iż takie same wyniki zostaną przypadkowo zwrócone dla dwóch semantycznie różnych zapytań i tym samym jedno z nich zostanie błędnie uznane za poprawne. Stanowi to podstawowe ograniczenie tej metryki.
 
 \section{Kluczowe cechy modeli}

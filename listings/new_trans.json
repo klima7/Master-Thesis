@@ -1,16 +1,16 @@
 {
-    "perpetrator": [
+    "concert_singer": [
         {
-            "name_src": "perpetrator",
-            "name_tgt": "sprawca",
-            "orig_src": "perpetrator",
-            "orig_tgt": "sprawca",
+            "orig_src": "singer_in_concert",
+            "orig_tgt": "piosenkarz_na_koncercie",
+            "name_src": "singer in concert",
+            "name_tgt": "piosenkarz na koncercie",
             "columns": [
                 {
-                    "name_src": "perpetrator id",
-                    "name_tgt": "sprawca id",
-                    "orig_src": "Perpetrator_ID",
-                    "orig_tgt": "Sprawca_ID"
+                    "orig_src": "Singer_ID",
+                    "orig_tgt": "Piosenkarz_ID",
+                    "name_src": "singer id",
+                    "name_tgt": "piosenkarz id",
                 },
                 <kolejne kolumny>
             ]
