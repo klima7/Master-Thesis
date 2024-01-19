@@ -274,7 +274,7 @@ Aby poradzić sobie z zarysowanym problemem postanowiono przed tłumaczeniem dok
 
 Podstawowa metoda tłumaczenia nazw to ich proste i intuicyjne przekazywanie do tłumacza. Jest to sposób, który został prawdopodobnie wykorzystany we wszystkich tłumaczeniach maszynowych zbioru \code{Spider}, ponieważ ich autorzy nie zwrócili szczególnej uwagi na tę kwestię. Podczas realizacji niniejszej pracy zauważono jednak, że wiele błędów w takich tłumaczeniach wynika z braku uwzględniania przez tłumacza kontekstu i opracowano metodę, która pozwala w dużej mierze obejść ten problem. Dla przykładu kolumna \code{home\_games} podstawową metodą jest tłumaczona jako \code{gry\_domowe}, natomiast ulepszona metoda kontekstowa weźmie pod uwagę, że kolumna ta znajduję się w tabeli \code{stadium} oraz bazie danych \code{game\_injury} i tym razem nazwa zostanie przetłumaczona poprawnie jako \code{mecze\_u\_siebie}.
 
-Metoda kontekstowa polega na prostej obserwacji, że nowoczesne narzędzia bazujące na sieciach neuronowych, w szczególności \code{DeepL}, tłumaczą to samo słowo w różny sposób w zależności od kontekstu w jakim ono wystąpiło. Z tego powodu do tłumacza poza samymi nazwami tabel i kolumn postanowiono także podawać w roli kontekstu nazwy baz danych, a dla kolumn również nazwy tabeli. Zostały opracowane szablony, które służą do tworzenia skontekstualizowanych wyrażeń podawanych do tłumacza i wraz z przykładami użycia zostały przedstawione na rysunku \ref{fig:translation-in-context}. Dla porównania postanowiono dokonać tłumaczenia bezkontekstowego i okazało się, że wynikowe tłumaczenia nazw pomiędzy tymi metodami różnią się dla 21,41\% przypadków, co stanowi dużą różnicę.
+Metoda kontekstowa polega na prostej obserwacji, że nowoczesne narzędzia bazujące na sieciach neuronowych, w szczególności \code{DeepL}, tłumaczą to samo słowo w różny sposób w zależności od kontekstu, w jakim ono wystąpiło. Z tego powodu do tłumacza poza samymi nazwami tabel i kolumn postanowiono także podawać w roli kontekstu nazwy baz danych, a dla kolumn również nazwy tabel. Zostały opracowane szablony, które służą do tworzenia skontekstualizowanych wyrażeń podawanych do tłumacza i wraz z przykładami użycia zostały przedstawione na rysunku \ref{fig:translation-in-context}. Dla porównania postanowiono dokonać tłumaczenia bezkontekstowego i okazało się, że wynikowe tłumaczenia nazw pomiędzy tymi metodami różnią się dla 21,41\% przypadków, co stanowi dużą różnicę. W tabeli \ref{tab:context-translation-examples} przedstawiono zestawienie kilku nazw przetłumaczonych kontekstowo oraz bezkontekstowo.
 
 \begin{figure}[ht!]
 \centering
@@ -293,27 +293,52 @@ Metoda kontekstowa polega na prostej obserwacji, że nowoczesne narzędzia bazuj
 \label{fig:translation-in-context}
 \end{figure}
 
-Przedstawiona strategia tłumaczenia kontekstowego jest zainspirowana metodą \code{SAVe}, opisaną w artykule dotyczącym wielojęzycznego zbioru \code{MultiSpider} \mycite{Dou2022}. Została tam wykorzystana jako metoda augmentacji w celu poprawienia osiąganych przez model wyników. Jest bardziej skomplikowana od przedstawionego powyżej wariantu, ponieważ zakłada wykorzystanie wielu szablonów oraz ma dodatkowy etap weryfikacji tłumaczeń, co jednak dla rozważanego problemu nie ma dobrego uzasadnienia.
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{|l|l|l|l|l|l|}
+        \hline
+        \small{\thead{Słowo\\tłumaczone}} &
+        \small{\thead{Nazwa\\bazy}} &
+        \small{\thead{Czy\\kolumna}} &
+        \small{\thead{Nazwa\\tabeli}} & 
+        \small{\thead{Tłumaczenie\\bezkontekstowe}} &
+        \small{\thead{Tłumaczenie\\kontekstowe}} \\
+        \hline
+        major & club & tak & student & główny & kierunek \\
+        sex & new pets & tak & student & seks & płeć \\
+        return data & sakila & tak & rental & data powrotu & data zwrotu \\
+        players & wta & nie & --- & gracze & zawodnicy \\
+        available policies & insurance fnol & nie & --- & dostępne zasady & dostępne polisy \\
+        likes & network & nie & --- & upodobania & polubienia \\
+        \hline
+    \end{tabular}
+    \caption{Porównanie kontekstowego i bezkontekstowego tłumaczenia nazw}
+    \label{tab:context-translation-examples}
+\end{table}
 
-Oczywistym minusem zaproponowanej metody jest istotne zwiększenie długości tekstów podawanych do tłumacza, co w przypadku \code{DeepL} wpływa na naliczenie wyższych kosztów, czy też szybsze wykorzystanie darmowych limitów - na co mimo wszystko się zdecydowano. Zaletą strategii kontekstowej jest poprawa tłumaczenia dla wielu nazw, jednak z pewnego punktu widzenia może ona także wpływać na obniżenie czytelności przetłumaczonego schematu. Zdarzają się bowiem przypadki, iż w obrębie jednej bazy danych pewna nazwa kolumny zostaje przetłumaczona na kilka różnych sposobów, chociaż nie powinna. Zmniejsza to spójność tak przetłumaczonego schematu, bo sugeruje, że przechowywane są w tych kolumnach dane o różnym znaczeniu, a w rzeczywistości jest inaczej. Nie jest więc banalnym oszacowanie wypadkowego wpływu zastosowania tej metody na jakość finalnego zbioru, uważa się jednak, że jest on pozytywny.
+Przedstawiona strategia tłumaczenia kontekstowego jest zainspirowana metodą \code{SAVe}, opisaną w artykule dotyczącym wielojęzycznego zbioru \code{MultiSpider} \mycite{Dou2022}. Została tam wykorzystana jako metoda augmentacji dla poprawienia osiąganych przez model wyników. Jest bardziej skomplikowana od przedstawionego powyżej wariantu, ponieważ zakłada wykorzystanie wielu szablonów oraz ma dodatkowy etap weryfikacji tłumaczeń, co jednak dla rozważanego problemu nie ma dobrego uzasadnienia.
+
+Oczywistym minusem zaproponowanej metody jest istotne zwiększenie długości tekstów podawanych do tłumacza, co w przypadku \code{DeepL} wpływa na naliczenie wyższych kosztów, czy też szybsze wykorzystanie darmowych limitów -- na co mimo wszystko się zdecydowano. Zaletą strategii kontekstowej jest poprawa tłumaczenia dla wielu nazw, jednak z pewnego punktu widzenia może ona także wpływać na obniżenie czytelności przetłumaczonego schematu. Zdarzają się bowiem przypadki, iż w obrębie jednej bazy danych pewna nazwa kolumny zostaje przetłumaczona na kilka różnych sposobów, chociaż nie powinna. Zmniejsza to spójność tak przetłumaczonego schematu, bo sugeruje, że przechowywane są w tych kolumnach dane o różnym znaczeniu, a w rzeczywistości jest inaczej. Nie jest więc banalnym oszacowanie wypadkowego wpływu zastosowania tej metody na jakość finalnego zbioru, uważa się jednak, że jest on pozytywny.
 
 \subsubsection{Ręczne poprawki}
-Po uzyskaniu tłumaczeń maszynowych nazw tabel i kolumn oraz ich wstępnej ocenie było oczywistym, że wciąż zawierają pewne błędy. Przejrzenie każdego z nich jedno po drugim wymagałoby znacznego nakładu czasu, więc postanowiono posłużyć się metodami heurystycznymi, by zlokalizować tylko te najbardziej podejrzane. 
+Po uzyskaniu tłumaczeń maszynowych nazw tabel i kolumn oraz ich wstępnej ocenie stało się oczywiste, że wciąż zawierają pewne błędy. Przejrzenie każdego z nich jedno po drugim wymagałoby znacznego nakładu czasu, więc postanowiono posłużyć się metodami heurystycznymi, by zlokalizować tylko te najbardziej podejrzane tłumaczenia. 
 
-Zauważono, że dla błędnych tłumaczeń bardzo często nazwa przetłumaczona jest identyczna z angielską, więc korzystając z tego faktu, prostych skryptów oraz możliwości edytora \code{Visual Studio Code} dokonano znalezienia właśnie takich przypadków, a następnie je poprawiono. Były to w dużej mierze nazwy składające się z kilku wyrazów połączonych ze sobą za pomocą innej konwencji niż znaki podkreślenia, bo tylko ten najpopularniejszy wariant był obsługiwany w fazie maszynowej. Dość częste były również kilkuliterowe skróty jak \code{mid} (movie id), czy \code{aid} (author id), z którymi - co nie dziwi - \code{DeepL} sobie nie poradził. Poza tym dokonano poprawy kilkunastu wyrażeń w przypadku których zaobserwowano częste pomyłki, jak tłumaczenie \code{name} na \code{imię i nazwisko}, chociaż powinno zostać przetłumaczone jako \code{nazwa}, czy \code{id}, które niepotrzebnie zostało przetłumaczone na rozwlekłą nazwę \code{identyfikator}.
+Zauważono, że dla błędnych tłumaczeń bardzo często nazwa przetłumaczona jest identyczna z angielską, więc korzystając z tego faktu, prostych skryptów oraz możliwości edytora \code{Visual Studio Code} dokonano znalezienia właśnie takich przypadków, a następnie je poprawiono. Były to w dużej mierze nazwy składające się z kilku wyrazów połączonych ze sobą za pomocą innej konwencji niż znaki podkreślenia, bo tylko ten najpopularniejszy wariant był obsługiwany w fazie maszynowej. Dość częste były również kilkuliterowe skróty jak \code{mid} (movie id), czy \code{aid} (author id), z którymi -- co nie dziwi -- \code{DeepL} sobie nie poradził. Poza tym dokonano poprawy kilkunastu wyrażeń, w przypadku których zaobserwowano częste pomyłki, jak tłumaczenie \code{name} na \code{imię i nazwisko}, chociaż powinno zostać przetłumaczone jako \code{nazwa}, czy \code{id}, które niepotrzebnie zostało rozwinięte na rozwlekłą nazwę \code{identyfikator}.
+
+Po dokonaniu poprawek związanych z jakością tłumaczeń należało zweryfikować je pod kątem konfliktów nazw. Konieczne było upewnienie się, że w obrębie jednej bazy nie powstało kilka tabel o takich samych nazwach, czy też kilka identycznych kolumn w obrębie tabeli. W tym celu napisano skrypt w języku Python, który analizuje podane mapowanie nazw schematu i raportuje znalezione problemy, które następnie ręcznie naprawiono. Takich konfliktów było zaledwie kilka, lecz ich rozwiązanie okazało się zaskakująco trudne. Dwa przykłady to konflikt nazw kolumn \code{result} i \code{score}, które zostały przetłumaczone jako \code{wynik} oraz tabel \code{Type\_Of\_Restaurant} i \mbox{\code{Restaurant\_Type}}, które zostały przetłumaczone jako \mbox{\code{Typ\_Restauracji}}. W tym drugim przypadku szczególnie trudno było znaleźć dwa różne polskie tłumaczenia i postanowiono zastosować nie do końca satysfakcjonującą parę \code{Typ\_Restauracji} oraz \code{Restauracja\_Typu}.
 
 Na cały etap ręcznych poprawek zostało poświęcone kilka godzin i w jego wyniku zmodyfikowano 10,54\% tłumaczeń maszynowych. Wydaje się to dużą częścią, lecz większość z tych modyfikacji dokonano w szybki, półautomatyczny sposób.
 
 
 \subsection{Tłumaczenie pytań}
-Tłumaczenie pytań sprowadza się do uzupełnienia w przedstawionym wcześniej formacie danych źródłowych wartości \code{question.pl} na podstawie atrybutu \code{question.en}. W tym przypadku pytania zostały bezpośrednio przekazane do tłumacza, bez stosowania żadnych dodatkowych sztuczek. Uznano, że stosowanie tłumaczenia kontekstowego, które oznaczałoby rozszerzenie przekazywanych do tłumacza tekstów o nazwę bazy danych z której pochodzą, nie ma sensu. Wiązałoby się to z tłumaczeniem większej liczby znaków na podstawie których \code{DeepL} obciąża swoich użytkowników, a uzyskana poprawa prawdopodobnie nie byłaby znacząca. Pytania są bowiem zwykle na tyle długie, że pozwalają tłumaczowi na wywnioskowanie domeny której dotyczą, więc wybranie odpowiednich tłumaczeń dla problematycznych słów nie stanowi już tak dużego problemu.
+Tłumaczenie pytań sprowadza się do uzupełnienia w przedstawionym wcześniej formacie danych źródłowych atrybutu \code{question.pl} na podstawie \code{question.en}. W tym przypadku pytania zostały bezpośrednio przekazane do tłumacza, bez stosowania żadnych dodatkowych sztuczek. Uznano, że stosowanie tłumaczenia kontekstowego, które oznaczałoby rozszerzenie przekazywanych do tłumacza tekstów o nazwę bazy danych z której pochodzą, nie ma sensu. Wiązałoby się to z tłumaczeniem większej liczby znaków na podstawie których \code{DeepL} obciąża swoich użytkowników, a uzyskana poprawa prawdopodobnie nie byłaby znacząca. Pytania są bowiem zwykle na tyle długie, że pozwalają tłumaczowi na wywnioskowanie domeny, której dotyczą, więc wybranie odpowiednich tłumaczeń dla problematycznych słów nie stanowi już tak dużego problemu.
 
-Etap manualnych poprawek nie został w tym przypadku wykorzystany, gdyż pytania zawierają dużą ilość tekstu i ciężko jest dostrzec w nich ewentualne błędy. Nie znaleziono również żadnych sposobów na znalezienie podejrzanych tłumaczeń, czy dokonanie półautomatycznych poprawek, tak jak to miało miejsce dla tłumaczenia nazw tabel i kolumn. Ostatecznie maszynowe tłumaczenia pytań wydawały się na tyle wysokiej jakości, że postanowiono przejść do kolejnych etapów.
+Etap manualnych poprawek nie został w tym przypadku wykorzystany, gdyż pytania zawierają dużą ilość tekstu i trudno jest dostrzec w nich ewentualne błędy. Nie znaleziono również żadnych sposobów na odszukanie podejrzanych tłumaczeń, czy dokonanie półautomatycznych poprawek, tak jak to miało miejsce dla tłumaczenia nazw tabel i kolumn. Ostatecznie maszynowe tłumaczenia pytań wydawały się na tyle wysokiej jakości, że postanowiono przejść do kolejnych etapów.
 
 \subsection{Tłumaczenie wartości w zapytaniach SQL}
-Tłumaczenie wartości w zapytaniach SQL odbywa się poprzez uzupełnienie atrybutów \code{query.pl} na podstawie \code{query.en} w pliku danych źródłowych o przedstawionym wcześniej formacie. Ten ostatni atrybut zawiera oryginalne zapytania SQL, natomiast pierwszy zapytania z wszelkimi anglojęzycznymi łańcuchami znaków przetłumaczonymi na język polski.
+Tłumaczenie wartości w zapytaniach SQL odbywa się poprzez uzupełnienie atrybutu \code{query.pl} na podstawie \code{query.en} w pliku danych źródłowych. Ten ostatni atrybut zawiera oryginalne zapytania SQL, natomiast pierwszy zapytania z wszelkimi anglojęzycznymi łańcuchami znaków przetłumaczonymi na język polski.
 
-W celu znalezienia w danym zapytaniu wartości tekstowych dokonywano jego przetwarzania z wykorzystaniem biblioteki \code{sqlparse}. Pozwalała ona podzielić zapytanie na poszczególne tokeny i wybrać te, które posiadają typ \code{Token.Literal.String}, czyli właśnie wartości tekstowe. Są to wyrażenia zamknięte w pojedynczych lub podwójnych cudzysłowach, które przekazywano do \code{DeepL} w celu uzyskania tłumaczeń, a następnie zastępowano nimi oryginalne teksty. Wyjątek stanowią jedynie wartości występujące w roli szablonów po słowie kluczowym \code{LIKE}, takie jak \code{'\%Hey\%'}, \code{'\%East\%'}, \code{'S\%'}. Nie są one zapisane w języku naturalnym, ponieważ zawierają specjalne znaki, stanowiące problem dla tłumacza maszynowego. Z tego względu, a także biorąc pod uwagę rzadkość takich przypadków, postanowiono przetłumaczyć je manualnie. Wizualizacja tego etapu została przedstawiona na rysunku \ref{fig:value-translation}.
+W celu znalezienia w danym zapytaniu wartości tekstowych dokonywano jego przetwarzania z wykorzystaniem biblioteki \code{sqlparse}. Pozwalała ona podzielić zapytanie na poszczególne tokeny i wybrać te, które posiadają typ \code{Token.Literal.String}, czyli stanowią wartości tekstowe. Są to wyrażenia zapisane się w cudzysłowach, które przekazywano do \code{DeepL} w celu uzyskania tłumaczeń, a następnie zastępowano nimi oryginalne teksty. Wyjątek stanowią wartości występujące w roli szablonów po słowie kluczowym \code{LIKE}, takie jak \code{'\%Hey\%'}, \code{'\%East\%'}, \code{'S\%'}. Nie są zapisane w języku naturalnym, ponieważ zawierają specjalne znaki, stanowiące problem dla tłumacza maszynowego. Biorąc pod uwagę rzadkość takich przypadków, postanowiono przetłumaczyć je manualnie. Wizualizacja tego etapu została przedstawiona na rysunku \ref{fig:value-translation}.
 
 \begin{figure}[ht!]
   \centering
@@ -323,13 +348,11 @@ W celu znalezienia w danym zapytaniu wartości tekstowych dokonywano jego przetw
 \end{figure}
 
 \section{Stworzone zbiory}
-Niniejszy podrozdział stanowi ukoronowanie pracy nad polskimi zbiorami danych, ponieważ zawiera ich ostateczne przedstawienie wraz 
+Niniejszy część stanowi ukoronowanie pracy nad polskimi zbiorami danych, ponieważ zawiera ich ostateczne przedstawienie wraz 
 z analizą. Zgodnie z obraną strategią kompletne zbiory stanowią połączenie jednego z bazowych zbiorów oraz jednego z mapowań nazw tabel i kolumn, dlatego komponenty te zostaną opisane osobno. Na koniec kilka ich połączeń zostanie nazwanych w celu ułatwienia dalszych rozważań.
 
-% Niniejszy podrozdział stanowi ukoronowanie pracy nad polskimi zbiorami danych, ponieważ zawiera on przedstawienie i analizę przygotowanych zbiorów przykładów, tłumaczeń schematów oraz ostatecznie zbiorów, które poprzez ich kombinację można wygenerować.
-
 \subsection{Zbiory bazowe}
-Przygotowanych zostało pięć bazowych zbiorów z których zdecydowanie najistotniejszym ze względu na swoją renomę oraz powszechne wykorzystanie jest \code{Spider}. W celu weryfikacji i porównywania trenowanych modeli przetłumaczone zostały także zbiory \code{Spider-DK} oraz \code{Spider-Syn}. \code{CoSQL} oraz \code{SParC} to natomiast znacznie różniące się od swoich oryginałów zbiory, które przygotowano i przetłumaczono głównie w celu uzyskania dodatkowych danych treningowych.
+Przygotowanych zostało pięć bazowych zbiorów, z których zdecydowanie najistotniejszym ze względu na swoją renomę oraz powszechne wykorzystanie jest \code{Spider}. W celu weryfikacji i porównywania trenowanych modeli przetłumaczone zostały także zbiory \code{Spider-DK} oraz \code{Spider-Syn}. \code{CoSQL} oraz \code{SParC} to natomiast znacznie różniące się od swoich oryginałów zbiory, które przygotowano i przetłumaczono głównie w celu uzyskania dodatkowych danych treningowych.
 
 \begin{table}[ht]
     \centering
@@ -338,15 +361,11 @@ Przygotowanych zostało pięć bazowych zbiorów z których zdecydowanie najisto
         \thead{Zbiór} & \thead{Część\\treningowa} & \thead{Część\\walidacyjna} & \thead{Razem} \\
         \hline
         Spider & 8659 & 1034 & 9693 \\
-        \hline
-        Spider-DK & 0 & 535 & 535 \\
-        \hline
         Spider-Syn & 3556 & 773 & 4329 \\
-        \hline
+        Spider-DK & 0 & 535 & 535 \\
         CoSQL & 1562 & 230 & 1792 \\
-        \hline
         SParC & 2651 & 366 & 3017 \\
-        \hhline{|=|=|=|=|} 
+        \hline
         Razem & 16428 & 2938 & 19366 \\
         \hline
     \end{tabular}
@@ -354,13 +373,13 @@ Przygotowanych zostało pięć bazowych zbiorów z których zdecydowanie najisto
     \label{tab:samples-count}
 \end{table}
 
-W tabeli \ref{tab:samples-count} przedstawione zostały liczności próbek we wszystkich stworzonych zbiorach bazowych z uwzględnieniem podziału na części treningowe oraz walidacyjne. \code{Spider} to zbiór najliczniejszy z którego żadne próbki nie były usuwane i dokładnie odpowiadają oryginalnym. Drugim największym jest \code{Spider-Syn}, który zawiera przykłady ze \code{Spider} z niewielkimi modyfikacjami, lecz w wyniku usuwania duplikatów skurczył się o ponad połowę. Zbiory \code{SParC} oraz \code{CoSQL} są następne w kolejności i one również w czasie deduplikacji zostały uszczuplone. Najmniejszym zbiorem, posiadającym jedynie część walidacyjną, jest \code{Spider-DK}, chociaż z niego żadne próbki usuwane nie były.
+W tabeli \ref{tab:samples-count} przedstawione zostały liczności próbek we wszystkich stworzonych zbiorach bazowych z uwzględnieniem podziału na części treningowe oraz walidacyjne. \code{Spider} to zbiór najliczniejszy, z którego żadne próbki nie były usuwane i dokładnie odpowiadają oryginalnym. Drugim największym jest \code{Spider-Syn}, który zawiera przykłady ze \code{Spider} z niewielkimi modyfikacjami, lecz w wyniku usuwania duplikatów skurczył się o ponad połowę. Zbiory \code{SParC} oraz \code{CoSQL} są następne w kolejności i one również w czasie deduplikacji zostały uszczuplone. Najmniejszym zbiorem, posiadającym jedynie część walidacyjną, jest \code{Spider-DK}, chociaż z niego żadne próbki usuwane nie były.
 
 \begin{table}[ht]
     \centering
     \begin{tabular}{|l|R{0.15\textwidth}|R{0.15\textwidth}|R{0.15\textwidth}|R{0.15\textwidth}|R{0.15\textwidth}|}
         \hline
-        \thead{Zbiór} & \thead{Easy} & \thead{Medium} & \thead{Hard} & \thead{Extra} \\
+        \thead{Zbiór} & \thead{Easy} & \thead{Medium} & \thead{Hard} & \thead{Extra Hard} \\
         \hline
         Spider & 2231 (23\%) & 3445 (36\%) & 2095 (22\%) & 1922 (20\%) \\
         Spider-DK & 110 (21\%) & 246 (46\%) & 74 (14\%) & 105 (20\%) \\
@@ -375,13 +394,13 @@ W tabeli \ref{tab:samples-count} przedstawione zostały liczności próbek we ws
     \label{tab:difficulty}
 \end{table}
 
-Repozytorium zbioru \code{Spider} dostarcza algorytm pozwalający przypisać do każdego zapytania SQL jeden z następujących czterech poziomów trudności: \code{Easy}, \code{Medium}, \code{Hard} oraz \code{Extra hard}. Postanowiono to wykorzystać w celu analizy rozłożenia zapytań o poszczególnych poziomach trudności we wszystkich stworzonych zbiorach. Wyniki tej analizy umieszczono w tabeli \ref{tab:difficulty}. Można je podsumować twierdzeniem, że najbardziej skomplikowane zapytania występują w zbiorze \code{Spider}, co niewątpliwie jest istotnym powodem jego popularności. Niemal równie trudne zapytania posiada zbiór \code{Spider-DK}, lecz jest on wielokrotnie mniejszy. Z drugiej strony wyjątkowo proste okazały się zapytania znajdujące się w oryginalnie kontekstowych zbiorach \code{CoSQL} oraz \code{SParC}.
+Repozytorium zbioru \code{Spider} \mycite{spider-repo} dostarcza algorytm pozwalający przypisać do każdego zapytania SQL jeden z czterech poziomów trudności: \code{Easy}, \code{Medium}, \code{Hard} oraz \code{Extra Hard}. Odbywa się to poprzez zliczenie w zapytaniu różnych komponentów i klasyfikację na podstawie zdefiniowanych reguł. Przykłady zapytań o poszczególnych poziomach trudności przedstawiono na rysunku \ref{fig:sql-difficulties}. Postanowiono dokonać analizy rozłożenia zapytań o poszczególnych poziomach trudności we wszystkich zbiorach. Wyniki tej analizy umieszczono w tabeli \ref{tab:difficulty}. Można je podsumować twierdzeniem, że najbardziej skomplikowane zapytania występują w zbiorze \code{Spider}, co niewątpliwie jest istotnym powodem jego popularności. Niemal równie trudne zapytania posiada zbiór \code{Spider-DK}, lecz jest on wielokrotnie mniejszy. Z drugiej strony wyjątkowo proste okazały się zapytania znajdujące w zbiorach \code{CoSQL} oraz \code{SParC}.
 
 \begin{table}[ht]
     \centering
-    \begin{tabular}{|l|P{0.20\textwidth}|P{0.20\textwidth}|}
+    \begin{tabular}{|l|r|r|}
         \hline
-        \thead{Zbiór} & \thead{Pytania (en/pl)} & \thead{Wartości (en/pl)} \\
+        \thead{Zbiór} & \thead{Pytania (en / pl)} & \thead{Wartości (en / pl)} \\
         \hline
         Spider & 66,74 / 66,44 & 10,66 / 11,28 \\
         Spider-DK & 66,01 / 65,93 & \s8,47 / \s8,59 \\
@@ -392,39 +411,89 @@ Repozytorium zbioru \code{Spider} dostarcza algorytm pozwalający przypisać do 
         Wszystkie & 63,69 / 63,61 & 10,32 / 10,94 \\
         \hline
     \end{tabular}
-    \caption[Zestawienie liczby znaków w pytaniach i wartościach]{Zestawienie liczby znaków w pytaniach i wartościach dla języka angielskiego i polskiego}
+    \caption{Zestawienie średniej liczby znaków w pytaniach i wartościach}
     \label{tab:questions-lengths}
 \end{table}
 
-Interesującą analizą, której postanowiono dokonać, jest zestawienie długości tekstów angielskich oraz przetłumaczonych na język polski. Zgodnie z danymi ukazanymi w tabeli \ref{tab:questions-lengths} średnie długości wszystkich pytań liczone w znakach różnią się zaledwie o 0,08. W przypadku długości wartości tekstowych różnica ta jest nieco większa i wynosi 0,61. Wzrost może być spowodowany faktem, że występują one jedynie w niektórych próbkach i ze statystycznego punktu widzenia miara ta jest mniej pewna. Mimo wszystko różnice okazały się zdecydowanie mniejsze od spodziewanych, co pokazuję, że język polskim nie różni się znacznie od angielskiego pod kątem zwięzłości.
+Interesującą analizą jest zestawienie długości tekstów angielskich oraz przetłumaczonych na język polski. Zgodnie z danymi ukazanymi w tabeli \ref{tab:questions-lengths} średnie długości wszystkich pytań liczone w znakach różnią się zaledwie o 0,08. W przypadku długości wartości tekstowych różnica ta jest nieco większa i wynosi 0,61. Wzrost może być spowodowany faktem, że występują one jedynie w niektórych próbkach i ze statystycznego punktu widzenia liczba ta jest mniej pewna. Mimo wszystko różnice okazały się zdecydowanie mniejsze od spodziewanych. Oznacza to, że długość pytań i wartości nie będzie miała wpływu na utrudnienie, czy też ułatwienia tłumaczenia zapytań w stosunku do języka angielskiego.
+
+\begin{figure}[ht]
+\begin{tabular}{cc}
+\begin{subfigure}{0.48\textwidth}
+    \begin{minipage}{\linewidth}
+        \lstinputlisting[
+        style=sql,
+        numbers=none,
+        showlines=true,
+        ]{listings/difficulties/easy.sql}
+    \end{minipage}
+    \caption{Easy}
+\end{subfigure}
+&
+\begin{subfigure}{0.48\textwidth}
+    \begin{minipage}{\linewidth}
+        \lstinputlisting[
+        style=sql,
+        numbers=none,
+        showlines=true,
+        ]{listings/difficulties/medium.sql}
+    \end{minipage}
+    \caption{Medium}
+\end{subfigure}
+\\
+  \begin{subfigure}{0.48\textwidth}
+    \begin{minipage}{\linewidth}
+        \lstinputlisting[
+        style=sql,
+        numbers=none,
+        showlines=true,
+        ]{listings/difficulties/hard.sql}
+    \end{minipage}
+    \caption{Hard}
+\end{subfigure}
+&
+\begin{subfigure}{0.48\textwidth}
+    \begin{minipage}{\linewidth}
+        \lstinputlisting[
+        style=sql,
+        numbers=none,
+        showlines=true,
+        ]{listings/difficulties/extra.sql}
+    \end{minipage}
+    \caption{Extra Hard}
+\end{subfigure}
+\end{tabular}
+\caption{Przykłady zapytań SQL o różnych poziomach trudności}
+\label{fig:sql-difficulties}
+\end{figure}
 
 \subsection{Mapowania nazw}
-Zgodnie z przedstawionymi do tej pory treściami opracowane zostały dwie główne drogi dokonywania tłumaczeń nazw tabel i kolumn: metoda bezkontekstowa oraz uważana za lepszą metoda kontekstowa. Mapowania uzyskane z wykorzystaniem tych strategii nazwano odpowiednio \code{pl\_nocontext} oraz \code{pl\_context}. W tłumaczeniach maszynowych uzyskanych metoda kontekstową dokonano następnie dużej liczby półautomatycznych poprawek i uzyskane w ten sposób mapowanie nazwano \code{pl\_context\_curated}. Istnieje oczywiście także mapowanie, które zachowuje angielskie nazwy, które określono jako \code{en\_original}.
+Zgodnie z przedstawionymi wcześniej informacjami opracowane zostały dwie główne drogi dokonywania tłumaczeń nazw tabel i kolumn: metoda bezkontekstowa oraz uważana za lepszą metoda kontekstowa. Mapowania nazw uzyskane z wykorzystaniem tych strategii nazwano odpowiednio \code{pl\_nocontext} oraz \code{pl\_context}. W tłumaczeniach maszynowych powstałych metoda kontekstową dokonano następnie dużej liczby półautomatycznych poprawek i stworzone w ten sposób mapowanie nazwano \code{pl\_context\_curated}. Przewidziano również mapowanie zachowujące oryginalne, angielskie nazwy, które określono jako \code{en\_original}.
 
 Wymienione mapowania zawierają polskie znaki, które jednak rzadko są spotykane w praktyce, więc opracowano skrypt, który dokonuje ich zastąpienia występującymi w kodowaniu \code{ASCII} odpowiednikami, jak \code{wysokość -> wysokosc}. W ten sposób powstały odpowiadające trzem wcześniej wspomnianym mapowania z sufiksem \code{\_sanitized}. Schemat przedstawiający naszkicowane zależności został przedstawiony na rysunku \ref{fig:mappings}.
 
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=1.0\linewidth]{images/mappings.png}
-  \caption{Schemat zależności pomiędzy stworzonymi mapowaniami nazw}
+  \lcaption{Schemat zależności pomiędzy stworzonymi mapowaniami nazw}{Litera Ł w zielonym kółku oznacza obecność polskich znaków, natomiast w czerwonym ich brak.}
   \label{fig:mappings}
 \end{figure}
 
-Podobnie jak to było w przypadku pytań, tutaj również postanowiono zbadać w jaki sposób zastosowanie poszczególnych mapowań wpływa na długość finalnych nazw tabel i kolumn. Wyniki tej analizy przedstawiono w tabeli \ref{tab:names-lengths}. Można zauważyć, że tłumaczenie na język polski zwiększa długości o około jeden znak, co stanowi prawie 10\%. Jest to znaczny wzrost, biorąc pod uwagę, że w przypadku tłumaczenia pytań był on marginalny. Wyjaśniać może to obserwacja, że angielskie nazwy tabel i kolumn często bywają zapisywane skrótowo, ponieważ pomijane są choćby przyimki, a tłumaczenia produkowane przez \code{DeepL} są bardziej opisowe i takie elementy już zawierają.
+Podobnie jak to było w przypadku pytań, tutaj również postanowiono zbadać, w jaki sposób zastosowanie poszczególnych mapowań wpływa na długość finalnych nazw tabel i kolumn. Wyniki tej analizy przedstawiono w tabeli \ref{tab:names-lengths}. Można zauważyć, że tłumaczenie na język polski zwiększa długości o około jeden znak, co stanowi prawie 10\%. Jest to znaczny wzrost, biorąc pod uwagę, że w przypadku tłumaczenia pytań był on marginalny. Wyjaśniać może to obserwacja, że angielskie nazwy tabel i kolumn często bywają zapisywane skrótowo, a tłumaczenia produkowane przez \code{DeepL} są bardziej opisowe. Przykładowo nazwa tabeli \code{Student\_Tests\_Taken} została przetłumaczona jako \code{Testy\_Wykonane\_Przez\_Uczniów}.
 
 \begin{table}[ht]
     \centering
     \begin{tabular}{|l|c|c|c|c|}
         \hline
-        \multirow{2}{*}[-6pt]{\thead{Mapowanie}} &
+        \multirow{2}{*}[-6pt]{\thead{Nazwy mapowań}} &
         \multicolumn{2}{c|}{\thead{Tabele}} &
         \multicolumn{2}{c|}{\thead{Kolumny}} \\
         \cline{2-5}
         \multirow{2}{*}{} &
-        \thead{name} &
-        \thead{name\_original} &
-        \thead{name} &
-        \thead{name\_original} \\
+        \thead{Nazwy\\naturalne} &
+        \thead{Nazwy\\oryginalne} &
+        \thead{Nazwy\\naturalne} &
+        \thead{Nazwy\\oryginalne} \\
         \hline
         \code{en\_original} & 10,48 & 10,28 & 10,26 & \s9,87 \\
         \code{pl\_nocontext} & 11,37 & 11,17 & 11,24 & 10,83 \\
@@ -447,8 +516,8 @@ W celu ułatwienia dalszej pracy poprzez możliwość odwoływania się do konkr
   \label{fig:datasets}
 \end{figure}
 
-Schemat zdefiniowanych zbiorów został przedstawiony na rysunku \ref{fig:datasets}. Można z niego odczytać, że na bazie zbioru \code{Spider} wygenerowane zostały trzy zbiory pochodne. \code{En-Spider} to wariant całkowicie angielski, bardzo podobny do oryginalnego \code{Spider}, ale z minimalnymi różnicami, jak sposób tokenizacji. Wykorzystuje angielskie pytania i wartości oraz mapowanie \code{en\_original}. Kolejny to \code{Pol-Spider-PL}, czyli wariant polski z polskim schematem baz danych, uzyskanym za pomocą mapowania \code{pl\_context\_curated\_sanitized}. Trzecim jest natomiast \code{Pol-Spider-EN}, czyli również zbiór polski, ale z angielskim schematem baz danych, stworzonym za pomocą mapowania \code{en\_original}.
+Schemat zdefiniowanych zbiorów został przedstawiony na rysunku \ref{fig:datasets}. Można z niego odczytać, że na bazie zbioru \code{Spider} wygenerowane zostały trzy zbiory pochodne. \code{En-Spider} to wariant całkowicie angielski, bardzo podobny do oryginalnego \code{Spider}, ale z minimalnymi różnicami, jak sposób tokenizacji. Wykorzystuje angielskie pytania i wartości oraz mapowanie \code{en\_original}. Kolejny to \code{Pol-Spider-PL}, czyli wariant polski, z polskim schematem baz danych, uzyskanym za pomocą mapowania \code{pl\_context\_curated\_sanitized}. Trzecim jest natomiast \mbox{\code{Pol-Spider-EN}}, czyli również zbiór polski, ale z angielskim schematem baz danych, stworzonym za pomocą mapowania \code{en\_original}.
 
 Opracowany został dodatkowo skrypt, który pozwala na łatwe łączenie zbiorów. Za jego pomocą dokonano połączenia dwóch wspomnianych polskich wariantów w zbiór, który nazwano \code{Pol-Spider}. Ma on podwójny rozmiar i obejmuje dwojaki sposób nazewnictwa kolumn i tabel. Jest istotny z praktycznego punktu widzenia, ponieważ nie ogranicza się tylko do pierwszego, czy drugiego przypadku, lecz obejmuje obie powszechnie spotykane konwencje. Po rozszerzeniu tego już rozbudowanego polskiego zbioru o angielski \code{En-Spider} powstaje natomiast \code{Mix-Spider}, czyli dość nietypowy zbiór zawierający próbki w obu językach.
 
-Podobny schemat nazewnictwa do przedstawionego powyżej został zastosowany do reszty zbiorów bazowych, czyli \code{Spider-DK}, \code{Spider-Syn}, \code{CoSQL} oraz \code{SParC}. Wykorzystano wymowne i schematyczne nazwy, aby ułatwić ich zapamiętanie. Możliwych do wygenerowania konfiguracji zbiorów jest znacznie więcej, lecz do tych przedstawionych będą występowały częstsze odwołania.
+Podobny schemat nazewnictwa do przedstawionego powyżej został zastosowany do reszty zbiorów bazowych, czyli \code{Spider-DK}, \code{Spider-Syn}, \code{CoSQL} oraz \code{SParC}. Wykorzystano wymowne i schematyczne nazwy, aby ułatwić ich zapamiętanie. Możliwych do wygenerowania konfiguracji zbiorów jest znacznie więcej, lecz do tych przedstawionych powyżej będą występowały częstsze odwołania w dalszej części pracy.
