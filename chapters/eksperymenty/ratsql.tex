@@ -21,7 +21,7 @@ Wśród innych dokonanych zmian znalazła się modyfikacja listy słów nazywany
 
 \subsection{Eksperymenty}
 
-W ramach eksperymentów postanowiono wytrenować i przetestować model \code{RAT-SQL} w obu wariantach: z enkodowaniem tekstów za pomocą pretrenowanego modelu \code{BERT} oraz z enkodowaniem za pomocą embeddingów \code{GloVe}. W pierwszej konfiguracji model liczy 244 miliony parametrów, a w drugiej zaledwie 17 milionów, z czego wszystkie podlegają optymalizacji. Dla wariantu z \code{BERT} zdecydowano się wytrenować dwie wersje, gdzie jedna zostanie nauczona na polskim zbiorze \code{pol-spider}, a druga na zbiorze \code{mix-spider}, który zawiera dodatkowo oryginalny zbiór angielski. Niektóre artykuły podają bowiem, że modele trenowane na tego typu połączonych zbiorach tłumaczonych i angielskich osiągają lepsze wyniki niż trenowane jedynie na tłumaczeniach \mycite{Bakshandaeva2022,SpiderPortuguese}, co postanowiono zweryfikować. Po wariancie z \code{GloVe} spodziewano się, że osiągnie słabsze wyniki od \code{BERT}, gdyż zgodnie z artykułem wprowadzającym \code{RAT-SQL} tak właśnie powinno się stać. Jak zostało wcześniej wspomniane, wykorzystane embeddingi \code{GloVe} trenowane były jedynie na tekstach polskich. Z tego powodu ten wariant postanowiono nauczyć dla bardziej ograniczonego scenariusza, w którym nazwy tabel i kolumn zawsze będą w języku polskim i trening przeprowadzono na zbiorze \code{pol-spider-pl}.
+W ramach eksperymentów postanowiono wytrenować i przetestować model \code{RAT-SQL} w obu wariantach: z enkodowaniem tekstów za pomocą pretrenowanego modelu \code{BERT} oraz z enkodowaniem za pomocą embeddingów \code{GloVe}. W pierwszej konfiguracji model liczy 244 miliony parametrów, a w drugiej zaledwie 17 milionów, z czego wszystkie podlegają optymalizacji. Dla wariantu z \code{BERT} zdecydowano się wytrenować dwie wersje, gdzie jedna zostanie nauczona na polskim zbiorze \code{Pol-Spider}, a druga na zbiorze \code{mix-spider}, który zawiera dodatkowo oryginalny zbiór angielski. Niektóre artykuły podają bowiem, że modele trenowane na tego typu połączonych zbiorach tłumaczonych i angielskich osiągają lepsze wyniki niż trenowane jedynie na tłumaczeniach \mycite{Bakshandaeva2022,SpiderPortuguese}, co postanowiono zweryfikować. Po wariancie z \code{GloVe} spodziewano się, że osiągnie słabsze wyniki od \code{BERT}, gdyż zgodnie z artykułem wprowadzającym \code{RAT-SQL} tak właśnie powinno się stać. Jak zostało wcześniej wspomniane, wykorzystane embeddingi \code{GloVe} trenowane były jedynie na tekstach polskich. Z tego powodu ten wariant postanowiono nauczyć dla bardziej ograniczonego scenariusza, w którym nazwy tabel i kolumn zawsze będą w języku polskim i trening przeprowadzono na zbiorze \code{Pol-Spider-PL}.
 
 Autorzy \code{RAT-SQL} oryginalnie trenowali wariant \code{BERT} przez 80 000 kroków, co postanowiono skrócić o połowę. Pomimo tego równoległy trening na obu wspomnianych zbiorach, na dwóch posiadanych kartach graficznych, zajął prawie trzy doby. Wariant \code{GloVe} trenowany był natomiast oryginalnie przez 40 000 kroków, co postanowiono pozostawić bez zmian i w tym przypadku zajęło to niecałe dwie doby. 
 
@@ -41,18 +41,18 @@ Autorzy \code{RAT-SQL} oryginalnie trenowali wariant \code{BERT} przez 80 000 kr
         \addplot table[x=step,y expr=\thisrow{em} * 100,col sep=comma] {plots/ratsql_training_bert.csv}; 
         \addplot table[x=step,y expr=\thisrow{em} * 100,col sep=comma] {plots/ratsql_training_bert_mix.csv}; 
         \addplot table[x=step,y expr=\thisrow{em} * 100,col sep=comma] {plots/ratsql_training_glove.csv}; 
-        \legend{BERT + pol-spider, BERT + mix-spider, GloVe}
+        \legend{BERT + Pol-Spider, BERT + mix-spider, GloVe}
       \end{axis}
     \end{tikzpicture}
-    \lcaption{Wyniki modeli na zbiorze testowym w trakcie trwania treningu}{Warianty \code{BERT} testowano na zbiorze \code{pol-spider}, natomiast \code{GloVe} na zbiorze \code{pol-spider-pl}.}
+    \lcaption{Wyniki modeli na zbiorze testowym w trakcie trwania treningu}{Warianty \code{BERT} testowano na zbiorze \code{Pol-Spider}, natomiast \code{GloVe} na zbiorze \code{Pol-Spider-PL}.}
     \label{plot:ratsql-accuracy}
   \end{center}
 \end{figure}
 
-Podczas treningu wagi modeli były regularnie zapisywane na dysku w odstępie 1000 kroków. Po zakończeniu każdy taki zestaw wag został przetestowany z wykorzystaniem metryki \code{EM Without Values}, co zajęło sumarycznie kilkanaście godzin obliczeń. Warianty z \code{BERT} testowane były na zbiorze \code{pol-spider}, natomiast wariant z \code{GloVe} na zbiorze \code{pol-spider-pl}. Wykres przedstawiający zmianę skuteczności modeli wraz z kolejnymi krokami treningu przedstawiono na rysunku \ref{plot:ratsql-accuracy}. Ostatecznie z każdego z trzech zestawów wag wybrano do dalszych testów ten, który podczas przedstawionej ewaluacji otrzymał najlepsze rezultaty. 
+Podczas treningu wagi modeli były regularnie zapisywane na dysku w odstępie 1000 kroków. Po zakończeniu każdy taki zestaw wag został przetestowany z wykorzystaniem metryki \code{EM Without Values}, co zajęło sumarycznie kilkanaście godzin obliczeń. Warianty z \code{BERT} testowane były na zbiorze \code{Pol-Spider}, natomiast wariant z \code{GloVe} na zbiorze \code{Pol-Spider-PL}. Wykres przedstawiający zmianę skuteczności modeli wraz z kolejnymi krokami treningu przedstawiono na rysunku \ref{plot:ratsql-accuracy}. Ostatecznie z każdego z trzech zestawów wag wybrano do dalszych testów ten, który podczas przedstawionej ewaluacji otrzymał najlepsze rezultaty. 
 
 \subsection{Wyniki}
-Trzy wytrenowane modele przetestowano na różnych konfiguracjach zbioru \code{Spider}. Wyniki tej analizy przedstawiono w tabeli \ref{tab:ratsql-results}. Można z niej odczytać, że w każdym przypadku najlepiej nauczył się wariant \code{BERT} trenowany na zbiorze \code{mix-spider}, nieco niższą skuteczność osiągnął \code{BERT} uczony na zbiorze \code{pol-spider}, natomiast model wykorzystujący embeddingi \code{GloVe} znacznie od tych dwóch odstaję. Z wykorzystaniem najlepszego modelu przeprowadzono dalsze testy, w których dokonano jego ewaluacji na wszystkich zbiorach pokrewnych z podziałem na poziomy trudności zapytań. Wyniki tych testów przedstawiono w tabeli \ref{tab:ratsql-difficulty}.
+Trzy wytrenowane modele przetestowano na różnych konfiguracjach zbioru \code{Spider}. Wyniki tej analizy przedstawiono w tabeli \ref{tab:ratsql-results}. Można z niej odczytać, że w każdym przypadku najlepiej nauczył się wariant \code{BERT} trenowany na zbiorze \code{mix-spider}, nieco niższą skuteczność osiągnął \code{BERT} uczony na zbiorze \code{Pol-Spider}, natomiast model wykorzystujący embeddingi \code{GloVe} znacznie od tych dwóch odstaję. Z wykorzystaniem najlepszego modelu przeprowadzono dalsze testy, w których dokonano jego ewaluacji na wszystkich zbiorach pokrewnych z podziałem na poziomy trudności zapytań. Wyniki tych testów przedstawiono w tabeli \ref{tab:ratsql-difficulty}.
 
 \begin{table}[ht]
     \centering
@@ -64,14 +64,14 @@ Trzy wytrenowane modele przetestowano na różnych konfiguracjach zbioru \code{S
         \cline{3-6}
         \multirow{2}{*}{} &
         \multirow{2}{*}{} &
-        \thead{\small{pol-spider}} &
-        \thead{\small{pol-spider-pl}} &
-        \thead{\small{pol-spider-en}} &
-        \thead{\small{en-spider}} \\
+        \thead{\small{Pol-Spider}} &
+        \thead{\small{Pol-Spider-PL}} &
+        \thead{\small{Pol-Spider-EN}} &
+        \thead{\small{En-Spider}} \\
         \hline
-        BERT & pol-spider & 53,1 & 56,6 & 49,7 & 42,8 \\
+        BERT & Pol-Spider & 53,1 & 56,6 & 49,7 & 42,8 \\
         BERT & mix-spider & 58,1 & 61,0 & 55,1 & 68,8 \\
-        GloVe & pol-spider-pl & 19,3 & 27,5 & 11,2 & \s2,8 \\
+        GloVe & Pol-Spider-PL & 19,3 & 27,5 & 11,2 & \s2,8 \\
         \hline
     \end{tabular}
     \lcaption{Wyniki modeli otrzymane metodą \code{RAT-SQL} na wariantach zbioru \code{Spider}}{Wartości metryk podano w procentach.}
@@ -84,11 +84,11 @@ Trzy wytrenowane modele przetestowano na różnych konfiguracjach zbioru \code{S
         \hline
         \thead{Zbiór} & \thead{Easy} & \thead{Medium} & \thead{Hard} & \thead{Extra\\Hard} & \thead{Razem} \\
         \hline
-        pol-spider & 73,8 & 58,7 & 50,9 & 40,4 & 58,1 \\
-        pol-spidersyn & 58,5 & 45,1  & 41,2  & 26,9  & 44,5 \\
-        pol-spiderdk & 60,9 & 36,4 & 31,1 & 17,6 & 37,0 \\
-        pol-sparc & 62,1 & 42,2  & 10,0  & 25,0  & 53,6 \\
-        pol-cosql & 59,6 & 47.5  & 22,1  & 29,4  & 48,7 \\
+        Pol-Spider & 73,8 & 58,7 & 50,9 & 40,4 & 58,1 \\
+        Pol-Spidersyn & 58,5 & 45,1  & 41,2  & 26,9  & 44,5 \\
+        Pol-Spiderdk & 60,9 & 36,4 & 31,1 & 17,6 & 37,0 \\
+        Pol-Sparc & 62,1 & 42,2  & 10,0  & 25,0  & 53,6 \\
+        Pol-Cosql & 59,6 & 47.5  & 22,1  & 29,4  & 48,7 \\
         \hline
     \end{tabular}
     \lcaption{Wyniki najlepszego modelu \code{RAT-SQL} na zbiorach pokrewnych}{Najlepszym modelem jest wariant \code{BERT} uczony na zbiorze dwujęzycznym. Wartości metryk podano w procentach.}
@@ -117,8 +117,8 @@ Istotną obserwacją jest to, że model trenowany na połączeniu zbioru polskie
 
 Wyniki osiągnięte przez model w wariancie z \code{GloVe} okazały się być znacznie niższe w porównaniu z wariantami \code{BERT}. Było to spodziewane, biorąc pod uwagę choćby liczbę parametrów, jednak wydaje się, że wyniki metryk mogłyby być nieco wyższe. Wytrenowany przez twórców \code{RAT-SQL} model odstaję od wariantu \code{BERT} o około 7 punktów procentowych, a w naszym przypadku różnica wynosi ponad 20 punktów. Powodem tego może być przypuszczalnie gorsza jakość embeddingów \code{GloVe} dla języka polskiego niż angielskiego, lecz dalszych eksperymentów zaniechano. Model w tym wariancie mógłby stanowić nieco słabszą alternatywę, którą można szybko wytrenować i uruchamiać na mniej wydajnych urządzeniach. Aktualna dokładność wydaję się jednak za niska, aby to znalazło praktyczne zastosowanie.
 
-Dane liczbowe w tabeli \ref{tab:ratsql-difficulty} pokazują, że wraz ze zwiększaniem się poziomu trudności zapytań maleje skuteczność modelu, co jest spodziewanym zachowaniem. Niewielkie rozbieżności od tej reguły można zaobserwować jedynie dla zbiorów \code{pol-cosql} oraz \code{pol-sparc}. Przyczyną tego jest zapewne niewielka liczba znajdujących się w nich trudnych zapytań, przez co kilka pozornie wymagających mogło znacząco zachwiać wynikami.
+Dane liczbowe w tabeli \ref{tab:ratsql-difficulty} pokazują, że wraz ze zwiększaniem się poziomu trudności zapytań maleje skuteczność modelu, co jest spodziewanym zachowaniem. Niewielkie rozbieżności od tej reguły można zaobserwować jedynie dla zbiorów \code{Pol-Cosql} oraz \code{Pol-Sparc}. Przyczyną tego jest zapewne niewielka liczba znajdujących się w nich trudnych zapytań, przez co kilka pozornie wymagających mogło znacząco zachwiać wynikami.
 
-Efekty uzyskane na zbiorze \code{pol-spidersyn} okazały się wyraźnie słabsze w porównaniu do tych na \code{pol-spider}, bo różnica wynosi aż 13,57 punktów procentowych. Potwierdza to obserwację przedstawioną w artykule wprowadzającym \code{Spider-Syn}. Mówi ona, że modele mają duże problemy z odpowiadaniem na pytania, w których użytkownik nie znając dokładnie schematu bazy danych, posługuję się synonimami.
+Efekty uzyskane na zbiorze \code{Pol-Spidersyn} okazały się wyraźnie słabsze w porównaniu do tych na \code{Pol-Spider}, bo różnica wynosi aż 13,57 punktów procentowych. Potwierdza to obserwację przedstawioną w artykule wprowadzającym \code{Spider-Syn}. Mówi ona, że modele mają duże problemy z odpowiadaniem na pytania, w których użytkownik nie znając dokładnie schematu bazy danych, posługuję się synonimami.
 
-Niskie wyniki, chociaż również spodziewane, osiągnął model na zbiorze \code{Spider-DK}. Zawiera on bowiem pytania wymagające znajomości wiedzy domenowej, z którą uważa się, że modele sobie często nie radzą. Spadek, który nastąpił w tym przypadku względem zbioru \code{pol-spider}, wynosi 21,07 punktów procentowych. W celu dokonania głębszej analizy możliwe jest obliczenie dokładności modelu w obrębie każdego typu wiedzy domenowej z osobna, czego jednak postanowiono nie robić.
+Niskie wyniki, chociaż również spodziewane, osiągnął model na zbiorze \code{Spider-DK}. Zawiera on bowiem pytania wymagające znajomości wiedzy domenowej, z którą uważa się, że modele sobie często nie radzą. Spadek, który nastąpił w tym przypadku względem zbioru \code{Pol-Spider}, wynosi 21,07 punktów procentowych. W celu dokonania głębszej analizy możliwe jest obliczenie dokładności modelu w obrębie każdego typu wiedzy domenowej z osobna, czego jednak postanowiono nie robić.

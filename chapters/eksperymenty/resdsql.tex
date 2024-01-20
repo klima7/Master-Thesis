@@ -6,7 +6,7 @@
 
 Ważnym elementem, odróżniającym \code{RESDSQL} od wcześniej opisanych rozwiązań jest to, że do enkodera zawartego wewnątrz \code{T5} nie są przekazywane wszystkie nazwy tabel i kolumn, lecz tylko te, które zostały uznane w kontekście danego pytania za najbardziej istotne. Celem tego działania jest odciążenie enkodera z wykonywania skomplikowanego procesu \code{schema linking}. Aby dostać potrzebną informację o istotności poszczególnych tabel i kolumn dla podanego pytania trenowana jest wcześniej całkowicie niezależna sieć, która przyjmuję pytanie oraz wszystkie nazwy tabel i kolumn i dla każdej z nich zwraca prawdopodobieństwo, które może być interpretowane jako stopień istotności. Sieć ta określana jest przez swoich autorów mianem \code{cross-encoder}. Ostatecznie do modelu \code{T5} przekazywane są 4 najistotniejsze tabele, a dla każdej z nich 5 najważniejszych kolumn.
 
-Z punktu widzenia dekodowania najważniejszą nowością jest to, że model \code{T5} nie jest dotrenowywany tak, aby od razu produkować kompletne zapytania, lecz na początku zwrócić jego szkielet, a dopiero za nim wykonywalne zapytanie. Uzasadnieniem opisanego zachowania jest to, że początkowe stworzenie szkieletu jest w miarę prostym problemem, więc powinno mieć dużą dokładność. Dekodery w modelach językowych posiadają własność nazywaną autoregresyjnością, która polega na tym, że podczas generowania kolejnych fragmentów odpowiedzi brany jest pod uwagę tekst wygenerowany do tej pory. Dzięki temu model \code{T5} podczas produkowania drugiem części odpowiedzi, która zawiera kompletne zapytanie SQL, może odwoływać się do wcześniejszej części z szablonem i traktując ją jako pewnego rodzaju notatnik uzupełnić brakujące elementy.
+Z punktu widzenia dekodowania najważniejszą nowością jest to, że model \code{T5} nie jest dotrenowywany tak, aby od razu produkować kompletne zapytania, lecz na początku zwrócić jego szkielet, a dopiero za nim wykonywalne zapytanie. Uzasadnieniem opisanego zachowania jest to, że początkowe stworzenie szkieletu jest w miarę prostym problemem, więc powinno mieć dużą dokładność. Dekodery w modelach językowych posiadają własność nazywaną autoregresyjnością, która polega na tym, że podczas generowania kolejnych fragmentów odpowiedzi brany jest pod uwagę tekst wygenerowany do tej pory. Dzięki temu model \code{T5} podczas produkowania drugiej części odpowiedzi, która zawiera kompletne zapytanie SQL, może odwoływać się do wcześniejszej części z szablonem i traktując ją jako pewnego rodzaju notatnik uzupełnić brakujące elementy.
 
 Ciekawą techniką z którą \code{RESDSQL} można łączyć jest \code{NatSQL} \mycite{Gan2021natsql}. Wprowadza ona alternatywną reprezentację dla zapytań SQL, która bardziej przypomina język naturalny i w związku z tym jest łatwiejsza do nauczenia i generowania przez większość modeli. Jednocześnie jest ona na tyle jednoznaczna, że można przekonwertować ją na tradycyjne zapytania SQL. Zgodnie z \mycite{Li2023resdsql} zastąpienie tradycyjnych zapytań za pomocą \code{NatSQL} pozwoliło na zbiorze \code{Spider} zwiększyć skuteczności mierzonej metryką \code{EM} o około 2 procent.
 
@@ -61,7 +61,7 @@ Zgodnie z wcześniejszym opisem wykorzystanie \code{RESDSQL} wymaga w pierwszej 
     \caption{model przewidujący zapytania}
     \label{plot:resdsql-t5-accuracy}
 \end{subfigure}
-\caption{Wykresy skuteczności modeli \code{RESDSQL} na części testowej zbioru \code{pol-spider} wraz z kolejnymi krokami treningu}
+\caption{Wykresy skuteczności modeli \code{RESDSQL} na części testowej zbioru \code{Pol-Spider} wraz z kolejnymi krokami treningu}
 \label{plot:resdsql-accuracy}
 \end{figure}
 
@@ -76,28 +76,28 @@ W tabeli \ref{tab:resdsql-difficulty} przedstawione zostały wyniki przeprowadzo
         \hline
         \thead{Zbiór} & \thead{Easy} & \thead{Medium} & \thead{Hard} & \thead{Extra} & \thead{Razem} \\
         \hline
-        pol-spider & 
+        Pol-Spider & 
         \threevals{76,2}{70,6}{83,5} &
         \threevals{61,9}{56,3}{73,1} &
         \threevals{50,0}{46,0}{62,9} &
         \threevals{35,8}{30,4}{53,3} &
         \threevals{59,1}{53,8}{70,7} \\
         
-        pol-spider-pl &
+        Pol-Spider-PL &
         \threevals{78,6}{72,6}{85,1} &
         \threevals{64,1}{58,5}{74,4} &
         \threevals{50,0}{44,8}{62,1} &
         \threevals{32,5}{27,1}{50,0} &
         \threevals{60,2}{54,5}{71,0} \\
         
-        pol-spider-en &
+        Pol-Spider-EN &
         \threevals{73,8}{68,5}{81,9} &
         \threevals{59,6}{54,0}{71,7} &
         \threevals{50,0}{47,1}{63,8} &
         \threevals{39,2}{33,7}{56,6} &
         \threevals{58,1}{53,1}{70,4} \\
         
-        en-spider &
+        En-Spider &
         \threevals{81,5}{79,4}{86,3} &
         \threevals{69,3}{66,4}{75,8} &
         \threevals{51,7}{50,6}{65,5} &
@@ -106,28 +106,28 @@ W tabeli \ref{tab:resdsql-difficulty} przedstawione zostały wyniki przeprowadzo
         
         \hline
         
-        pol-spidersyn &
+        Pol-Spidersyn &
         \threevals{61,7}{57,6}{72,5} &
         \threevals{52,2}{48,7}{65,8} &
         \threevals{42,6}{41,9}{57,0} &
         \threevals{26,4}{21,9}{44,6} &
         \threevals{48,6}{45,3}{62,4} \\
         
-        pol-spiderdk &
+        Pol-Spiderdk &
         \threevals{52,7}{48,2}{62,3} &
         \threevals{34,8}{31,5}{50,2} &
         \threevals{20,9}{20,9}{37,8} &
         \threevals{17,6}{13,3}{32,4} &
         \threevals{33,2}{29,9}{47,5} \\
         
-        pol-sparc &
+        Pol-Sparc &
         \threevals{61,3}{59,0}{72,3} &
         \threevals{38,3}{33,0}{60,2} &
         \threevals{13,3}{13,3}{43,3} &
         \threevals{43,8}{43,8}{50,0} &
         \threevals{52,5}{49,5}{67,2} \\
         
-        pol-cosql &
+        Pol-Cosql &
         \threevals{61,7}{56,7}{71,3} &
         \threevals{54,2}{48,3}{63,6} &
         \threevals{26,5}{25,0}{51,5} &
@@ -141,7 +141,7 @@ W tabeli \ref{tab:resdsql-difficulty} przedstawione zostały wyniki przeprowadzo
 \end{table}
 
 \subsection{Analiza}
-W porównaniu z dwoma wcześniej analizowanymi rozwiązaniami \code{RESDSQL} wydaje się wypadać najlepiej. Inaczej mówią jedynie wyniki dwóch testów. W przypadku zbiorów \code{pol-sparc} oraz \code{pol-spiderdk} patrząc na metrykę \code{EM} najlepiej wypadł bowiem model pierwszy, czyli \code{RAT-SQL}. W pozostałych przypadkach to jednak \code{RESDSQL} dominuje.
+W porównaniu z dwoma wcześniej analizowanymi rozwiązaniami \code{RESDSQL} wydaje się wypadać najlepiej. Inaczej mówią jedynie wyniki dwóch testów. W przypadku zbiorów \code{Pol-Sparc} oraz \code{Pol-Spiderdk} patrząc na metrykę \code{EM} najlepiej wypadł bowiem model pierwszy, czyli \code{RAT-SQL}. W pozostałych przypadkach to jednak \code{RESDSQL} dominuje.
 
 Warto zwrócić uwagę na fakt, że tak dobre wyniki udało się osiągnąć w stosunkowo niedługim czasie. Pomimo tego, że nauka odbywała się w sposób dwuetapowy to sumaryczny czas po którym modele osiągnęły maksymalną skuteczność okazał się dla \code{RESDSQL} najkrótszy spośród rozwiązań do tej pory rozważanych.
 

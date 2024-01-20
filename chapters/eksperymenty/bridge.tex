@@ -14,7 +14,7 @@ Przystosowanie \code{BRIDGE} do języka polskiego okazało się znacznie prostsz
 Jedyną ważną modyfikacją dla języka polskiego okazała się zmiana wykorzystywanego modelu \code{BERT} z wariantu \code{bert-large-uncased} na \code{bert-base-multilingual-uncased}, oba dostępne są na platformie \code{HF}. Jest to działanie analogiczne do zmiany zaaplikowanej w \code{RAT-SQL}. Uzasadnienie również jest podobne: zmieniono model na wielojęzyczny, by poradził sobie z językiem polskim oraz na mniejszy, by umożliwić naukę na posiadanym sprzęcie. Tak zmodyfikowany model \code{BRIDGE} liczy sobie 174 miliony parametrów i wszystkie podlegają treningowi.
 
 \subsection{Eksperymenty}
-W ramach eksperymentu chciano dokonać treningu modelu \code{BRIDGE} i go przetestować. Nauki dokonano na zbiorze \code{pol-spider-mix}, ponieważ wcześniej przeprowadzone eksperymenty z \code{RAT-SQL} pokazały, że model trenowany na połączonym zbiorze polskim i angielskim nauczył się lepiej. Oczywiście nie można założyć na tej podstawie, że każdy model uczony na połączonym zbiorze będzie skuteczniejszy. Można jednak przypuszczać, że zwykle tak jest.
+W ramach eksperymentu chciano dokonać treningu modelu \code{BRIDGE} i go przetestować. Nauki dokonano na zbiorze \code{Mix-Spider}, ponieważ wcześniej przeprowadzone eksperymenty z \code{RAT-SQL} pokazały, że model trenowany na połączonym zbiorze polskim i angielskim nauczył się lepiej. Oczywiście nie można założyć na tej podstawie, że każdy model uczony na połączonym zbiorze będzie skuteczniejszy. Można jednak przypuszczać, że zwykle tak jest.
 
 \begin{figure}[ht!]
   \begin{center}
@@ -30,12 +30,12 @@ W ramach eksperymentu chciano dokonać treningu modelu \code{BRIDGE} i go przete
         \addplot table[x=time,y expr=\thisrow{dev_exact_match} * 100,col sep=comma] {plots/bridge_training.csv}; 
       \end{axis}
     \end{tikzpicture}
-    \lcaption{Wyniki modelu \code{BRIDGE} w czasie trwania treningu}{Model sprawdzano na części testowej zbioru \mbox{\code{pol-spider}}.}
+    \lcaption{Wyniki modelu \code{BRIDGE} w czasie trwania treningu}{Model sprawdzano na części testowej zbioru \mbox{\code{Pol-Spider}}.}
     \label{plot:bridge-accuracy}
   \end{center}
 \end{figure}
 
-Model uczono przez 36 godzin na jednostce wyposażonej w kartę \code{Nvidia RTX 3080}, a zaimplementowany wewnątrz procedury treningu kod dokonywał w tym czasie regularnego obliczania metryki \code{EM Without Values} na części testowej zbioru \code{pol-spider}. Wykres przedstawiający zmianę wartości tej metryki na przestrzeni czasu przedstawiono na rysunku \ref{plot:bridge-accuracy}. Na wykresie widać, że skuteczność modelu rosła wyraźnie przez połowę czasu treningu, a w drugiej połowie już nie widać tendencji wzrostowej -- dlatego naukę postanowiono przerwać. Jako finalny został wybrany model z punktu, w którym wartość wspomnianej metryki była najwyższa.
+Model uczono przez 36 godzin na jednostce wyposażonej w kartę \code{Nvidia RTX 3080}, a zaimplementowany wewnątrz procedury treningu kod dokonywał w tym czasie regularnego obliczania metryki \code{EM Without Values} na części testowej zbioru \code{Pol-Spider}. Wykres przedstawiający zmianę wartości tej metryki na przestrzeni czasu przedstawiono na rysunku \ref{plot:bridge-accuracy}. Na wykresie widać, że skuteczność modelu rosła wyraźnie przez połowę czasu treningu, a w drugiej połowie już nie widać tendencji wzrostowej -- dlatego naukę postanowiono przerwać. Jako finalny został wybrany model z punktu, w którym wartość wspomnianej metryki była najwyższa.
 
 \subsection{Wyniki}
 Wyniki przeprowadzonego eksperymentu przedstawiono w tabeli \ref{tab:bridge-difficulty}. Jest ona znacznie bardziej rozbudowana niż to było w przypadku rozwiązania \code{RAT-SQL}, ponieważ ten model zwraca zapytania z wartościami. Możliwe więc stało się obliczenie metryk \code{EM} oraz \code{EX}.
@@ -46,28 +46,28 @@ Wyniki przeprowadzonego eksperymentu przedstawiono w tabeli \ref{tab:bridge-diff
         \hline
         \thead{Zbiór} & \thead{Easy} & \thead{Medium} & \thead{Hard} & \thead{Extra Hard} & \thead{Razem} \\
         \hline
-        pol-spider & 
+        Pol-Spider & 
         \threevals{79,4}{71,2}{82,9} &
         \threevals{59,8}{51,9}{68,9} &
         \threevals{43,1}{40,2}{63,8} &
         \threevals{34,6}{31,9}{54,5} &
         \threevals{57,6}{51,4}{69,1} \\
         
-        pol-spider-pl &
+        Pol-Spider-PL &
         \threevals{80,6}{72,6}{84,3} &
         \threevals{60,3}{52,5}{70,0} &
         \threevals{44,8}{40,2}{64,9} &
         \threevals{34,9}{31,3}{53,6} &
         \threevals{58,5}{51,8}{69,9} \\
         
-        pol-spider-en &
+        Pol-Spider-EN &
         \threevals{78,2}{69,8}{81,5} &
         \threevals{59,2}{51,3}{67,9} &
         \threevals{41,4}{40,2}{62,6} &
         \threevals{34,3}{32,5}{55,4} &
         \threevals{56,8}{50,9}{68,3} \\
         
-        en-spider &
+        En-Spider &
         \threevals{86,7}{82,3}{85,1} &
         \threevals{67,9}{62,8}{71,7} &
         \threevals{51,7}{48,3}{58,0} &
@@ -76,28 +76,28 @@ Wyniki przeprowadzonego eksperymentu przedstawiono w tabeli \ref{tab:bridge-diff
         
         \hline
         
-        pol-spidersyn &
+        Pol-Spidersyn &
         \threevals{63,2}{56,1}{71,6} &
         \threevals{48,3}{41,7}{59,3} &
         \threevals{37,1}{36,4}{52,6} &
         \threevals{23,1}{21,5}{43,8} &
         \threevals{45,7}{40,8}{58,4} \\
         
-        pol-spiderdk &
+        Pol-Spiderdk &
         \threevals{58,6}{51,4}{63,6} &
         \threevals{39,4}{32,9}{49,4} &
         \threevals{22,3}{22,3}{44,6} &
         \threevals{15,7}{13,8}{31,9} &
         \threevals{36,4}{31,5}{48,2} \\
         
-        pol-sparc &
+        Pol-Sparc &
         \threevals{61,7}{60,0}{68,1} &
         \threevals{38,8}{44,1}{60,2} &
         \threevals{\s3,3}{25,0}{43,3} &
         \threevals{25,0}{17,6}{43,8} &
         \threevals{52,0}{47,6}{64,3} \\
         
-        pol-cosql &
+        Pol-Cosql &
         \threevals{60,0}{52,5}{69,2} &
         \threevals{44,1}{34,7}{63,6} &
         \threevals{25,0}{19,1}{54,4} &
@@ -111,7 +111,7 @@ Wyniki przeprowadzonego eksperymentu przedstawiono w tabeli \ref{tab:bridge-diff
 \end{table}
 
 \subsection{Analiza}
-Zestawiając ze sobą wyniki osiągnięte metodą \code{BRIDGE} oraz \code{RAT-SQL} trudno jest wskazać pod względem metryki \code{EM Without Values}, która jest jedyną wspólną, model lepszy. Na częściach testowych wszystkich wariantów zbioru \code{Spider} analizowany teraz model \code{BRIDGE} okazuję się działać lepiej. Na zbiorach pokrewnych \code{pol-spiderdk}, \code{pol-sparc} oraz \code{pol-cosql} jednak to \code{RAT-SQL} jest skuteczniejszy. Można z tego wyciągnąć wniosek, że \code{BRIDGE} sprawdza się lepiej, jeżeli trenowany i testowany jest na podobnych danych. \code{RAT-SQL} wydaje się natomiast posiadać bardziej rozwiniętą umiejętność generalizacji i wykorzystania wiedzy domenowej, przez co osiąga lepsze wyniki na zbiorach wyraźnie odbiegających od treningowego. 
+Zestawiając ze sobą wyniki osiągnięte metodą \code{BRIDGE} oraz \code{RAT-SQL} trudno jest wskazać pod względem metryki \code{EM Without Values}, która jest jedyną wspólną, model lepszy. Na częściach testowych wszystkich wariantów zbioru \code{Spider} analizowany teraz model \code{BRIDGE} okazuję się działać lepiej. Na zbiorach pokrewnych \code{Pol-Spiderdk}, \code{Pol-Sparc} oraz \code{Pol-Cosql} jednak to \code{RAT-SQL} jest skuteczniejszy. Można z tego wyciągnąć wniosek, że \code{BRIDGE} sprawdza się lepiej, jeżeli trenowany i testowany jest na podobnych danych. \code{RAT-SQL} wydaje się natomiast posiadać bardziej rozwiniętą umiejętność generalizacji i wykorzystania wiedzy domenowej, przez co osiąga lepsze wyniki na zbiorach wyraźnie odbiegających od treningowego. 
 
 Metoda \code{BRIDGE} nie jest już tak popularna w literaturze jak \code{RAT-SQL} i eksperymenty z jej wykorzystaniem przeprowadzili jedynie autorzy rosyjskiego tłumaczenia zbioru \code{Spider}, czyli autorzy \code{PAUQ}. Zestawienie osiągniętych przez nich wyników z niniejszymi przedstawiono w tabeli \ref{tab:bridge-translations-results}. Widać, że zgodnie z metryką \code{EM Without Values} na zbiorze polskim udało się osiągnąć rezultaty nieco lepsze. Możliwą przyczyną jest przypuszczalnie większa liczba danych polskich, na których wielojęzyczny model \code{BERT} był trenowany, albo też wyższy stopień skomplikowania języka rosyjskiego. Różnica w wynikach metryki \code{EX} jest natomiast bardzo duża, na korzyść zbioru polskiego. Przyczyną tego jest pewne zakłamanie metryki \code{EX} dla języka polskiego, o czym wcześniej wspomniano. W pełni uzasadnione jej zaaplikowanie wymagałoby bowiem przetłumaczenia zawartości wszystkich baz danych, czego dla polskiego zbioru nie zrobiono, a w przypadku \code{PAUQ} zostało dokonane częściowo. Szczególnie więc w tym przypadku, ze względu tłumaczenia zawartości baz w tylko jednym zbiorze, względnym wartościom metryki \code{EX} nie należy zbytnio ufać. Mimo wszystko przedstawione zestawienie stanowi potwierdzenie tego, że modyfikacji metody \code{BRIDGE} dla języka polskiego dokonano poprawnie.
 

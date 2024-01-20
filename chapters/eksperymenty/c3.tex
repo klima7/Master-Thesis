@@ -29,21 +29,21 @@ Wyniki wykonanej ewaluacji przedstawiono w tabeli \ref{tab:c3sql-difficulty}. Ma
         \hline
         \thead{Zbiór} & \thead{Easy} & \thead{Medium} & \thead{Hard} & \thead{Extra} & \thead{Razem} \\
         \hline
-        pol-spider-100 & 
+        Pol-Spider-100 & 
         \threevals{54}{54}{83} &
         \threevals{43}{43}{91} &
         \threevals{44}{38}{44} &
         \threevals{13}{13}{75} &
         \threevals{41}{40}{79} \\
         
-        pol-spider-pl-50 &
+        Pol-Spider-PL-50 &
         \threevals{58}{58}{83} &
         \threevals{50}{50}{91} &
         \threevals{38}{38}{63} &
         \threevals{13}{13}{75} &
         \threevals{44}{44}{82} \\
         
-        pol-spider-en-50 &
+        Pol-Spider-EN-50 &
         \threevals{50}{50}{83} &
         \threevals{36}{36}{91} &
         \threevals{50}{38}{25} &
@@ -52,28 +52,28 @@ Wyniki wykonanej ewaluacji przedstawiono w tabeli \ref{tab:c3sql-difficulty}. Ma
         
         \hline
         
-        pol-spidersyn-100 &
+        Pol-Spidersyn-100 &
         \threevals{32}{32}{55} &
         \threevals{39}{36}{61} &
         \threevals{28}{27}{56} &
         \threevals{0}{0}{38} &
         \threevals{29}{28}{55} \\
         
-        pol-spiderdk-100 &
+        Pol-Spiderdk-100 &
         \threevals{100}{75}{75} &
         \threevals{50}{48}{59} &
         \threevals{36}{36}{79} &
         \threevals{15}{15}{50} &
         \threevals{51}{45}{63} \\
         
-        pol-sparc-100 &
+        Pol-Sparc-100 &
         \threevals{61}{61}{79} &
         \threevals{22}{18}{68} &
         \threevals{0}{0}{50} &
         \threevals{0}{0}{0} &
         \threevals{46}{45}{73} \\
         
-        pol-cosql-100 &
+        Pol-Cosql-100 &
         \threevals{62}{56}{87} &
         \threevals{31}{31}{77} &
         \threevals{29}{22}{36} &
@@ -89,7 +89,7 @@ Wyniki wykonanej ewaluacji przedstawiono w tabeli \ref{tab:c3sql-difficulty}. Ma
 \end{table}
 
 \subsection{Analiza}
-Zgodnie z publicznym rankingiem zbioru \code{Spider} analizowane teraz rozwiązanie jest spośród wszystkich w tej pracy omawianych najlepsze pod kątem metryki EX. Przeprowadzone eksperymenty to potwierdzają. Najlepsze wyniki nie zostały osiągnięte jedynie w przypadku zbioru \code{pol-spidersyn}, lecz również są dość wysokie.
+Zgodnie z publicznym rankingiem zbioru \code{Spider} analizowane teraz rozwiązanie jest spośród wszystkich w tej pracy omawianych najlepsze pod kątem metryki EX. Przeprowadzone eksperymenty to potwierdzają. Najlepsze wyniki nie zostały osiągnięte jedynie w przypadku zbioru \code{Pol-Spidersyn}, lecz również są dość wysokie.
 
 Wartość metryki \code{EM} osiągnęła z drugiej strony zaskakująco niską wartość. Pod jej kątem \code{C3} wydaje się być najgorszym z analizowanych rozwiązań. Skąd wynika tak duża rozbieżność? Powodem jest prawdopodobnie fakt, że metryka \code{EM} dokonuje strukturalnego porównania przewidzianych i wzorowych zapytania, a ten sam cel może być realizowany przez dwa całkowicie różne zapytania SQL. W przypadku wcześniejszych rozwiązań problem ten nie był tak widoczny, ponieważ były one uczone na części treningowej i w związku z tym nauczyły się bardziej preferować pewne sposoby generowania zapytań od innych. \code{C3} produkuje za to zapytania w sposób znacznie bardziej swobodny, co powoduje problemy ze wstrzeleniem się w oczekiwaną odpowiedź, co nie oznacza, że jest ona błędna. 
 
