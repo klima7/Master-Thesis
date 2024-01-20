@@ -6,6 +6,8 @@ Modele \code{RAT-SQL} oraz \code{BRIDGE} to dość stare rozwiązania, które zo
 
 W fazie eksperymentów trening modeli postanowiono wykonywać jedynie na zbiorze \code{Spider}. Cztery pozostałe będą wykorzystywane jedynie do przeprowadzania testów. Wynika to z chęci skrócenia czasu treningu oraz umożliwia dokonywanie uczciwych porównań z modelami trenowanymi przez innych badaczy, gdyż niemal zawsze jest to dokonywane właśnie na zbiorze \code{Spider}. Po fazie eksperymentów planuje się wybrać najbardziej obiecujące rozwiązanie i dokonać dłuższego treningu na wszystkich zbiorach.
 
+Podczas treningu modeli uczenia maszynowego bardzo ważną rolę odgrywa posiadany sprzęt, a w przypadku sieci neuronowych najbardziej ograniczającym komponentem są karty graficzne. W czasie trwania pracy posiadano swobodny dostęp do dwóch jednostek. Pierwszą jest komputer stacjonarny wyposażony w kartę graficzną \code{Nvidia RTX 2060} z 12 GB pamięci \code{VRAM}. Niestety posiadany procesor nie ma zintegrowanej karty graficznej, co powoduje, że wyświetlanie treści na monitorze zabiera prawie 2 GB i do wykorzystania dostępne jest jedynie 10 GB. Drugą jednostkę stanowi laptop \code{Lenovo ThinkPad} wyposażony w mobilną kartę \code{Nvidia RTX 3080}, posiadającą 16 GB pamięci, z czego całość jest dostępna do wykorzystania.
+
 
 \input{chapters/eksperymenty/ratsql}
 

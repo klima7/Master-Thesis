@@ -1,5 +1,5 @@
 \section{BRIDGE}
-\code{BRIDGE} jest to rozwiązanie, które zostało opublikowane w roku 2020 przez Xi Victoria Lin, Richarda Socher oraz Caiming Xiong \mycite{Lin2020}. Powstało więc nieco ponad rok po \code{RAT-SQL} i w odróżnieniu od niego generuje kompletne zapytania SQL z wartościami, co jest istotną zaletą. Jego kod źródłowy jest umieszczony na platformie Github \mycite{bridge-repository}.
+\code{BRIDGE} to rozwiązanie, które zostało opublikowane w roku 2020 przez Xi Victoria Lin, Richarda Socher oraz Caiming Xiong \mycite{Lin2020}. Powstało więc nieco ponad rok po \code{RAT-SQL} i w odróżnieniu od niego generuje kompletne zapytania SQL z wartościami, co jest istotną zaletą. Jego kod źródłowy jest umieszczony na platformie Github \mycite{bridge-repository}.
 
 \subsection{Działanie}
 Działanie \code{BRIDGE} znacząco odbiega od \code{RAT-SQL}. W tym przypadku wykorzystano enkodowanie oparte na serializacji informacji wejściowych do długiego tekstu i przekazaniu go do pretrenowanego modelu \code{BERT}. Dekodowanie opiera się natomiast na generowaniu słów jedno po drugim, zamiast generowania akcji tworzących drzewo \code{AST}. Na obu etapach zastosowano ciekawe techniki, które dodatkowo poprawiają skuteczność.
