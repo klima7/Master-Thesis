@@ -1,5 +1,5 @@
 \section{BRIDGE}
-\code{BRIDGE} to rozwiązanie, które zostało opublikowane w roku 2020 przez Xi Victorię Lin, Richarda Sochera oraz Caiming Xionga \mycite{Lin2020}. Powstało więc nieco ponad rok po \code{RAT-SQL} i w odróżnieniu od niego generuje kompletne zapytania SQL z wartościami, co jest istotną zaletą. Jego kod źródłowy jest umieszczony na platformie \code{GitHub} \mycite{bridge-repository}.
+\code{BRIDGE} to rozwiązanie, które zostało opublikowane w roku 2020 przez Xi Victorię Lin, Richarda Sochera oraz Caiming Xionga \mycite{Lin2020}. Powstało więc w podobnym czasie jak \code{RAT-SQL}, ale w odróżnieniu od niego generuje kompletne zapytania SQL z wartościami, co jest istotną zaletą. Jego kod źródłowy jest umieszczony na platformie \code{GitHub} \mycite{bridge-repository}.
 
 \subsection{Działanie}
 Działanie \code{BRIDGE} znacząco odbiega od \code{RAT-SQL}. W tym przypadku wykorzystano enkodowanie oparte na serializacji informacji wejściowych do długiego tekstu i przekazywaniu go do pretrenowanego modelu \code{BERT}. Dekodowanie opiera się natomiast na generowaniu słów jedno po drugim, zamiast generowania akcji tworzących drzewo \code{AST}. Na obu etapach zastosowano ciekawe techniki, które dodatkowo poprawiają skuteczność.
@@ -131,5 +131,5 @@ Metoda \code{BRIDGE} nie jest już tak popularna w literaturze jak \code{RAT-SQL
     \label{tab:bridge-translations-results}
 \end{table}
 
-Analizując dalej tabelę \ref{tab:bridge-difficulty} można zauważyć, że wyniki metryki \code{EM Without Values} są zawsze większe od \code{EM}, co z jednej strony jest oczywiste, ale warto to podkreślić. Różnica pomiędzy nimi wynosi średnio 5,6 punktów procentowych, co oznacza, że ponad pięć procent generowanych zapytań jest poprawnych pod względem struktury, lecz posiada błąd w przewidzianych wartościach. Widać więc, że generowanie wartości stanowi istotne wyzwanie. Dla \code{RESDSQL} aktualne są spostrzeżenia poczynione dla poprzedniego modelu, takie jak spadek skuteczności wraz ze wzrostem poziomu trudności, czy niższa dokładność w przypadku zbiorów pokrewnych.
+Analizując dalej tabelę \ref{tab:bridge-difficulty}, można zauważyć, że wyniki metryki \code{EM Without Values} są zawsze większe od \code{EM}, co z jednej strony jest oczywiste, ale warto to podkreślić. Różnica pomiędzy nimi wynosi średnio 5,6 punktów procentowych, co oznacza, że ponad pięć procent generowanych zapytań jest poprawnych pod względem struktury, lecz posiada błąd w przewidzianych wartościach. Widać więc, że generowanie wartości stanowi istotne wyzwanie. Dla \code{RESDSQL} aktualne są spostrzeżenia poczynione dla poprzedniego modelu, takie jak spadek skuteczności wraz ze wzrostem poziomu trudności, czy niższa dokładność w przypadku zbiorów pokrewnych.
 
