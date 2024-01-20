@@ -1,22 +1,20 @@
 \section{BRIDGE}
-\code{BRIDGE} to rozwiązanie, które zostało opublikowane w roku 2020 przez Xi Victoria Lin, Richarda Socher oraz Caiming Xiong \mycite{Lin2020}. Powstało więc nieco ponad rok po \code{RAT-SQL} i w odróżnieniu od niego generuje kompletne zapytania SQL z wartościami, co jest istotną zaletą. Jego kod źródłowy jest umieszczony na platformie Github \mycite{bridge-repository}.
+\code{BRIDGE} to rozwiązanie, które zostało opublikowane w roku 2020 przez Xi Victorię Lin, Richarda Sochera oraz Caiming Xionga \mycite{Lin2020}. Powstało więc nieco ponad rok po \code{RAT-SQL} i w odróżnieniu od niego generuje kompletne zapytania SQL z wartościami, co jest istotną zaletą. Jego kod źródłowy jest umieszczony na platformie \code{GitHub} \mycite{bridge-repository}.
 
 \subsection{Działanie}
-Działanie \code{BRIDGE} znacząco odbiega od \code{RAT-SQL}. W tym przypadku wykorzystano enkodowanie oparte na serializacji informacji wejściowych do długiego tekstu i przekazaniu go do pretrenowanego modelu \code{BERT}. Dekodowanie opiera się natomiast na generowaniu słów jedno po drugim, zamiast generowania akcji tworzących drzewo \code{AST}. Na obu etapach zastosowano ciekawe techniki, które dodatkowo poprawiają skuteczność.
+Działanie \code{BRIDGE} znacząco odbiega od \code{RAT-SQL}. W tym przypadku wykorzystano enkodowanie oparte na serializacji informacji wejściowych do długiego tekstu i przekazywaniu go do pretrenowanego modelu \code{BERT}. Dekodowanie opiera się natomiast na generowaniu słów jedno po drugim, zamiast generowania akcji tworzących drzewo \code{AST}. Na obu etapach zastosowano ciekawe techniki, które dodatkowo poprawiają skuteczność.
 
-Enkodowanie opiera się na skonstruowaniu sekwencji tekstowej zawierającej wszystkie nazwy tabel, gdzie po każdej nazwie tabeli znajduję się lista zawartych w niej kolumn. Na początku tej sekwencji doklejane jest dodatkowo rozpatrywane pytanie. Wcześniej wykonywany jest etap \code{schema linking} w celu znalezienia połączeń typu \code{value link} i odnalezione dopasowania w zawartości bazy danych są  wstawiane po nazwie odpowiedniej kolumny. W celu zachowania znaczenia poszczególnych części stworzonej sekwencji wykorzystywane są specjalne tokeny \code{[T]}, \code{[C]} oraz \code{[V]}, które są wstawiane odpowiednio przed każdą nazwą tabeli, kolumny i wartością. Stworzony tekst jest następnie przetwarzany przez model językowy \code{BERT} i dodane po nim dwie lekkie warstwy \code{LSTM}. W ten sposób uzyskiwane są wykorzystywane przez dekoder wektorowe reprezentacje wszystkich tabel, kolumn i pytania. Reprezentacje kolumn są jednak dodatkowo wzbogacane za pomocą trenowanych równolegle wektorów reprezentujących metainformację, takie jak bycie kluczem podstawowym, bycie kluczem obcym, czy posiadanie konkretnego typu danych. Łącznie podstawowych reprezentacji z tymi metainformacjami dokonuję się prostą warstwą liniową.
+Enkodowanie opiera się na skonstruowaniu sekwencji tekstowej zawierającej wszystkie nazwy tabel, gdzie po każdej nazwie tabeli znajduje się lista zawartych w niej kolumn. Na początku tej sekwencji doklejane jest dodatkowo rozpatrywane pytanie. Wcześniej wykonywany jest etap \code{schema linking} w celu znalezienia połączeń typu \code{value link} i odnalezione dopasowania w zawartości bazy danych są  wstawiane po nazwie odpowiedniej kolumny. W celu zachowania znaczenia poszczególnych części stworzonej sekwencji wykorzystywane są specjalne tokeny \code{[T]}, \code{[C]} oraz \code{[V]}, które są wstawiane odpowiednio przed każdą nazwą tabeli, kolumny i wartością. Stworzony tekst jest następnie przetwarzany przez model językowy \code{BERT} i dodane po nim dwie lekkie warstwy \code{LSTM}. W ten sposób uzyskiwane są wykorzystywane przez dekoder wektorowe reprezentacje wszystkich tabel, kolumn i pytania. Reprezentacje kolumn są jednak dodatkowo wzbogacane za pomocą trenowanych równolegle wektorów reprezentujących metainformacje, takie jak bycie kluczem podstawowym, bycie kluczem obcym, czy posiadanie konkretnego typu danych. Łącznie podstawowych reprezentacji z tymi metainformacjami dokonuje się prostą warstwą liniową.
 
-Wykorzystany dekoder generuje wyjściowe zapytanie słowo po słowie. Nie jest to jednak typowy dekoder, jak te wykorzystywane w modelach językowych, ponieważ na każdym kroku dekodowania poza wyprodukowaniem jednego tokena ze słownika może dokonać także kopiowania go z pytania lub spośród nazw tabel i kolumn. Aby umożliwić takie zachowanie standardowy dekoder bazujący na \code{LSTM} został połączony z siecią typu \code{pointer network} \mycite{Vinyals2015}, która potrafi wskazywać konkretne pozycje w sekwencjach wejściowych. Poza tym dekoder został nauczony w taki sposób, aby produkować zapytania w kolejności wykonywania, czyli takiej w której wykonałby je silnik bazodanowy. Powoduje to, że nazwy tabel generowane są przed nazwami kolumn i dzięki temu podczas generowania nazwy kolumny można ograniczyć się jedynie do kolumn dostępnych we wcześniej wymienionych tabelach.
+Wykorzystany dekoder generuje wyjściowe zapytanie słowo po słowie. Nie jest to jednak typowy dekoder, jak te wykorzystywane w modelach językowych, ponieważ na każdym kroku dekodowania, poza wyprodukowaniem jednego tokena ze słownika, może dokonać także kopiowania go z pytania lub spośród nazw tabel i kolumn. Aby umożliwić takie zachowanie standardowy dekoder, bazujący na \code{LSTM}, został połączony z siecią typu \code{Pointer Network} \mycite{Vinyals2015}, która potrafi wskazywać konkretne pozycje w sekwencjach wejściowych. Poza tym dekoder został nauczony w taki sposób, aby produkować zapytania w kolejności wykonywania, czyli takiej, w której wykonałby je silnik bazodanowy. Powoduje to, że nazwy tabel generowane są przed nazwami kolumn i dzięki temu podczas generowania nazwy kolumny można ograniczyć się jedynie do kolumn dostępnych we wcześniej wymienionych tabelach.
 
 \subsection{Modyfikacje dla języka polskiego}
 Przystosowanie \code{BRIDGE} do języka polskiego okazało się znacznie prostsze niż to było w przypadku \code{RAT-SQL}. Tutaj również pracę rozpoczęto od uruchomienia oryginalnego rozwiązania, więc napisano plik \code{Dockerfile}, który tworzy obraz dockerowy zawierający kompletne środowisko. Jedynym problemem okazał się brak wśród zależności projektu biblioteki \code{numpy}, która była wykorzystywana. Naprawiono to poprzez dodanie odpowiedniej linii kodu.
 
-Jedyną ważną modyfikacją dla języka polskiego, której dokonano, jest zmiana wykorzystywanego modelu \code{BERT} z wariantu \code{bert-large-uncased} na \code{bert-base-multilingual-uncased}. Zmiana ta jest bardzo podobna do tej zaaplikowanej w \code{RAT-SQL}. Uzasadnienie również jest podobne: zmieniono model na wersję wielojęzyczną, by poradziła sobie z językiem polskim oraz wykorzystano wersję mniejszą, by umożliwić naukę na posiadanym sprzęcie. 
+Jedyną ważną modyfikacją dla języka polskiego okazała się zmiana wykorzystywanego modelu \code{BERT} z wariantu \code{bert-large-uncased} na \code{bert-base-multilingual-uncased}. Oba dostępne są na platformie \code{Hugging Face}. Jest to bardzo podobne do zmiany zaaplikowanej w \code{RAT-SQL}. Uzasadnienie również jest podobne: zmieniono model na wielojęzyczny, by poradził sobie z językiem polskim oraz na mniejszy, by umożliwić naukę na posiadanym sprzęcie. 
 
 \subsection{Eksperymenty}
-W ramach eksperymentów postanowiono dokonać treningu modelu \code{BRIDGE} i go przetestować. Nauki postanowiono dokonać na zbiorze \code{pol-spider-mix}, ponieważ wcześniej przeprowadzone eksperymenty z \code{RAT-SQL} pokazały, że model nauczony na połączonym zbiorze polskim i angielskim nauczył się lepiej. Oczywiście nie można założyć na tej podstawie, że każdy jeden model uczony na połączonym zbiorze będzie skuteczniejszy. Można jednak przypuszczać, że zwykle tak jest.
-
-Model uczono przez 36 godzin, a zaimplementowany wewnątrz procedury treningu kod dokonywał w tym czasie regularnego obliczania metryki \code{exact set match without values} na części testowej zbioru \code{pol-spider}. Wykres przedstawiający jak zmieniała się wartość tej metryki na przestrzeni czasu przedstawiono na rysunku \ref{plot:bridge-accuracy}. Na wykresie tym widać, że skuteczność modelu rosła wyraźnie przez połowę czasu treningu, a w drugiem połowie już nie widać tendencji wzrostowej -- dlatego naukę postanowiono przerwać. Jako finalny został wybrany model w punkcie w którym wartość wspomnianej metryki była najwyższa.
+W ramach eksperymentu chciano dokonać treningu modelu \code{BRIDGE} i go przetestować. Nauki dokonano na zbiorze \code{pol-spider-mix}, ponieważ wcześniej przeprowadzone eksperymenty z \code{RAT-SQL} pokazały, że model trenowany na połączonym zbiorze polskim i angielskim nauczył się lepiej. Oczywiście nie można założyć na tej podstawie, że każdy model uczony na połączonym zbiorze będzie skuteczniejszy. Można jednak przypuszczać, że zwykle tak jest.
 
 \begin{figure}[ht!]
   \begin{center}
@@ -27,24 +25,26 @@ Model uczono przez 36 godzin, a zaimplementowany wewnątrz procedury treningu ko
         xmin=0, xmax=37,
         grid=major,
         xlabel={Czas treningu [godziny]},
-        ylabel=EM without values,
+        ylabel={EM Without Values [\%]},
       ]
-        \addplot table[x=time,y=dev_exact_match,col sep=comma] {plots/bridge_training.csv}; 
+        \addplot table[x=time,y expr=\thisrow{dev_exact_match} * 100,col sep=comma] {plots/bridge_training.csv}; 
       \end{axis}
     \end{tikzpicture}
-    \caption{Wyniki metryki \code{EM} na części testowej zbioru \code{pol-spider} w czasie trwania treningu modelu}
+    \lcaption{Wyniki modelu \code{BRIDGE} w czasie trwania treningu}{Model sprawdzano na części testowej zbioru \mbox{\code{pol-spider}}.}
     \label{plot:bridge-accuracy}
   \end{center}
 \end{figure}
 
+Model uczono przez 36 godzin na jednostce wyposażonej w kartę \code{Nvidia RTX 3080}, a zaimplementowany wewnątrz procedury treningu kod dokonywał w tym czasie regularnego obliczania metryki \code{EM Without Values} na części testowej zbioru \code{pol-spider}. Wykres przedstawiający zmianę wartości tej metryki na przestrzeni czasu przedstawiono na rysunku \ref{plot:bridge-accuracy}. Na wykresie widać, że skuteczność modelu rosła wyraźnie przez połowę czasu treningu, a w drugiej połowie już nie widać tendencji wzrostowej -- dlatego naukę postanowiono przerwać. Jako finalny został wybrany model z punktu, w którym wartość wspomnianej metryki była najwyższa.
+
 \subsection{Wyniki}
-Wyniki przeprowadzonego eksperymentu przedstawiono w tabeli \ref{tab:bridge-difficulty}. Jest ona znacznie bardziej rozbudowana niż to było w przypadku rozwiązania \code{RAT-SQL}, ponieważ ten model zwraca zapytania z wartościami. Możliwe więc stało się obliczenie metryk \code{EM with values} oraz \code{EX}.
+Wyniki przeprowadzonego eksperymentu przedstawiono w tabeli \ref{tab:bridge-difficulty}. Jest ona znacznie bardziej rozbudowana niż to było w przypadku rozwiązania \code{RAT-SQL}, ponieważ ten model zwraca zapytania z wartościami. Możliwe więc stało się obliczenie metryk \code{EM} oraz \code{EX}.
 
 \begin{table}[H]
     \centering
     \begin{tabular}{|l|r|r|r|r|r|}
         \hline
-        \thead{Zbiór} & \thead{Easy} & \thead{Medium} & \thead{Hard} & \thead{Extra} & \thead{Razem} \\
+        \thead{Zbiór} & \thead{Easy} & \thead{Medium} & \thead{Hard} & \thead{Extra Hard} & \thead{Razem} \\
         \hline
         pol-spider & 
         \threevals{79,4}{71,2}{82,9} &
@@ -106,14 +106,14 @@ Wyniki przeprowadzonego eksperymentu przedstawiono w tabeli \ref{tab:bridge-diff
         
         \hline
     \end{tabular}
-    \caption{Wyniki modelu \code{BRIDGE} na poszczególnych zbiorach. Wartości w każdej komórce posiadają format EM \slashsep{ EM with values} \slashsep{ EX}}
+    \lcaption{Wyniki modelu \code{BRIDGE} na poszczególnych zbiorach}{Wartości w każdej komórce posiadają format \mbox{EM Without Values / EM / EX}}
     \label{tab:bridge-difficulty}
 \end{table}
 
 \subsection{Analiza}
-Zestawiając ze sobą wyniki osiągnięte metodą \code{BRIDGE} oraz \code{RAT-SQL} trudno jest wskazać pod względem metryki \code{EM without values} model lepszy. Na częściach testowych wszystkich wariantów zbioru \code{Spider} analizowany teraz model \code{BRIDGE} okazuję się działać lepiej. Na zbiorach pokrewnych \code{pol-spiderdk}, \code{pol-sparc} oraz \code{pol-cosql} jednak to \code{RAT-SQL} jest skuteczniejszy. Można z tego wyciągnąć wniosek, że \code{BRIDGE} sprawdza się lepiej, jeżeli trenowany i testowany jest na podobnych danych. \code{RAT-SQL} wydaje się natomiast posiadać bardziej rozwiniętą umiejętność generalizacji i wykorzystania wiedzy domenowej, przez co osiąga lepsze wyniki na zbiorach wyraźnie odbiegających od treningowego. 
+Zestawiając ze sobą wyniki osiągnięte metodą \code{BRIDGE} oraz \code{RAT-SQL} trudno jest wskazać pod względem metryki \code{EM Without Values}, która jest jedyną wspólną, model lepszy. Na częściach testowych wszystkich wariantów zbioru \code{Spider} analizowany teraz model \code{BRIDGE} okazuję się działać lepiej. Na zbiorach pokrewnych \code{pol-spiderdk}, \code{pol-sparc} oraz \code{pol-cosql} jednak to \code{RAT-SQL} jest skuteczniejszy. Można z tego wyciągnąć wniosek, że \code{BRIDGE} sprawdza się lepiej, jeżeli trenowany i testowany jest na podobnych danych. \code{RAT-SQL} wydaje się natomiast posiadać bardziej rozwiniętą umiejętność generalizacji i wykorzystania wiedzy domenowej, przez co osiąga lepsze wyniki na zbiorach wyraźnie odbiegających od treningowego. 
 
-Metoda \code{BRIDGE} nie jest już tak popularna w literaturze jak \code{RAT-SQL} i eksperymenty z jej wykorzystaniem przeprowadzili jedynie autorzy rosyjskiego tłumaczenia zbioru \code{Spider}, czyli autorzy zbioru \code{PAUQ}. Zestawienie osiągniętych przez nich wyników z niniejszymi przedstawiono w tabeli \ref{tab:bridge-translations-results}. Widać, że zgodnie z metryką \code{EM} na zbiorze polskim udało się osiągnąć wyniki nieco lepsze. Jednym z możliwych powodów jest przypuszczalnie wyższy stopień skomplikowania języka rosyjskiego. Różnica w wynikach metryki \code{EX} jest natomiast znacznie większa i co zaskakujące, dla odmiany na korzyść zbioru rosyjskiego. Przyczyną tego jest pewne zakłamanie metryki \code{EX} dla języka polskiego, o czym wcześniej wspomniano. W pełni uzasadnione jej zaaplikowanie wymagałoby bowiem przetłumaczenia zawartości wszystkich baz danych, czego dla polskiego zbioru nie zrobiono, a w przypadku zbioru rosyjskiego zostało to dokonane częściowo. Generalnie przedstawione zestawienie stanowi potwierdzenie tego, że modyfikacji metody \code{BRIDGE} dla języka polskiego dokonano poprawnie.
+Metoda \code{BRIDGE} nie jest już tak popularna w literaturze jak \code{RAT-SQL} i eksperymenty z jej wykorzystaniem przeprowadzili jedynie autorzy rosyjskiego tłumaczenia zbioru \code{Spider}, czyli autorzy \code{PAUQ}. Zestawienie osiągniętych przez nich wyników z niniejszymi przedstawiono w tabeli \ref{tab:bridge-translations-results}. Widać, że zgodnie z metryką \code{EM Without Values} na zbiorze polskim udało się osiągnąć rezultaty nieco lepsze. Możliwą przyczyną jest przypuszczalnie większa liczba danych polskich, na których wielojęzyczny model \code{BERT} był trenowany, albo też wyższy stopień skomplikowania języka rosyjskiego. Różnica w wynikach metryki \code{EX} jest natomiast bardzo duża, na korzyść zbioru polskiego. Przyczyną tego jest pewne zakłamanie metryki \code{EX} dla języka polskiego, o czym wcześniej wspomniano. W pełni uzasadnione jej zaaplikowanie wymagałoby bowiem przetłumaczenia zawartości wszystkich baz danych, czego dla polskiego zbioru nie zrobiono, a w przypadku \code{PAUQ} zostało dokonane częściowo. Szczególnie więc w tym przypadku, ze względu tłumaczenia zawartości baz w tylko jednym zbiorze, względnym wartościom metryki \code{EX} nie należy zbytnio ufać. Mimo wszystko przedstawione zestawienie stanowi potwierdzenie tego, że modyfikacji metody \code{BRIDGE} dla języka polskiego dokonano poprawnie.
 
 \begin{table}[ht!]
     \centering
@@ -124,12 +124,12 @@ Metoda \code{BRIDGE} nie jest już tak popularna w literaturze jak \code{RAT-SQL
         \multirow{2}{*}{} & \thead{Tłumaczenie} & \thead{Tłumaczenie\\ + angielski} \\
         \hline
         \multicolumn{1}{|l|}{Rosyjskie (\code{PAUQ})} & \twovals{52,0}{48,0} & \twovals{55,0}{50,0} \\
-        \multicolumn{1}{|l|}{Polskie (\code{Pol-Spider})} & \twovals{---}{---} & \twovals{57,6}{69,1} \\
+        \multicolumn{1}{|l|}{Polskie (\code{Pol-Spider})} & \twovals{\varendash[20pt]}{\varendash[20pt]} & \twovals{57,6}{69,1} \\
         \hline
     \end{tabular}
-    \caption{Zestawienie wyników osiągniętych przez model \code{BRIDGE} dla różnych tłumaczeń zbioru \code{Spider} i zbiorów treningowych}
+    \lcaption{Zestawienie wyników modelu \code{BRIDGE} dla polskiego i rosyjskiego tłumaczenia}{Komórki tabeli zawierają wyniki metryk w formacie EM Without Values / EX.}
     \label{tab:bridge-translations-results}
 \end{table}
 
-Analizując dalej tabelę \ref{tab:bridge-difficulty} można zauważyć, że wyniki metryki \code{EM with values} są mniejsze od \code{EM without values}, co jest oczywiście spodziewane i zawsze tak być powinno. Różnica pomiędzy nimi wynosi średnio 5,6 punktów procentowych, co oznacza, że ponad pięć procent generowanych zapytań jest poprawnych pod względem struktury, lecz posiada błąd w przewidzianych wartościach. Widać więc, że generowanie wartości stanowi istotne wyzwanie. Dla \code{RESDSQL} aktualne są również spostrzeżenia poczynione dla poprzedniego modelu, takie jak spadek skuteczności wraz ze wzrostem poziomu trudności, czy niższa dokładność w przypadku zbiorów pokrewnych.
+Analizując dalej tabelę \ref{tab:bridge-difficulty} można zauważyć, że wyniki metryki \code{EM Without Values} są zawsze większe od \code{EM}, co z jednej strony jest oczywiste, ale warto to podkreślić. Różnica pomiędzy nimi wynosi średnio 5,6 punktów procentowych, co oznacza, że ponad pięć procent generowanych zapytań jest poprawnych pod względem struktury, lecz posiada błąd w przewidzianych wartościach. Widać więc, że generowanie wartości stanowi istotne wyzwanie. Dla \code{RESDSQL} aktualne są spostrzeżenia poczynione dla poprzedniego modelu, takie jak spadek skuteczności wraz ze wzrostem poziomu trudności, czy niższa dokładność w przypadku zbiorów pokrewnych.
 

@@ -49,6 +49,11 @@
 % Cytowanie
 \newcommand{\mycite}[1]{({\color{citation_color}\cite{#1}})}
 
+% Pozioma linia o danej długości
+\newcommand{\varendash}[1][5pt]{%
+  \makebox[#1]{\leaders\hbox{--}\hfill\kern0pt}%
+}
+
 % Komendy do automatycznie sortujących się list
 \newcommand{\sortitem}[2][\relax]{%
   \DTLnewrow{list}
