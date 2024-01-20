@@ -6,17 +6,17 @@ Sposób działania \code{C3} istotnie odbiega od funkcjonowania opisywanych wcze
 
 W celu przewidzenia kompletnego zapytania SQL model \code{GPT-3.5-Turbo} jest wykorzystywany trzykrotnie. W pierwszej kolejności przekazywane jest mu pytanie wraz ze schematem bazy danych i proszony jest o zwrócenie nazw tabel posortowanych względem istotności. W drugim kroku w instrukcji wejściowej przekazywane jest pytanie, cztery najistotniejsze tabele wraz z kolumnami oraz relacje między nimi i model proszony jest o posortowanie kolumn w obrębie każdej tabeli od najbardziej do najmniej istotnej. Ostatecznie do \code{GPT-3.5-Turbo} przekazywane jest pytanie, elementy schematu uznane za istotne, klucze obce oraz wartości z bazy danych znalezione w procesie \code{schema linking} i jest on proszony o wygenerowanie gotowego zapytania.
 
-Podczas tworzenia \code{C3} wykorzystano 3 istotne techniki od których model wziął swoją nazwę. Określono jest bowiem jako \code{\underline{C}lear Prompting}, \code{\underline{C}alibration with Hints} oraz \code{\underline{C}onsistent Output}. Pierwsza z nich polega na tworzeniu instrukcji wejściowych o przejrzystym układzie i zamieszczaniu w nich jedynie elementów najważniejszych. Druga sprowadza się do obserwacji odchyleń względem oczekiwań w odpowiedziach modelu językowego i podawaniu we wcześniejszej konwersacji wskazówek, które to korygują. Ostatnia technika oznacza intensywne wykorzystanie strategii nazywanej \code{self-consistency} \mycite{Wang2022Consistency}. Jest ona związana z faktem, że odpowiedzi modeli językowych nie są deterministyczne -- przekazywanie tych samych informacji wejściowych zwykle skutkuje różnymi odpowiedziami. W związku z tym często dobrym pomysłem jest podanie do modelu tych samych informacji kilka razy, zebranie wszystkich odpowiedzi i wyłonienie spośród nich tej najczęstszej.
+Podczas tworzenia \code{C3} wykorzystano 3 istotne techniki, od których model wziął swoją nazwę. Określono jest bowiem jako \code{\underline{C}lear Prompting}, \code{\underline{C}alibration with Hints} oraz \code{\underline{C}onsistent Output}. Pierwsza z nich polega na tworzeniu instrukcji wejściowych o przejrzystym układzie i zamieszczaniu w nich jedynie elementów najważniejszych. Druga sprowadza się do obserwacji odchyleń względem oczekiwań w odpowiedziach modelu językowego i podawaniu we wcześniejszej konwersacji wskazówek, które to korygują. Ostatnia technika oznacza intensywne wykorzystanie strategii nazywanej \code{self-consistency} \mycite{Wang2022Consistency}. Jest ona związana z faktem, że odpowiedzi modeli językowych nie są deterministyczne -- przekazywanie tych samych informacji wejściowych zwykle skutkuje różnymi odpowiedziami. W związku z tym często dobrym pomysłem jest podanie do modelu tych samych informacji kilka razy, zebranie wszystkich odpowiedzi i wyłonienie spośród nich tej najczęstszej.
 
 \subsection{Modyfikacje dla języka polskiego}
 Z punktu widzenia przystosowania \code{C3} do języka polskiego najistotniejsza była modyfikacja promptów, czyli instrukcji wejściowych do modelu językowego. Poza tym, tak jak w przypadku \code{RAT-SQL}, należało zamienić wyrazy \code{stop words} z angielskich na polskie. Są one wykorzystywane na etapie \code{schema linking} podczas poszukiwania połączeń \code{value link}.
 
-Modyfikacji promptów można było dokonać tego na różne sposoby i rozważono kilka z nich. Pierwszą możliwością jest przetłumaczenie ich w całości na język polski. Wymaga to jednak całkowitej modyfikacji i w związku z tym wysiłek twórców \code{C3} włożony w ich dopracowanie jest w dużym stopniu tracony. Poza tym modele językowe są uczone w większości na danych angielskich i to dla nich osiągają najlepsze wyniki. Drugim z rozważanych podejść był kompletny brak tłumaczenia promptów. Nagłe pojawienie się polskiego pytania oraz elementów schematu w instrukcji wejściowej wydaje się jednak być dość nietypowe i niespodziewane, co przypuszczalnie może pogarszać zwracane wyniki. Z wymienionych powodów zdecydowano się pozostawić prompty w języku angielskim, lecz wprowadzić w nich kilka delikatnych modyfikacji. W instrukcjach służących do znalezienia istotnych tabel i kolumn słowo \textit{question} określono przymiotnikiem \textit{polish}. W instrukcji służącej do finalnego generowania zapytania zrobiono to samo ze słowem \textit{databases}, przetłumaczono dwa przykładowe pytania na język polski oraz dodano zdanie mówiące, że pytanie zostanie dostarczone w języku polskim. Zmodyfikowane prompty z zaznaczonymi zmianami można znaleźć w dodatku \ref{extra:c3-prompts}. Bez wątpienia ciekawym byłoby eksperymentalne zbadanie skuteczności każdego z przedstawionych sposobów modyfikacji instrukcji, lecz byłoby to również kosztowne.
+Modyfikacji promptów można dokonać na różne sposoby i rozważono kilka z nich. Pierwszą jest przetłumaczenie w całości na język polski. Wymaga to jednak całkowitej modyfikacji i w związku z tym wysiłek twórców \code{C3} włożony w ich dopracowanie jest w dużym stopniu tracony. Poza tym modele językowe są uczone w większości na danych angielskich i to dla nich osiągają najlepsze wyniki. Drugim z rozważanych podejść był kompletny brak tłumaczenia promptów. Nagłe pojawienie się polskiego pytania oraz elementów schematu w instrukcji wejściowej wydaje się jednak być dość nietypowe, co przypuszczalnie może pogarszać zwracane wyniki. Z wymienionych powodów zdecydowano się pozostawić prompty w języku angielskim, lecz wprowadzić w nich delikatne modyfikacje. W instrukcjach służących do znalezienia istotnych tabel i kolumn słowo \code{question} określono przymiotnikiem \code{polish}. W instrukcji służącej do finalnego generowania zapytania zrobiono to samo ze słowem \code{databases}, przetłumaczono dwa przykładowe pytania na język polski oraz dodano zdanie mówiące, że pytanie zostanie dostarczone w języku polskim. Zmodyfikowane prompty z zaznaczonymi zmianami można znaleźć w dodatku \ref{extra:c3-prompts}. Bez wątpienia ciekawym byłoby eksperymentalne zbadanie skuteczności każdego z przedstawionych sposobów modyfikacji instrukcji, lecz byłoby to również kosztowne.
 
 \subsection{Eksperymenty}
-Zmodyfikowane w powyżej opisany sposób rozwiązanie \code{C3} chciano przetestować na tych samych zbiorach co wszystkie wcześniejsze. Problem stanowią w tym przypadku jednak koszty naliczane przez \code{OpenAI} za wykorzystanie modelu \code{GPT-3.5-Turbo}, które są znaczące. Aby temu sprostać postanowiono skonstruować mniejsze odpowiedniki potrzebnych zbiorów. Poszczególne próbki wybrano przy tym tak, aby pod względem rozkładu poziomów trudności zapytań SQL zbiory mniejsze jak najdokładniej odpowiadały oryginalnym. W przypadku zbiorów zawierających elementy schematu zarówno w języku polskim i angielskim zadbano także o to, aby proporcje pomiędzy tymi częściami nie uległy zmianie. Zbiory ze schematem w jednym języku postanowiono zredukować do 50 przykładów, natomiast z dwujęzycznymi schematami do 100 przykładów. 
+Zmodyfikowane w powyżej opisany sposób rozwiązanie \code{C3} chciano przetestować na tych samych zbiorach, co wszystkie wcześniejsze. Problem stanowią w tym przypadku jednak koszty naliczane przez \code{OpenAI} za wykorzystanie modelu \code{GPT-3.5-Turbo}, które są znaczące. Aby temu sprostać postanowiono skonstruować mniejsze odpowiedniki posiadanych zbiorów. Poszczególne próbki wybrano przy tym tak, aby pod względem rozkładu poziomów trudności zapytań SQL zbiory mniejsze jak najdokładniej odpowiadały oryginalnym. W przypadku zbiorów zawierających elementy schematu zarówno w języku polskim i angielskim zadbano także o to, aby proporcje pomiędzy tymi częściami nie uległy zmianie. Zbiory ze schematem w jednym języku postanowiono zredukować do 50 przykładów, natomiast z dwujęzycznymi schematami do 100 przykładów. 
 
-Wykonanie ewaluacji na wybranych pięciuset przykładach spowodowało naliczenie kwoty około 10 dolarów, czyli w przybliżeniu 40 złotych. W przeliczeniu na jedno pytanie daje to około 8 groszy. Względnie wysokie koszty są w dużym stopniu spowodowane wykorzystaniem wspomnianego mechanizmu \code{self-consistency}, który wymaga odpytywania modelu językowego wielokrotnie o to samo. 
+Wykonanie ewaluacji na wybranych pięciuset przykładach spowodowało naliczenie kwoty około 10 dolarów, czyli w przybliżeniu 40 złotych. W przeliczeniu na jedno pytanie daje to około 8 groszy. Względnie wysokie koszty są w dużym stopniu spowodowane wykorzystaniem wspomnianego mechanizmu \code{self-consistency}, który wymaga odpytywania modelu językowego wielokrotnie o to samo. Modyfikacja paru parametrów umożliwia zmniejszenie liczby tych odpytań, lecz autorzy metody pokazują w artykule, że wpływa to bezpośrednio na dokładność.
 
 \subsection{Wyniki}
 Wyniki wykonanej ewaluacji przedstawiono w tabeli \ref{tab:c3sql-difficulty}. Mają one format podobny do wcześniejszych, lecz ze względu na małą liczność zbiorów podawanie części ułamkowej poszczególnych metryk było bezzasadne. W nazwach zbiorów zawarto liczbę znajdujących się w nich przykładów.
@@ -25,76 +25,76 @@ Wyniki wykonanej ewaluacji przedstawiono w tabeli \ref{tab:c3sql-difficulty}. Ma
     \centering
 
 
-    \begin{tabular}{|l|r|r|r|r|r|}
+    \begin{tabular}{|l|R{0.13\textwidth}|R{0.13\textwidth}|R{0.13\textwidth}|R{0.135\textwidth}|R{0.13\textwidth}|}
         \hline
-        \thead{Zbiór} & \thead{Easy} & \thead{Medium} & \thead{Hard} & \thead{Extra} & \thead{Razem} \\
+        \thead{Zbiór} & \thead{Easy} & \thead{Medium} & \thead{Hard} & \thead{Extra Hard} & \thead{Razem} \\
         \hline
         Pol-Spider-100 & 
-        \threevals{54}{54}{83} &
-        \threevals{43}{43}{91} &
-        \threevals{44}{38}{44} &
-        \threevals{13}{13}{75} &
-        \threevals{41}{40}{79} \\
+        \threevalsx{54}{54}{83} &
+        \threevalsx{43}{43}{91} &
+        \threevalsx{44}{38}{44} &
+        \threevalsx{13}{13}{75} &
+        \threevalsx{41}{40}{79} \\
         
         Pol-Spider-PL-50 &
-        \threevals{58}{58}{83} &
-        \threevals{50}{50}{91} &
-        \threevals{38}{38}{63} &
-        \threevals{13}{13}{75} &
-        \threevals{44}{44}{82} \\
+        \threevalsx{58}{58}{83} &
+        \threevalsx{50}{50}{91} &
+        \threevalsx{38}{38}{63} &
+        \threevalsx{13}{13}{75} &
+        \threevalsx{44}{44}{82} \\
         
         Pol-Spider-EN-50 &
-        \threevals{50}{50}{83} &
-        \threevals{36}{36}{91} &
-        \threevals{50}{38}{25} &
-        \threevals{13}{13}{75} &
-        \threevals{38}{36}{76} \\
+        \threevalsx{50}{50}{83} &
+        \threevalsx{36}{36}{91} &
+        \threevalsx{50}{38}{25} &
+        \threevalsx{13}{13}{75} &
+        \threevalsx{38}{36}{76} \\
         
         \hline
         
         Pol-Spidersyn-100 &
-        \threevals{32}{32}{55} &
-        \threevals{39}{36}{61} &
-        \threevals{28}{27}{56} &
-        \threevals{0}{0}{38} &
-        \threevals{29}{28}{55} \\
+        \threevalsx{32}{32}{55} &
+        \threevalsx{39}{36}{61} &
+        \threevalsx{28}{27}{56} &
+        \threevalsx{\s0}{\s0}{38} &
+        \threevalsx{29}{28}{55} \\
         
         Pol-Spiderdk-100 &
-        \threevals{100}{75}{75} &
-        \threevals{50}{48}{59} &
-        \threevals{36}{36}{79} &
-        \threevals{15}{15}{50} &
-        \threevals{51}{45}{63} \\
+        \threevalsx{100}{75}{75} &
+        \threevalsx{50}{48}{59} &
+        \threevalsx{36}{36}{79} &
+        \threevalsx{15}{15}{50} &
+        \threevalsx{51}{45}{63} \\
         
         Pol-Sparc-100 &
-        \threevals{61}{61}{79} &
-        \threevals{22}{18}{68} &
-        \threevals{0}{0}{50} &
-        \threevals{0}{0}{0} &
-        \threevals{46}{45}{73} \\
+        \threevalsx{61}{61}{79} &
+        \threevalsx{22}{18}{68} &
+        \threevalsx{\s0}{\s0}{50} &
+        \threevalsx{\s0}{\s0}{\s0} &
+        \threevalsx{46}{45}{73} \\
         
         Pol-Cosql-100 &
-        \threevals{62}{56}{87} &
-        \threevals{31}{31}{77} &
-        \threevals{29}{22}{36} &
-        \threevals{0}{0}{50} &
-        \threevals{44}{40}{74} \\
+        \threevalsx{62}{56}{87} &
+        \threevalsx{31}{31}{77} &
+        \threevalsx{29}{22}{36} &
+        \threevalsx{\s0}{\s0}{50} &
+        \threevalsx{44}{40}{74} \\
         
         \hline
     \end{tabular}
-    \caption{Wyniki modelu \code{C3} na poszczególnych zbiorach. Wartości w każdej komórce posiadają format EM \slashsep{ EM with values} \slashsep{ EX}}
+    \lcaption{Wyniki modelu \code{C3} na poszczególnych zbiorach}{Wartości w każdej komórce posiadają format \mbox{EM Without Values / EM / EX}.}
 \label{tab:c3sql-difficulty}
     
     
 \end{table}
 
 \subsection{Analiza}
-Zgodnie z publicznym rankingiem zbioru \code{Spider} analizowane teraz rozwiązanie jest spośród wszystkich w tej pracy omawianych najlepsze pod kątem metryki EX. Przeprowadzone eksperymenty to potwierdzają. Najlepsze wyniki nie zostały osiągnięte jedynie w przypadku zbioru \code{Pol-Spidersyn}, lecz również są dość wysokie.
+Zgodnie z rankingiem zbioru \code{Spider} analizowane teraz rozwiązanie jest spośród wszystkich w tej pracy omawianych najlepsze pod kątem metryki \code{EX}. Przeprowadzone eksperymenty to potwierdzają. Najlepsze wyniki nie zostały osiągnięte jedynie w przypadku zbioru \code{Pol-Spidersyn}, lecz również są dość wysokie.
 
-Wartość metryki \code{EM} osiągnęła z drugiej strony zaskakująco niską wartość. Pod jej kątem \code{C3} wydaje się być najgorszym z analizowanych rozwiązań. Skąd wynika tak duża rozbieżność? Powodem jest prawdopodobnie fakt, że metryka \code{EM} dokonuje strukturalnego porównania przewidzianych i wzorowych zapytania, a ten sam cel może być realizowany przez dwa całkowicie różne zapytania SQL. W przypadku wcześniejszych rozwiązań problem ten nie był tak widoczny, ponieważ były one uczone na części treningowej i w związku z tym nauczyły się bardziej preferować pewne sposoby generowania zapytań od innych. \code{C3} produkuje za to zapytania w sposób znacznie bardziej swobodny, co powoduje problemy ze wstrzeleniem się w oczekiwaną odpowiedź, co nie oznacza, że jest ona błędna. 
+Wartość metryki \code{EM} osiągnęła z drugiej strony zaskakująco niską wartość. Pod jej kątem \code{C3} wydaje się być najgorszym z analizowanych rozwiązań. Skąd wynika tak duża rozbieżność? Powodem jest prawdopodobnie fakt, iż metryka \code{EM} dokonuje strukturalnego porównania wzorcowych i przewidzianych  zapytań, a ten sam cel może być realizowany przez dwa zapytania całkowicie różne. W przypadku wcześniejszych rozwiązań problem ten nie był tak widoczny, ponieważ były one uczone na części treningowej i w związku z tym nauczyły się bardziej preferować pewne sposoby generowania zapytań od innych. \code{C3} produkuje za to zapytania w sposób znacznie bardziej swobodny, co powoduje problemy ze wstrzeleniem się w oczekiwaną odpowiedź. Nie oznacza to jednak, że jest ona błędna. 
 
-Słusznie może pojawić się obawa, że otrzymywane z wykorzystaniem \code{C3} wyniki ewaluacji nie są wiarygodne. Przypuszczalnie model językowy \code{GPT-3.5-Turbo} mógł bowiem być trenowany na wykorzystywanych podczas ewaluacji danych lub im podobnych i w związku z tym osiągać w testach zawyżone wyniki. Sytuacja taka nazywana jest wyciekiem danych. Dane treningowe nie mogły zawierać przykładów identycznych, gdyż żadne polskie tłumaczenie zbioru \code{Spider} wcześniej nie istniało. Artykuł \bibtitle{Rethinking Benchmark and Contamination for Language Models with Rephrased Samples} \mycite{Yang2023} wskazuje jednak, że kontaminacja może zostać wprowadzona do zbioru treningowego za pomocą tłumaczeń na inne języki, tak więc angielski zbiór \code{Spider} oraz jego istniejące już tłumaczenia mogą stanowić zagrożenie dla rzetelności testów.
+Słusznie może pojawić się obawa, że otrzymywane z wykorzystaniem \code{C3} wyniki ewaluacji nie są wiarygodne. Przypuszczalnie model językowy \code{GPT-3.5-Turbo} mógł bowiem być trenowany na wykorzystywanych podczas ewaluacji danych lub im podobnych i w związku z tym osiągać w testach zawyżone wyniki. Sytuacja taka nazywana jest wyciekiem danych. Zbiory treningowe nie mogły zawierać przykładów identycznych, gdyż żadne polskie tłumaczenia zbioru \code{Spider} wcześniej nie istniały. Artykuł \bibtitle{Rethinking Benchmark and Contamination for Language Models with Rephrased Samples} \mycite{Yang2023} wskazuje jednak, że kontaminacja może zostać wprowadzona do zbioru treningowego także poprzez tłumaczenia na inne języki. Z tego powodu angielski zbiór \code{Spider} oraz jego istniejące już tłumaczenia mogą stanowić zagrożenie dla rzetelności testów.
 
-Jeśli chodzi o publiczny ranking zbioru \code{Spider}, to takiej obawy nie ma, ponieważ część testowa jest utajona i nie ma możliwości, aby \code{OpenAI} nawet przez przypadek dopuściło do dołączenia tych danych do zbioru treningowego. W niniejszej pracy, jak też wielu innych, z powodu braku dostępności części testowej jej rolę przejmuję publicznie dostępna część pierwotnie nazwana walidacyjną, więc obawa o wyciek danych staje się realna. Zgodnie z artykułem wprowadzającym model \code{GPT-3} \mycite{Brown2020} (wraz z udostępnieniem \code{GPT-3.5} nie został wydany kolejny) \code{OpenAI} dokonuje usuwania ze zbioru treningowego danych pokrywających się z wykorzystywanymi przez nich zbiorami testowymi. Swojego modelu nie testowali na zbiorze \code{Spider}, więc prawdopodobnie specjalne wysiłki nie zostały podjęte w celu wykluczenia tych danych z treningu. Trzeba się więc liczyć z tym, że dane przedstawione w powyższej tabeli mogą być zawyżone.
+Jeśli chodzi o ranking zbioru \code{Spider}, to takiej obawy nie ma, ponieważ część testowa jest utajona i nie ma możliwości, aby \code{OpenAI}, nawet przez przypadek, dopuściło do dołączenia tych danych do zbioru treningowego. W niniejszej pracy, jak też wielu innych, z powodu braku dostępności części testowej jej rolę przejmuję publicznie dostępna część pierwotnie nazwana walidacyjną, więc obawa o wyciek danych staje się realna. Zgodnie z artykułem wprowadzającym model \mbox{\code{GPT-3}} \mycite{Brown2020} \code{OpenAI} dokonuje usuwania ze zbioru treningowego danych pokrywających się z wykorzystywanymi przez nich zbiorami testowymi. Swojego modelu nie testowali na zbiorze \code{Spider}, więc prawdopodobnie specjalne wysiłki nie zostały podjęte w celu wykluczenia tych danych z treningu. Trzeba się więc liczyć z tym, że dane przedstawione w powyższej tabeli mogą być zawyżone.
 
-W przypadku \code{C3} należy zaakcentować dość długi czas potrzebny na wygenerowanie odpowiedzi na dostarczone pytania, ponieważ dla każdego wymagane jest około 40 sekund. Inną zauważoną wadą jest bardzo duża zależność od \code{OpenAI}. Wiąże się to oczywiście z kosztami, ale wprowadza również komplikacje w kwestii utrzymania działania całego rozwiązania, gdyż \code{OpenAI} może dowolnie zmieniać cenniki, usuwać stare modele, czy modyfikować interfejsy.
+W przypadku \code{C3} należy zaakcentować dość długi czas potrzebny na wygenerowanie odpowiedzi na dostarczone pytania, ponieważ dla każdego wymagane jest do 30 sekund oczekiwania. Inną zauważoną wadą jest bardzo duża zależność od \code{OpenAI}. Wiąże się to oczywiście z kosztami, ale wprowadza również komplikacje w kwestii utrzymania działania całego rozwiązania w dłuższej perspektywie, gdyż \code{OpenAI} może dowolnie zmieniać cenniki, usuwać stare modele, czy modyfikować interfejsy. Nie posiada się już kontroli nad całym systemem.

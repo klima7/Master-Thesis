@@ -21,7 +21,7 @@ Wśród innych dokonanych zmian znalazła się modyfikacja listy słów nazywany
 
 \subsection{Eksperymenty}
 
-W ramach eksperymentów postanowiono wytrenować i przetestować model \code{RAT-SQL} w obu wariantach: z enkodowaniem tekstów za pomocą pretrenowanego modelu \code{BERT} oraz z enkodowaniem za pomocą embeddingów \code{GloVe}. W pierwszej konfiguracji model liczy 244 miliony parametrów, a w drugiej zaledwie 17 milionów, z czego wszystkie podlegają optymalizacji. Dla wariantu z \code{BERT} zdecydowano się wytrenować dwie wersje, gdzie jedna zostanie nauczona na polskim zbiorze \code{Pol-Spider}, a druga na zbiorze \code{mix-spider}, który zawiera dodatkowo oryginalny zbiór angielski. Niektóre artykuły podają bowiem, że modele trenowane na tego typu połączonych zbiorach tłumaczonych i angielskich osiągają lepsze wyniki niż trenowane jedynie na tłumaczeniach \mycite{Bakshandaeva2022,SpiderPortuguese}, co postanowiono zweryfikować. Po wariancie z \code{GloVe} spodziewano się, że osiągnie słabsze wyniki od \code{BERT}, gdyż zgodnie z artykułem wprowadzającym \code{RAT-SQL} tak właśnie powinno się stać. Jak zostało wcześniej wspomniane, wykorzystane embeddingi \code{GloVe} trenowane były jedynie na tekstach polskich. Z tego powodu ten wariant postanowiono nauczyć dla bardziej ograniczonego scenariusza, w którym nazwy tabel i kolumn zawsze będą w języku polskim i trening przeprowadzono na zbiorze \code{Pol-Spider-PL}.
+W ramach eksperymentów postanowiono wytrenować i przetestować model \code{RAT-SQL} w obu wariantach: z enkodowaniem tekstów za pomocą pretrenowanego modelu \code{BERT} oraz z enkodowaniem za pomocą embeddingów \code{GloVe}. W pierwszej konfiguracji model liczy 244 miliony parametrów, a w drugiej zaledwie 17 milionów, z czego wszystkie podlegają optymalizacji. Dla wariantu z \code{BERT} zdecydowano się wytrenować dwie wersje, gdzie jedna zostanie nauczona na polskim zbiorze \code{Pol-Spider}, a druga na zbiorze \code{Mix-Spider}, który zawiera dodatkowo oryginalny zbiór angielski. Niektóre artykuły podają bowiem, że modele trenowane na tego typu połączonych zbiorach tłumaczonych i angielskich osiągają lepsze wyniki niż trenowane jedynie na tłumaczeniach \mycite{Bakshandaeva2022,SpiderPortuguese}, co postanowiono zweryfikować. Po wariancie z \code{GloVe} spodziewano się, że osiągnie słabsze wyniki od \code{BERT}, gdyż zgodnie z artykułem wprowadzającym \code{RAT-SQL} tak właśnie powinno się stać. Jak zostało wcześniej wspomniane, wykorzystane embeddingi \code{GloVe} trenowane były jedynie na tekstach polskich. Z tego powodu ten wariant postanowiono nauczyć dla bardziej ograniczonego scenariusza, w którym nazwy tabel i kolumn zawsze będą w języku polskim i trening przeprowadzono na zbiorze \code{Pol-Spider-PL}.
 
 Autorzy \code{RAT-SQL} oryginalnie trenowali wariant \code{BERT} przez 80 000 kroków, co postanowiono skrócić o połowę. Pomimo tego równoległy trening na obu wspomnianych zbiorach, na dwóch posiadanych kartach graficznych, zajął prawie trzy doby. Wariant \code{GloVe} trenowany był natomiast oryginalnie przez 40 000 kroków, co postanowiono pozostawić bez zmian i w tym przypadku zajęło to niecałe dwie doby. 
 
@@ -41,7 +41,7 @@ Autorzy \code{RAT-SQL} oryginalnie trenowali wariant \code{BERT} przez 80 000 kr
         \addplot table[x=step,y expr=\thisrow{em} * 100,col sep=comma] {plots/ratsql_training_bert.csv}; 
         \addplot table[x=step,y expr=\thisrow{em} * 100,col sep=comma] {plots/ratsql_training_bert_mix.csv}; 
         \addplot table[x=step,y expr=\thisrow{em} * 100,col sep=comma] {plots/ratsql_training_glove.csv}; 
-        \legend{BERT + Pol-Spider, BERT + mix-spider, GloVe}
+        \legend{BERT + Pol-Spider, BERT + Mix-Spider, GloVe}
       \end{axis}
     \end{tikzpicture}
     \lcaption{Wyniki modeli na zbiorze testowym w trakcie trwania treningu}{Warianty \code{BERT} testowano na zbiorze \code{Pol-Spider}, natomiast \code{GloVe} na zbiorze \code{Pol-Spider-PL}.}
@@ -52,7 +52,7 @@ Autorzy \code{RAT-SQL} oryginalnie trenowali wariant \code{BERT} przez 80 000 kr
 Podczas treningu wagi modeli były regularnie zapisywane na dysku w odstępie 1000 kroków. Po zakończeniu każdy taki zestaw wag został przetestowany z wykorzystaniem metryki \code{EM Without Values}, co zajęło sumarycznie kilkanaście godzin obliczeń. Warianty z \code{BERT} testowane były na zbiorze \code{Pol-Spider}, natomiast wariant z \code{GloVe} na zbiorze \code{Pol-Spider-PL}. Wykres przedstawiający zmianę skuteczności modeli wraz z kolejnymi krokami treningu przedstawiono na rysunku \ref{plot:ratsql-accuracy}. Ostatecznie z każdego z trzech zestawów wag wybrano do dalszych testów ten, który podczas przedstawionej ewaluacji otrzymał najlepsze rezultaty. 
 
 \subsection{Wyniki}
-Trzy wytrenowane modele przetestowano na różnych konfiguracjach zbioru \code{Spider}. Wyniki tej analizy przedstawiono w tabeli \ref{tab:ratsql-results}. Można z niej odczytać, że w każdym przypadku najlepiej nauczył się wariant \code{BERT} trenowany na zbiorze \code{mix-spider}, nieco niższą skuteczność osiągnął \code{BERT} uczony na zbiorze \code{Pol-Spider}, natomiast model wykorzystujący embeddingi \code{GloVe} znacznie od tych dwóch odstaję. Z wykorzystaniem najlepszego modelu przeprowadzono dalsze testy, w których dokonano jego ewaluacji na wszystkich zbiorach pokrewnych z podziałem na poziomy trudności zapytań. Wyniki tych testów przedstawiono w tabeli \ref{tab:ratsql-difficulty}.
+Trzy wytrenowane modele przetestowano na różnych konfiguracjach zbioru \code{Spider}. Wyniki tej analizy przedstawiono w tabeli \ref{tab:ratsql-results}. Można z niej odczytać, że w każdym przypadku najlepiej nauczył się wariant \code{BERT} trenowany na zbiorze \code{Mix-Spider}, nieco niższą skuteczność osiągnął \code{BERT} uczony na zbiorze \code{Pol-Spider}, natomiast model wykorzystujący embeddingi \code{GloVe} znacznie od tych dwóch odstaję. Z wykorzystaniem najlepszego modelu przeprowadzono dalsze testy, w których dokonano jego ewaluacji na wszystkich zbiorach pokrewnych z podziałem na poziomy trudności zapytań. Wyniki tych testów przedstawiono w tabeli \ref{tab:ratsql-difficulty}.
 
 \begin{table}[ht]
     \centering
@@ -70,7 +70,7 @@ Trzy wytrenowane modele przetestowano na różnych konfiguracjach zbioru \code{S
         \thead{\small{En-Spider}} \\
         \hline
         BERT & Pol-Spider & 53,1 & 56,6 & 49,7 & 42,8 \\
-        BERT & mix-spider & 58,1 & 61,0 & 55,1 & 68,8 \\
+        BERT & Mix-Spider & 58,1 & 61,0 & 55,1 & 68,8 \\
         GloVe & Pol-Spider-PL & 19,3 & 27,5 & 11,2 & \s2,8 \\
         \hline
     \end{tabular}
