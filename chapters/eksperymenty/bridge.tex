@@ -14,7 +14,7 @@ Przystosowanie \code{BRIDGE} do języka polskiego okazało się znacznie prostsz
 Jedyną ważną modyfikacją dla języka polskiego okazała się zmiana wykorzystywanego modelu \code{BERT} z wariantu \code{bert-large-uncased} na \code{bert-base-multilingual-uncased}, oba dostępne są na platformie \code{HF}. Jest to działanie analogiczne do zmiany zaaplikowanej w \code{RAT-SQL}. Uzasadnienie również jest podobne: zmieniono model na wielojęzyczny, by poradził sobie z językiem polskim oraz na mniejszy, by umożliwić naukę na posiadanym sprzęcie. Tak zmodyfikowany model \code{BRIDGE} liczy sobie 174 miliony parametrów i wszystkie podlegają treningowi.
 
 \subsection{Eksperymenty}
-W ramach eksperymentu chciano dokonać treningu modelu \code{BRIDGE} i go przetestować. Nauki dokonano na zbiorze \code{Mix-Spider}, ponieważ wcześniej przeprowadzone eksperymenty z \code{RAT-SQL} pokazały, że model trenowany na połączonym zbiorze polskim i angielskim nauczył się lepiej. Oczywiście nie można założyć na tej podstawie, że każdy model uczony na połączonym zbiorze będzie skuteczniejszy. Można jednak przypuszczać, że zwykle tak jest.
+W ramach eksperymentu chciano dokonać treningu modelu \code{BRIDGE} i go przetestować. Naukę przeprowadzono na zbiorze \code{Mix-Spider}, ponieważ wcześniej przeprowadzone eksperymenty z \mbox{\code{RAT-SQL}} pokazały, że model trenowany na połączonym zbiorze polskim i angielskim nauczył się lepiej. Oczywiście nie można założyć na tej podstawie, że każdy model uczony na połączonym zbiorze będzie skuteczniejszy. Można jednak przypuszczać, że zwykle tak jest.
 
 \begin{figure}[ht!]
   \begin{center}

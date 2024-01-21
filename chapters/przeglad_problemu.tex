@@ -3,7 +3,7 @@ Celem niniejszego rozdziału jest przedstawienie zwięzłego przeglądu podejś�
 
 \section{Stosowane metryki}
 \label{section:metrics}
-Posiadając docelowe zapytanie, które w literaturze anglojęzycznej określane jest mianem \code{gold query}, oraz zapytanie wyprodukowane przez dowolny algorytm zachodzi potrzeba dokonania oceny tego, w jakim stopniu one sobie odpowiadają. Pozwala to bowiem w liczbowy sposób wyrazić dokładność algorytmu i dokonać jego porównań z innymi. Manualna ocena zwykle nie wchodzi w grę ze względu na swoją czasochłonność, więc opracowanych zostało kilka metryk, które dokonują tego w sposób automatyczny. Te najważniejsze opisano poniżej.
+Posiadając docelowe zapytanie, które w literaturze anglojęzycznej określane jest mianem \code{gold query}, oraz zapytanie wyprodukowane przez dowolny algorytm, zachodzi potrzeba dokonania oceny tego, w jakim stopniu one sobie odpowiadają. Pozwala to bowiem w liczbowy sposób wyrazić dokładność algorytmu i dokonać jego porównań z innymi. Manualna ocena zwykle nie wchodzi w grę ze względu na swoją czasochłonność, więc opracowanych zostało kilka metryk, które dokonują tego w sposób automatyczny. Te najważniejsze opisano poniżej.
 
 \subsection{Exact Set Match (EM)}
 Problemem zwyczajnego porównywania ze sobą docelowych i przewidywanych zapytań SQL jako wartości tekstowych jest to, że mogą się różnić w kolejności elementów niemających znaczenia. Przykładowo zwykle nieistotne jest, w jakiej kolejności zostaną zwrócone poszczególne kolumny. Podobnie nie ma znaczenia uporządkowanie wyrażeń boolowskich połączonych operatorami \code{AND}, czy \code{OR}. Ostatecznie obojętna jest nawet kolejność występowania klauzuli \code{SELECT}, \code{FROM}, czy \code{WHERE} w strukturze zapytania. Metryka \code{Exact Set Match}, nazywana skrótowo \code{EM}, rozwiązuje naszkicowany problem poprzez odpowiednie przetworzenie zapytań i porównywanie poszczególnych składników, traktując je jak zbiory, czyli ignorując kolejność, która jest nieistotna. Należy jednak zauważyć, że w języku SQL można osiągnąć ten sam cel przy pomocy kompletnie różnych instrukcji, zupełnie odmiennych strukturalnie. Rozważana metryka nie jest w stanie poprawnie rozpoznać takich przypadków i w rzeczywistości prawidłowe zapytanie oceni jako błędne.
@@ -14,7 +14,7 @@ Okazuje się, że szczególnie trudnym do przewidywania fragmentem zapytań SQL 
 \begin{figure}[ht!]
   \centering
   \includesvg[width=0.85\linewidth]{images/em_without_values}
-  \caption{Przykłady prawidłowych i nieprawidłowych zapytań dla metryki \code{EM}}
+  \caption{Prawidłowe i nieprawidłowe zapytania dla metryki \code{EM Without Values}}
   \label{fig:em-without-values}
 \end{figure}
 
@@ -26,7 +26,7 @@ Metryka \code{Execution Accuracy}, nazywana skrótowo \code{EX}, wychodzi z pros
 Dość wyraźny jest podział istniejących algorytmów rozwiązujących problem \code{Text-to-SQL} ze względu na dwie cechy. Pierwsza z nich to kwestia obecności wartości w przewidywanych zapytaniach. Druga natomiast to posiadanie umiejętności wykorzystania zawartości baz danych. Informacje te w oficjalnym rankingu zbioru \code{Spider} są wyszczególnione dla każdego modelu, ponieważ mają dość istotne implikacje, które zostaną opisane w poniższych sekcjach.
 
 \subsection{Przewidywanie wartości}
-Algorytmy tłumaczące zapytania naturalne na język SQL dzielą się na dwie podstawowe kategorie: przewidujące kompletne zapytania oraz zapytania bez wartości. Wówczas produkują instrukcje zawierające w miejscu wartości specjalne symbole zastępcze, takie jak \code{value}, czy \code{terminal}. Przykłady wygenerowanych zapytań zgodnie z oboma podejściami przedstawiono na rysunku \ref{fig:query-values}.
+Algorytmy tłumaczące zapytania naturalne na język SQL dzielą się na dwie podstawowe kategorie: przewidujące kompletne zapytania oraz zapytania bez wartości. Wówczas produkują instrukcje zawierające w ich miejscuspecjalne symbole zastępcze, takie jak \code{value}, czy \code{terminal}. Przykłady wygenerowanych zapytań zgodnie z oboma podejściami przedstawiono na rysunku \ref{fig:query-values}.
 
 \begin{figure}[ht!]
   \centering
@@ -51,7 +51,7 @@ Duże pretrenowane modele językowe zostały zaadaptowane w bardzo wielu problem
 
 Wykorzystanie dużych modeli językowych opiera się na traktowaniu ich jak czarnych skrzynek, które przyjmują na wejście instrukcję w języku naturalnym i zwracają odpowiedź. Te instrukcje wejściowe mają kluczowe znaczenie i określane są mianem promptów. Nawet niewielkie ich modyfikacji mogą drastycznie wpływać na otrzymywane odpowiedzi. W związku z tym powstała cała dyscyplina określana jako \code{prompt engineering}, która zajmuję się tworzeniem oraz optymalizacją promptów w takim kierunku, aby model zwracał oczekiwane odpowiedzi.
 
-W ostatnim czasie rozwiązania bazujące na dużych modelach językowych oraz prompt engineering zdominowały górną część rankingu zbioru \code{Spider}. Ich wadą jest jednak to, że wykorzystują płatne modele udostępniane przez \code{OpenAI}, co czyni je zbyt kosztownymi dla wielu zastosowań.
+W ostatnim czasie rozwiązania bazujące na dużych, pretrenowanych modelach językowych zdominowały górną część rankingu zbioru \code{Spider}. Ich wadą jest jednak to, że wykorzystują płatne modele udostępniane przez \code{OpenAI}, co czyni je zbyt kosztownymi dla wielu zastosowań.
 
 \section{Etapy tłumaczenia zapytań} \label{specific-stages}
 Celem niniejszej części jest przedstawienie powszechnie występujących w dedykowanych modelach \code{Text-to-SQL} etapów przetwarzania. Pozwoli to znacznie lepiej zrozumieć sposób działania rozwiązań wybranych do eksperymentów w kolejnym etapie.
@@ -59,7 +59,7 @@ Celem niniejszej części jest przedstawienie powszechnie występujących w dedy
 Okazuje się, że niemal wszystkie powstałe do tej pory modele opierają się na architekturze \code{enkoder-dekoder}. Oznacza to, że występuje w nich etap enkodowania, podczas którego informacje wejściowe konwertowane są do zwięzłej reprezentacji pośredniej, a następnie w etapie dekodowania na jej podstawie generowana jest ostateczna odpowiedź. Etapy te mogą być zrealizowane na bardzo wiele sposobów. Zwykle wyróżnia się także dodatkową fazę określaną mianem \code{schema linking}, która zwraca informację pozwalającą lepiej dokonać procesu enkodowania. 
 
 \subsection{Schema Linking}
-Celem etapu \code{schema linking} jest znalezienie powiązań pomiędzy frazami występującymi w pytaniu a elementami bazy danych, takimi jak tabele, kolumny i wartości. Jest to działanie, które jest intuicyjnie wykonywane nawet przez ludzkich ekspertów kiedy stoją przed zadaniem skonstruowania nowego zapytania SQL. Przykładowy rezultat takiego działania przedstawiono na rysunku \ref{fig:schema-linking}. W odróżnieniu od dwóch kolejnych etapów ten jest opcjonalny, lecz w praktyce często wykorzystywany.
+Celem etapu \code{schema linking} jest znalezienie powiązań pomiędzy frazami występującymi w pytaniu a elementami bazy danych, takimi jak tabele, kolumny i wartości. Jest to działanie, które jest intuicyjnie wykonywane nawet przez ludzkich ekspertów, kiedy stoją przed zadaniem skonstruowania nowego zapytania SQL. Przykładowy rezultat takiego działania przedstawiono na rysunku \ref{fig:schema-linking}. W odróżnieniu od dwóch kolejnych etapów ten jest opcjonalny, lecz w praktyce często wykorzystywany.
 
 \begin{figure}[ht!]
   \centering
