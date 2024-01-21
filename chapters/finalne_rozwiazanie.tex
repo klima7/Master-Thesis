@@ -1,20 +1,20 @@
 \chapter{Finalne rozwiązanie}
-Wszystkie przeprowadzone we wcześniejszej części testy modeli sprowadzały się wyłącznie do oceny automatycznej. Wyciągnięto z niej wniosek, że bardzo dobrze spisuje się model \code{RESDSQL}, a \code{C3} także jest godny uwagi. Z tego względu w niniejszym rozdziale postanowiono dokonać ponownego treningu \code{RESDSQL}, lecz z wykorzystaniem większej wersji modelu \code{T5} oraz z wykorzystaniem większej ilości danych. Tak jak wcześniej dokonano automatycznej oceny, lecz poza tym zaimplementowano interfejs graficzny pozwalający na praktyczne wykorzystanie oraz manualną ocenę tego rozwiązania, a także \code{C3}. Stworzoną aplikację przedstawiono kilku osobom w celu przetestowania i wyrażenia swojej opinii. Te skrótowo przedstawione działania zostaną w dalszej części dokładnie opisane.
+Wszystkie przeprowadzone we wcześniejszej części testy modeli sprowadzały się wyłącznie do oceny automatycznej. Wyciągnięto z niej wniosek, że bardzo dobrze spisuje się model \code{RESDSQL}, a \code{C3} również jest godny uwagi. Z tego względu w niniejszym rozdziale postanowiono dokonać ponownego treningu \code{RESDSQL}, lecz z wykorzystaniem większej wersji modelu \code{T5} oraz większej ilości danych. Tak jak wcześniej dokonano automatycznej oceny, lecz poza tym zaimplementowano interfejs graficzny, pozwalający na praktyczne wykorzystanie oraz manualną ocenę dwóch wybranych modeli. Stworzoną aplikację przedstawiono kilku osobom w celu przetestowania i wyrażenia swojej opinii. Te skrótowo opisane działania zostaną w kolejnych sekcjach rozwinięte.
 
-\section{Ponowny trening RESDSQL i automatyczna ocena}
-Jako, że wyniki modelu \code{RESDSQL} okazały się najlepsze spośród wszystkich klasycznych, trenowalnych rozwiązań, postanowiono dokonać jego nauki ponownie, lecz z wykorzystaniem rozszerzonego zbioru oraz większego wariantu modelu \code{T5} w nadziei na zwiększenie skuteczności.
+\section{Ponowny trening RESDSQL}
+Jako że wyniki modelu \code{RESDSQL} okazały się najlepsze spośród wszystkich klasycznych, trenowalnych rozwiązań, postanowiono dokonać jego nauki ponownie, lecz z wykorzystaniem rozszerzonego zbioru oraz większego wariantu modelu \code{T5}, licząc na jeszcze lepsze rezultaty.
 
-Wcześniej do treningu wykorzystano jedynie warianty zbioru \code{Spider}, ponieważ pozwalało to skrócić czas treningu oraz wykonywać rzetelne porównania z modelami tworzonymi przez innych badaczy, którzy również dokonywali treningu wyłącznie na tym zbiorze. Poza zbiorem \code{Spider} do danych treningowych postanowiono włączyć \code{Spider-Syn}, \code{SParC} oraz \code{CoSQL} w wariancie z polskimi i angielskimi schematami baz danych, a także ich angielskie pierwowzory. Zbiór \code{Spider-DK} pominięto, ponieważ zawiera on jedynie przykłady testowe. W ten sposób ilość danych treningowych została zwiększona prawie dwukrotnie.
+Wcześniej do treningu wykorzystano jedynie warianty zbioru \code{Spider}, ponieważ pozwoliło to skrócić czas treningu oraz wykonywać rzetelne porównania z modelami tworzonymi przez innych badaczy, którzy również dokonywali treningu wyłącznie na tym zbiorze. Teraz poza zbiorem \code{Spider} do danych treningowych postanowiono włączyć \code{Spider-Syn}, \code{SParC} oraz \code{CoSQL} w wariantach z polskimi i angielskimi schematami baz danych, a także ich angielskie pierwowzory. Zbiór \code{Spider-DK} pominięto, ponieważ zawiera on jedynie przykłady testowe. Posługując się wcześniej wprowadzonymi nazwami, można powiedzieć inaczej, że do zbioru treningowego wybrano \code{Mix-Spider}, \code{Mix-Spidersyn}, \code{Mix-Sparc} oraz \code{Mix-Cosql}. W ten sposób ilość danych treningowych została zwiększona prawie dwukrotnie.
 
-Wariant modelu \code{T5} postanowiono zmienić z wcześniej wykorzystanego \code{mt5-base} na \code{mt5-large}, który zawiera dwukrotnie większą liczbę parametrów. Powoduje ona, że model jest w stanie pomieścić znacznie większą wiedzę. W fazie eksperymentów nie skorzystano z tego, ponieważ nie dysponowano kartą graficzną o odpowiednio dużej ilości pamięci \code{VRAM}. \textbf{Stało się to możliwe dzięki uprzejmości p. Grzegorza Warzechy z firmy TaskPilot, który udostępnił odpowiednie zasoby sprzętowe}. Do treningu wykorzystano potężną kartę \code{RTX-4090} dysponującą 24 GB pamięci \code{VRAM}.
+Wariant modelu \code{T5} postanowiono zmienić z wcześniej wykorzystanego \code{mt5-base} na \code{mt5-large}, który zawiera dwukrotnie większą liczbę parametrów. Powoduje ona, że model jest w stanie pomieścić znacznie większą wiedzę. W fazie eksperymentów nie skorzystano z tego, ponieważ nie dysponowano kartą graficzną o odpowiednio dużej ilości pamięci \code{VRAM}. \textbf{Stało się to możliwe dzięki uprzejmości p. Grzegorza Warzechy z firmy TaskPilot, który udostępnił odpowiednie zasoby sprzętowe} i do treningu wykorzystano potężną kartę \code{Nvidia RTX 4090}, dysponującą 24 GB pamięci \code{VRAM}.
 
-Na rozwiązanie \code{RESDSQL}, jak opisywano wcześniej, składają się dwa modele. Pierwszego, oceniającego istotność tabel i kolumn, nie uczono ponownie, lecz wykorzystano ten wytrenowany wcześniej. Zamiana rozmiaru modelu językowego \code{T5} i ponowny trening tyczy się jedynie drugiego etapu, w którym następuje ostateczne generowanie zapytań SQL. Naukę kontynuowano przez 14 godzin, a jego wyniki przedstawiono w tabeli \ref{tab:resdsql-final-difficulty}.
+Na rozwiązanie \code{RESDSQL}, jak opisywano wcześniej, składają się dwa modele. Pierwszego, oceniającego istotność tabel i kolumn, nie uczono ponownie, lecz wykorzystano ten wytrenowany wcześniej. Zamiana rozmiaru modelu językowego \code{T5} i ponowny trening tyczy się jedynie drugiego etapu, w którym następuje ostateczne generowanie zapytań SQL. Naukę kontynuowano przez 14 godzin, a jej wyniki przedstawiono w tabeli \ref{tab:resdsql-final-difficulty}.
 
 \begin{table}[H]
     \centering
     \begin{tabular}{|l|r|r|r|r|r|}
         \hline
-        \thead{Zbiór} & \thead{Easy} & \thead{Medium} & \thead{Hard} & \thead{Extra} & \thead{Razem} \\
+        \thead{Zbiór} & \thead{Easy} & \thead{Medium} & \thead{Hard} & \thead{Extra Hard} & \thead{Razem} \\
         \hline
         Pol-Spider & 
         \threevals{85,5}{76,8}{87,7} &
@@ -76,9 +76,17 @@ Na rozwiązanie \code{RESDSQL}, jak opisywano wcześniej, składają się dwa mo
         
         \hline
     \end{tabular}
-    \caption{Wyniki finalnego modelu \code{RESDSQL} na poszczególnych zbiorach. Wartości w każdej komórce posiadają format EM \slashsep{ EM with values} \slashsep{ EX}}
+    \lcaption{Wyniki finalnego modelu \code{RESDSQL} na poszczególnych zbiorach}{Wartości w każdej komórce posiadają format \mbox{EM Without Values / EM / EX}.}
     \label{tab:resdsql-final-difficulty}
 \end{table}
+
+\begin{figure}[H]
+  \centering
+  \includesvg[width=1.0\linewidth]{images/final_resdsql_radar}
+  \lcaption{...}{...}
+  \label{fig:final-resdsql-radar}
+\end{figure}
+
 
 Wyniki testów pokazują, że zwiększenie rozmiaru modelu \code{T5} wraz z rozszerzeniem zbioru treningowego pozwoliło wyraźnie podnieść wyniki wszystkich metryk w porównaniu do wcześniej trenowanej wersji. W przypadku każdego ze zbiorów testowych nastąpiło zwiększenie wartości metryki \code{EM} o przynajmniej 8 punktów procentowych. Wartość metryki \code{EX} również wzrosła, co sprawiło, że ta wersja modelu \code{RESDSQL} dorównuje pod tym kątem nawet modelowi \code{C3}.
 
