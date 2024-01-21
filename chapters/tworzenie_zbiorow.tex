@@ -106,7 +106,7 @@ Trzeba zauważyć, że opisane powyżej usuwanie duplikatów bazuje na angielski
 
 \begin{figure}[ht!]
   \centering
-  \includegraphics[width=1.0\linewidth]{images/duplication_after_translation.png}
+  \includesvg[width=1.0\linewidth]{images/duplication_after_translation}
   \caption[Sposób powstawania duplikacji w wyniku tłumaczenia]{Sposób powstawania duplikacji pomiędzy \code{Spider} i \code{Spider-Syn} w wyniku tłumaczenia}
   \label{fig:deduplication-after-translation}
 \end{figure}
@@ -203,14 +203,14 @@ Aby poradzić sobie z ustaleniem przynależności kolumn do tabel w skomplikowan
 
 \begin{figure}[ht!]
   \centering
-  \includegraphics[width=1.0\linewidth]{images/query_decomposition_serial.png}
+  \includesvg[width=1.0\linewidth]{images/query_decomposition_serial}
   \caption{Metoda dekomponowania zapytań z operatorami zbiorowymi}
   \label{fig:query-decomposition-serial}
 \end{figure}
 
 \begin{figure}[ht!]
   \centering
-  \includegraphics[width=1.0\linewidth]{images/query_decomposition_nested.png}
+  \includesvg[width=1.0\linewidth]{images/query_decomposition_nested}
   \lcaption{Metoda dekomponowania zapytań z zagnieżdżeniem}{Fragment w zapytaniu zewnętrznym odpowiadający zapytaniu wewnętrznemu zastępowany jest wyrażeniem \code{SELECT 1}, aby zapewnić strukturalną poprawność obu rezultatów dekompozycji.}
   \label{fig:query-decomposition-nested}
 \end{figure}
@@ -228,7 +228,7 @@ Zapytania SQL podzielone na tokeny to element, który również musi znaleźć s
 
 \begin{figure}[ht!]
   \centering
-  \includegraphics[width=0.9\linewidth]{images/query_tokenization.png}
+  \includesvg[width=0.9\linewidth]{images/query_tokenization}
   \caption{Schemat działania zaproponowanego algorytmu tokenizacji zapytań SQL}
   \label{fig:query-tokenization}
 \end{figure}
@@ -269,7 +269,7 @@ Aby poradzić sobie z zarysowanym problemem postanowiono przed tłumaczeniem dok
 
 \begin{figure}[ht!]
   \centering
-  \includegraphics[width=1.0\linewidth]{images/multi_word_translation.png}
+  \includesvg[width=1.0\linewidth]{images/multi_word_translation}
   \caption{Schemat algorytmu do tłumaczenia oryginalnych nazw tabel i kolumn}
   \label{fig:multi-word-translation}
 \end{figure}
@@ -281,13 +281,13 @@ Metoda kontekstowa polega na prostej obserwacji, że nowoczesne narzędzia bazuj
 \begin{figure}[ht!]
 \centering
 \begin{subfigure}{0.49\textwidth}
-    \includegraphics[width=\textwidth]{images/translation_in_context_table.png}
+    \includesvg[width=\textwidth]{images/translation_in_context_table}
     \caption{Dla tabel}
     \label{fig:first}
 \end{subfigure}
 \hfill
 \begin{subfigure}{0.49\textwidth}
-    \includegraphics[width=\textwidth]{images/translation_in_context_column.png}
+    \includesvg[width=\textwidth]{images/translation_in_context_column}
     \caption{Dla kolumn}
     \label{fig:second}
 \end{subfigure}
@@ -344,7 +344,7 @@ W celu znalezienia w danym zapytaniu wartości tekstowych dokonywano jego przetw
 
 \begin{figure}[ht!]
   \centering
-  \includegraphics[width=1.0\linewidth]{images/value_translation.png}
+  \includesvg[width=1.0\linewidth]{images/value_translation}
   \caption{Wizualizacja etapu tłumaczenia wartości w zapytaniach SQL}
   \label{fig:value-translation}
 \end{figure}
@@ -480,7 +480,7 @@ Wymienione mapowania zawierają polskie znaki, które jednak rzadko są spotykan
 
 \begin{figure}[ht!]
   \centering
-  \includegraphics[width=1.0\linewidth]{images/mappings.png}
+  \includesvg[width=1.0\linewidth]{images/mappings}
   \lcaption{Schemat zależności pomiędzy stworzonymi mapowaniami nazw}{Litera Ł w zielonym kółku oznacza obecność polskich znaków, natomiast w czerwonym ich brak.}
   \label{fig:mappings}
 \end{figure}
@@ -517,7 +517,7 @@ W celu ułatwienia dalszej pracy poprzez możliwość odwoływania się do konkr
 
 \begin{figure}[ht!]
   \centering
-  \includegraphics[width=1.0\linewidth]{images/datasets.png}
+  \includesvg[width=1.0\linewidth]{images/datasets}
   \caption{Schemat zależności pomiędzy zbudowanymi zbiorami danych}
   \label{fig:datasets}
 \end{figure}
