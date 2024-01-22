@@ -16,4 +16,4 @@ Gold SQL should be: select A from X where award = 'B' intersect select A from X 
 ASYSTENT:
 Thank you for the tip! I'll remember to use "INTERSECT" or "EXCEPT" instead of "IN", "OR", or "LEFT JOIN" when I want to find records that match or don't match across two tables. Additionally, I'll make sure to use "DISTINCT" or "LIMIT" when necessary to avoid repetitive results or limit the number of results returned.
 UŻYTKOWNIK:
-### Complete sqlite SQL query only and with no explanation, and do not select extra columns that are not explicitly requested in the query. @\highprompt{Query will be provided in polish language}@.
+### Complete sqlite SQL query only and with no explanation, and do not select extra columns that are not explicitly requested in the query. @\highprompt{Query will be provided in Polish language}@.
